@@ -95,8 +95,11 @@
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
   }
   details.group > summary::-webkit-details-marker { display: none; }
-  details.group > summary::before { content: "+"; color: var(--gray); width: 12px; flex: 0 0 auto; }
-  details.group[open] > summary::before { content: "–"; }
+  details.group > summary::before {
+    content: "\203A"; color: var(--gray); width: 12px; flex: 0 0 auto; text-align: center; line-height: 1;
+    font-size: 16px; transition: transform 0.15s var(--ease);
+  }
+  details.group[open] > summary::before { transform: rotate(90deg); }
   details.group > summary .badge { font-weight: 400; color: var(--gray); font-size: 12px; margin-left: auto; }
   details.group > .body { padding: 4px 12px 12px; display: grid; gap: 10px; border-top: 1px solid var(--bolder); }
   details.level-0 > summary { background: var(--bg); }
