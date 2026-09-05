@@ -95,9 +95,10 @@
         });
       },
       getFileSha: function (path) {
-        // Cache-bust: GitHub can serve a stale sha right after a push.
-        return call('/repos/' + repo + '/contents/' + encodeURI(path) + '?ref=' + encodeURIComponent(branch) + '&_=' + Date.now(),
-                    { headers: { 'Cache-Control': 'no-cache' } }).then(function (r) {
+        // Cache-bust with a query param. A Cache-Control header cannot be used:
+        // it is not CORS-safelisted and GitHub does not allow it, which fails the
+        // preflight and surfaces as "Failed to fetch".
+        return call('/repos/' + repo + '/contents/' + encodeURI(path) + '?ref=' + encodeURIComponent(branch) + '&_=' + Date.now()).then(function (r) {
           if (r.status === 404) return null;
           if (!r.ok) throw new Error('GitHub read failed (' + r.status + ')');
           return r.json().then(function (j) { return j.sha; });
