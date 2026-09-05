@@ -541,6 +541,17 @@ window.SITE_CONTENT = {
           "posts": []
         }
       ]
+    },
+    {
+      "id": "blogs",
+      "label": "Blogs",
+      "blocks": [
+        {
+          "type": "blog",
+          "title": "Writing",
+          "posts": []
+        }
+      ]
     }
   ]
 };

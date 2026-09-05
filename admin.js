@@ -138,7 +138,8 @@
     stats:   { type: 'stats', title: 'At a glance', stats: [{ value: '1', label: 'Label' }] },
     cards:   { type: 'cards', title: 'New section', cards: [{ meta: 'Category', title: 'Card', text: 'Description', facts: [{ label: 'Fact', value: 'Value' }] }] },
     posts:   { type: 'posts', title: 'Updates', posts: [] },
-    races:   { type: 'races', title: 'Racing', races: [] }
+    races:   { type: 'races', title: 'Racing', races: [] },
+    blog:    { type: 'blog', title: 'Writing', posts: [] }
   };
   var KEY_TEMPLATES = {
     tabs:    { id: 'new', label: 'New tab', blocks: [] },
@@ -915,6 +916,7 @@
   var composeKind = 'post';   // 'post' writes an update, 'race' writes a race result
   var draft = [];             // { kind: 'new' | 'existing', mtype, src, alt, file, url, name }
   var mapDraft = null;        // the route map, same shape as a draft item
+  var coverDraft = null;      // a blog post's cover image
   var paceTouched = false;
   var editingIndex = -1;      // index in the tab's list, -1 while writing something new
   var MAX_BYTES = 40 * 1024 * 1024;
@@ -940,7 +942,8 @@
   // Each tab keeps at most one "posts" and one "races" section, created on first use.
   var BLOCK_FOR = {
     post: { type: 'posts', key: 'posts', title: 'Updates' },
-    race: { type: 'races', key: 'races', title: 'Racing' }
+    race: { type: 'races', key: 'races', title: 'Racing' },
+    blog: { type: 'blog',  key: 'posts', title: 'Writing' }
   };
   function blockFor(tabIndex, kind, create) {
     var spec = BLOCK_FOR[kind];
@@ -968,6 +971,7 @@
     renderComposerHead();
     renderDraftMedia();
     renderMapPreview();
+    renderCoverPreview();
     renderComposeFeed();
   }
 
@@ -976,19 +980,25 @@
     if (editingIndex >= 0 && !confirm('Discard the item you are editing?')) return;
     composeKind = kind;
     resetComposer();
-    $('kind-post').setAttribute('aria-pressed', kind === 'post' ? 'true' : 'false');
-    $('kind-race').setAttribute('aria-pressed', kind === 'race' ? 'true' : 'false');
+    ['post', 'race', 'blog'].forEach(function (k) {
+      $('kind-' + k).setAttribute('aria-pressed', kind === k ? 'true' : 'false');
+    });
     $('post-fields').hidden = kind !== 'post';
     $('race-fields').hidden = kind !== 'race';
+    $('blog-fields').hidden = kind !== 'blog';
     $('post-date').hidden = kind !== 'post';
+    // A blog post carries its images inline, so the attach strip stays out of the way.
+    $('pick-media').hidden = kind === 'blog';
+    $('dropnote').hidden = kind === 'blog';
     renderCompose();
   }
   $('kind-post').addEventListener('click', function () { setComposeKind('post'); });
   $('kind-race').addEventListener('click', function () { setComposeKind('race'); });
+  $('kind-blog').addEventListener('click', function () { setComposeKind('blog'); });
 
   function renderComposeTabs() {
     var host = $('compose-tabs');
-    host.innerHTML = '<span class="pill-label">' + (composeKind === 'race' ? 'Add to' : 'Post in') + '</span>' +
+    host.innerHTML = '<span class="pill-label">' + (composeKind === 'race' ? 'Add to' : composeKind === 'blog' ? 'Write in' : 'Post in') + '</span>' +
       (model.tabs || []).map(function (t, i) {
         return '<button type="button" class="pill" data-tab="' + i + '" aria-pressed="' + (i === composeTab) + '">' +
           esc(t.label || t.id) + '<span class="count">' + itemsOf(i, composeKind).length + '</span></button>';
@@ -1003,20 +1013,22 @@
     $('composer-author').textContent = pro.name || 'You';
     var tab = model.tabs[composeTab];
     var where = tab ? tab.label : '';
-    var noun = composeKind === 'race' ? 'race result' : 'post';
+    var noun = composeKind === 'race' ? 'race result' : composeKind === 'blog' ? 'blog post' : 'post';
     $('composer-target').textContent = editingIndex >= 0
       ? 'Editing a ' + noun + ' in ' + where
-      : (composeKind === 'race' ? 'Logging a race in ' : 'Posting to ') + where;
+      : (composeKind === 'race' ? 'Logging a race in '
+        : composeKind === 'blog' ? 'Writing in ' : 'Posting to ') + where;
     $('composer-badge').hidden = editingIndex < 0;
     $('post-cancel').hidden = editingIndex < 0 && !composerHasContent();
     $('post-submit').textContent = editingIndex >= 0
       ? 'Save changes'
-      : (composeKind === 'race' ? 'Log race' : 'Post');
+      : (composeKind === 'race' ? 'Log race' : composeKind === 'blog' ? 'Publish post' : 'Post');
   }
 
   function composerHasContent() {
     if (draft.length || mapDraft) return true;
     if (composeKind === 'race') return !!($('race-name').value.trim() || $('race-time').value.trim() || $('race-note').value.trim());
+    if (composeKind === 'blog') return !!($('blog-title').value.trim() || $('blog-body').value.trim());
     return !!($('post-title').value.trim() || $('post-body').value.trim());
   }
 
@@ -1034,7 +1046,7 @@
           '<button type="button" data-mact="del" data-i="' + i + '" title="Remove">✕</button>' +
         '</span></div>';
     }).join('');
-    $('dropnote').hidden = draft.length > 0;
+    $('dropnote').hidden = draft.length > 0 || composeKind === 'blog';
   }
 
   function renderMapPreview() {
@@ -1087,9 +1099,148 @@
     renderComposerHead();
   });
 
+  function renderCoverPreview() {
+    var box = $('cover-preview');
+    var src = coverDraft ? (coverDraft.kind === 'new' ? coverDraft.url : previewSrc(coverDraft.src)) : '';
+    box.className = 'map-preview' + (src ? ' has' : '');
+    box.innerHTML = src ? '<img src="' + esc(src) + '" alt="Cover">' : 'Cover';
+    $('cover-remove').hidden = !coverDraft;
+  }
+
+  // Wraps or prefixes the selection in the body textarea.
+  var MD_ACTIONS = {
+    h2:     { line: '## ' },
+    list:   { line: '- ' },
+    num:    { line: '1. ' },
+    quote:  { line: '> ' },
+    bold:   { wrap: '**' },
+    italic: { wrap: '*' },
+    code:   { block: '```\n', close: '\n```' },
+    rule:   { block: '\n---\n', close: '' }
+  };
+  function applyMd(kind) {
+    var ta = $('blog-body');
+    var spec = MD_ACTIONS[kind];
+    if (!spec) return;
+    var start = ta.selectionStart, end = ta.selectionEnd;
+    var sel = ta.value.slice(start, end);
+    // Block-level marks need to begin their own line.
+    var atLineStart = start === 0 || ta.value.charAt(start - 1) === '\n';
+    var lead = (spec.wrap || atLineStart) ? '' : '\n';
+    var out;
+    if (spec.wrap) {
+      out = spec.wrap + (sel || 'text') + spec.wrap;
+    } else if (spec.line) {
+      out = lead + (sel || 'text').split('\n').map(function (l) { return spec.line + l; }).join('\n');
+    } else {
+      out = lead + spec.block + (sel || '') + spec.close;
+    }
+    ta.setRangeText(out, start, end, 'end');
+    ta.focus();
+    onBlogInput();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.md-btn[data-md]');
+    if (b) { e.preventDefault(); applyMd(b.dataset.md); }
+  });
+
+  function insertAtCursor(text) {
+    var ta = $('blog-body');
+    ta.setRangeText(text, ta.selectionStart, ta.selectionEnd, 'end');
+    ta.focus();
+    onBlogInput();
+  }
+
+  function onBlogInput() {
+    var words = $('blog-body').value.trim().split(/\s+/).filter(Boolean).length;
+    $('blog-count').textContent = words ? words + ' words · ' + Math.max(1, Math.round(words / 200)) + ' min read' : '';
+    renderComposerHead();
+    schedulePreview(['tabs', composeTab]);
+  }
+  $('blog-body').addEventListener('input', onBlogInput);
+  $('blog-title').addEventListener('input', renderComposerHead);
+
+  $('pick-cover').addEventListener('click', function () { $('blog-cover-file').click(); });
+  $('blog-cover-file').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { setStatus('The cover needs to be an image.', 'error'); return; }
+    if (file.size > MAX_BYTES) { setStatus('That cover is over 40 MB.', 'error'); return; }
+    if (coverDraft && coverDraft.kind === 'new' && coverDraft.url && !coverDraft.keepUrl) URL.revokeObjectURL(coverDraft.url);
+    coverDraft = { kind: 'new', file: file, url: URL.createObjectURL(file), mtype: 'image', name: file.name, alt: '' };
+    renderCoverPreview();
+    renderComposerHead();
+  });
+  $('cover-remove').addEventListener('click', function () {
+    if (coverDraft && coverDraft.kind === 'new' && coverDraft.url && !coverDraft.keepUrl) URL.revokeObjectURL(coverDraft.url);
+    coverDraft = null;
+    renderCoverPreview();
+    renderComposerHead();
+  });
+
+  // Images inside a post upload straight away and drop a Markdown tag at the cursor.
+  $('insert-image').addEventListener('click', function () {
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    var picker = document.createElement('input');
+    picker.type = 'file';
+    picker.accept = 'image/*';
+    picker.addEventListener('change', function () {
+      var file = picker.files && picker.files[0];
+      if (!file) return;
+      if (file.size > MAX_BYTES) { setStatus('That image is over 40 MB.', 'error'); return; }
+      var dest = 'media/' + todayISO().slice(0, 7) + '/' + Date.now() + '-' + slugify(file.name);
+      var url = URL.createObjectURL(file);
+      setStatus('Uploading ' + file.name + '\u2026');
+      fileToB64(file)
+        .then(function (b64) { return github().putBase64(dest, b64, 'Add media ' + dest); })
+        .then(function () {
+          localUrls[dest] = url;
+          insertAtCursor('\n![](' + dest + ')\n');
+          setStatus('Image added. Put a caption in the square brackets if you want one.', 'ok');
+        })
+        .catch(function (err) { setStatus(err.message || String(err), 'error'); });
+    });
+    picker.click();
+  });
+
   function renderComposeFeed() {
     if (composeKind === 'race') return renderRaceFeed();
+    if (composeKind === 'blog') return renderBlogFeed();
     return renderPostFeed();
+  }
+
+  function renderBlogFeed() {
+    var list = itemsOf(composeTab, 'blog');
+    $('feed-count').textContent = list.length
+      ? list.length + (list.length === 1 ? ' post' : ' posts') + ' in this tab'
+      : '';
+    if (!list.length) {
+      $('compose-feed').innerHTML = '<div class="empty-note">Nothing written in this tab yet.</div>';
+      return;
+    }
+    var order = list.map(function (_, i) { return i; }).sort(function (a, b) {
+      return (list[b].date || '') < (list[a].date || '') ? -1 : 1;
+    });
+    $('compose-feed').innerHTML = order.map(function (i) {
+      var p = list[i];
+      var words = String(p.body || '').trim().split(/\s+/).filter(Boolean).length;
+      return '<article class="card apost">' +
+        '<div class="apost-top">' +
+          '<span class="apost-title">' + esc(p.title || '(untitled)') + '</span>' +
+          '<span class="apost-when">' + esc(niceDate(p.date)) + '</span>' +
+          '<span class="apost-tools">' +
+            '<button type="button" class="btn secondary small" data-pact="edit" data-i="' + i + '">Edit</button>' +
+            '<button type="button" class="btn danger small" data-pact="del" data-i="' + i + '">Delete</button>' +
+          '</span>' +
+        '</div>' +
+        '<div class="arace-figs">' +
+          '<span>' + words + ' words</span>' +
+          '<span>' + Math.max(1, Math.round(words / 200)) + ' min read</span>' +
+          (p.cover ? '<span>cover</span>' : '') +
+          ((p.tags || []).length ? '<span>' + esc(p.tags.join(', ')) + '</span>' : '') +
+        '</div></article>';
+    }).join('');
   }
 
   function raceUpcoming(r) { return !!r.date && r.date > todayISO(); }
@@ -1210,8 +1361,16 @@
     $('race-pace').value = '';
     $('race-note').value = '';
     $('pace-auto').hidden = true;
+    if (coverDraft && coverDraft.kind === 'new' && coverDraft.url && !coverDraft.keepUrl) URL.revokeObjectURL(coverDraft.url);
+    coverDraft = null;
+    $('blog-title').value = '';
+    $('blog-date').value = todayISO();
+    $('blog-tags').value = '';
+    $('blog-body').value = '';
+    $('blog-count').textContent = '';
     renderDraftMedia();
     renderMapPreview();
+    renderCoverPreview();
     renderComposerHead();
   }
 
@@ -1237,9 +1396,10 @@
     var stamp = Date.now();
     var folder = 'media/' + todayISO().slice(0, 7);
     var pending = (mapDraft && mapDraft.kind === 'new' ? 1 : 0) +
+      (coverDraft && coverDraft.kind === 'new' ? 1 : 0) +
       draft.filter(function (m) { return m.kind === 'new'; }).length;
     var done = 0;
-    var out = { map: '', media: [] };
+    var out = { map: '', cover: '', media: [] };
 
     function upload(m, tag) {
       var path = folder + '/' + stamp + '-' + tag + '-' + slugify(m.name);
@@ -1259,6 +1419,12 @@
       chain = chain.then(function () {
         if (mapDraft.kind !== 'new') { out.map = mapDraft.src; return; }
         return upload(mapDraft, 'map').then(function (path) { out.map = path; });
+      });
+    }
+    if (coverDraft) {
+      chain = chain.then(function () {
+        if (coverDraft.kind !== 'new') { out.cover = coverDraft.src; return; }
+        return upload(coverDraft, 'cover').then(function (path) { out.cover = path; });
       });
     }
     draft.forEach(function (m, i) {
@@ -1337,17 +1503,21 @@
     if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
 
     var race = composeKind === 'race';
+    var blog = composeKind === 'blog';
     var title = $('post-title').value.trim();
     var body = $('post-body').value.trim();
     var raceName = $('race-name').value.trim();
+    var blogTitle = $('blog-title').value.trim();
 
     if (race && !raceName) { setStatus('Give the race a name first.', 'error'); return; }
-    if (!race && !title && !body && !draft.length) { setStatus('Add a title, some text, or a file first.', 'error'); return; }
+    if (blog && !blogTitle) { setStatus('Give the post a title first.', 'error'); return; }
+    if (!race && !blog && !title && !body && !draft.length) { setStatus('Add a title, some text, or a file first.', 'error'); return; }
 
     var submit = $('post-submit');
     submit.disabled = true;
     $('post-cancel').disabled = true;
-    var uploading = (mapDraft && mapDraft.kind === 'new') || draft.some(function (m) { return m.kind === 'new'; });
+    var uploading = (mapDraft && mapDraft.kind === 'new') || (coverDraft && coverDraft.kind === 'new') ||
+      draft.some(function (m) { return m.kind === 'new'; });
     setStatus(uploading ? 'Uploading…' : 'Publishing…');
 
     uploadPending().then(function (up) {
@@ -1366,6 +1536,14 @@
           map: up.map,
           media: up.media
         };
+      } else if (blog) {
+        item = {
+          title: blogTitle,
+          date: $('blog-date').value || todayISO(),
+          tags: $('blog-tags').value.split(',').map(function (t) { return t.trim(); }).filter(Boolean),
+          cover: up.cover,
+          body: $('blog-body').value.trim()
+        };
       } else {
         item = { title: title, date: $('post-date').value || todayISO(), body: body, media: up.media };
       }
@@ -1374,13 +1552,13 @@
       if (editing) list[editingIndex] = item;
       else list.unshift(item);
       setStatus('Publishing…');
-      return publishContent((editing ? 'Edit ' : 'Add ') + (race ? 'race' : 'post'));
+      return publishContent((editing ? 'Edit ' : 'Add ') + (race ? 'race' : blog ? 'blog post' : 'post'));
     }).then(function (payload) {
       resetComposer();
       renderCompose();
       renderForm();
       pushPreview(model.tabs[composeTab].id);
-      return confirmLive(payload, race ? 'Race logged' : 'Posted');
+      return confirmLive(payload, race ? 'Race logged' : blog ? 'Post published' : 'Posted');
     }).catch(function (err) {
       setStatus(err.message || String(err), 'error');
     }).then(function () {
@@ -1408,7 +1586,14 @@
       resetComposer();
       editingIndex = i;
       draft = mediaToDraft(item.media);
-      if (race) {
+      if (composeKind === 'blog') {
+        $('blog-title').value = item.title || '';
+        $('blog-date').value = /^\d{4}-\d{2}-\d{2}$/.test(item.date || '') ? item.date : todayISO();
+        $('blog-tags').value = (item.tags || []).join(', ');
+        $('blog-body').value = item.body || '';
+        coverDraft = item.cover ? { kind: 'existing', src: item.cover, mtype: 'image', alt: '' } : null;
+        onBlogInput();
+      } else if (race) {
         $('race-name').value = item.name || '';
         $('race-date').value = /^\d{4}-\d{2}-\d{2}$/.test(item.date || '') ? item.date : todayISO();
         $('race-location').value = item.location || '';
@@ -1426,9 +1611,10 @@
       }
       renderDraftMedia();
       renderMapPreview();
+      renderCoverPreview();
       renderComposerHead();
       $('compose-pane').scrollTo({ top: 0, behavior: 'smooth' });
-      $(race ? 'race-name' : 'post-body').focus();
+      $(composeKind === 'blog' ? 'blog-body' : race ? 'race-name' : 'post-body').focus();
       setStatus('Editing. Save changes to publish, or Cancel to leave it as it is.');
       return;
     }
@@ -1461,6 +1647,7 @@
     $('post-date').value = todayISO();
     $('race-date').value = todayISO();
     $('race-km').value = RACE_KM.full;
+    $('blog-date').value = todayISO();
     if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
       showGateError('This editor needs a secure context (https:// or localhost). Run a local server, e.g. `python3 -m http.server`, or use the live site.');
     }

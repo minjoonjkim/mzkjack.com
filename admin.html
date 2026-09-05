@@ -245,6 +245,24 @@
   .upload-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .upload-controls { display: grid; gap: 6px; flex: 1 1 auto; min-width: 0; }
   .upload-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+  .blog-fields { display: grid; gap: 10px; }
+  #blog-title { font-size: 19px; font-weight: 700; color: var(--black); border: 0; border-bottom: 1px solid var(--bolder); border-radius: 0; padding: 5px 0; }
+  #blog-title::placeholder { font-weight: 400; color: var(--gray); }
+  #blog-title:focus { border-color: var(--primary-text); box-shadow: none; }
+  #blog-body {
+    min-height: 320px; resize: vertical; line-height: 1.65; border-radius: var(--radius-sm);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px;
+  }
+  .md-bar { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; padding: 3px; background: var(--bg); border-radius: 9px; }
+  .md-btn {
+    appearance: none; border: 0; background: none; cursor: pointer; color: var(--dim);
+    min-width: 27px; height: 25px; padding: 0 6px; border-radius: 6px; font-size: 12px; line-height: 1;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .md-btn:hover { background: var(--white); color: var(--black); box-shadow: var(--sh-1); }
+  .md-btn.wide { padding: 0 10px; font-weight: 700; }
+  .md-sep { width: 1px; height: 16px; background: var(--bolder); margin: 0 4px; }
+  .md-hint { margin-left: auto; color: var(--gray); font-size: 11px; padding-right: 6px; }
   .btn.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--white); font-weight: 700; }
   .btn.danger.armed:hover { background: #A93226; border-color: #A93226; color: var(--white); }
   .btn.primary.pending { position: relative; }
@@ -396,6 +414,7 @@
         <div class="kindswitch" role="group" aria-label="What to add">
           <button type="button" class="kind" id="kind-post" aria-pressed="true">Update</button>
           <button type="button" class="kind" id="kind-race" aria-pressed="false">Race result</button>
+          <button type="button" class="kind" id="kind-blog" aria-pressed="false">Blog post</button>
         </div>
 
         <div id="post-fields">
@@ -439,6 +458,47 @@
               <button type="button" class="btn secondary small" id="map-remove" hidden>Remove map</button>
             </div>
           </div>
+        </div>
+
+        <div class="blog-fields" id="blog-fields" hidden>
+          <input type="text" id="blog-title" placeholder="Post title" aria-label="Post title">
+          <div class="field-grid">
+            <div class="field"><label for="blog-date">Date</label><input type="date" id="blog-date"></div>
+            <div class="field"><label for="blog-tags">Tags (comma separated)</label><input type="text" id="blog-tags" placeholder="Robotics, Economics"></div>
+          </div>
+          <div class="map-row">
+            <div class="map-preview" id="cover-preview">Cover</div>
+            <div class="map-actions">
+              <button type="button" class="btn secondary small fake-file" id="pick-cover">＋ Cover image</button>
+              <input type="file" id="blog-cover-file" accept="image/*" hidden>
+              <button type="button" class="btn secondary small" id="cover-remove" hidden>Remove cover</button>
+            </div>
+          </div>
+          <div class="md-bar">
+            <button type="button" class="md-btn" data-md="h2" title="Heading">H</button>
+            <button type="button" class="md-btn" data-md="bold" title="Bold"><b>B</b></button>
+            <button type="button" class="md-btn" data-md="italic" title="Italic"><i>I</i></button>
+            <button type="button" class="md-btn" data-md="list" title="Bulleted list">•</button>
+            <button type="button" class="md-btn" data-md="num" title="Numbered list">1.</button>
+            <button type="button" class="md-btn" data-md="quote" title="Quote">&ldquo;</button>
+            <button type="button" class="md-btn" data-md="code" title="Code block">&lt;/&gt;</button>
+            <button type="button" class="md-btn" data-md="rule" title="Divider">—</button>
+            <span class="md-sep"></span>
+            <button type="button" class="md-btn wide" id="insert-image">＋ Image</button>
+            <span class="md-hint" id="blog-count"></span>
+          </div>
+          <textarea id="blog-body" placeholder="Write here.
+
+# Heading
+Normal text. **Bold**, *italic*, `code`, [links](https://example.com).
+
+- a bullet
+1. a numbered item
+> a quote
+
+```
+code block
+```" aria-label="Post body"></textarea>
         </div>
 
         <div class="dropnote" id="dropnote">Drag photos or videos here, paste them, or use the button below.</div>

@@ -381,6 +381,84 @@
     box-shadow: var(--sh-1);
   }
 
+
+  /* ---------- Blog index ---------- */
+  .blog-index { display: grid; gap: 10px; }
+  .bi {
+    display: flex; gap: 14px; align-items: flex-start; padding: 13px 14px;
+    border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--white);
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .bi:hover { border-color: var(--primary); box-shadow: var(--sh-2); transform: translateY(-2px); }
+  .bi-cover {
+    flex: 0 0 auto; width: 116px; height: 78px; border-radius: 7px; overflow: hidden;
+    background: #F4F5F7; border: 1px solid var(--line-soft);
+  }
+  .bi-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bi-text { display: grid; gap: 3px; min-width: 0; }
+  .bi-meta { color: var(--gray); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+  .bi-title { font-size: 15px; font-weight: 700; color: var(--black); line-height: 1.35; letter-spacing: -0.01em; }
+  .bi-ex { color: var(--dim); line-height: 1.55; }
+  .bi-tags, .doc-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+  .bi-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.03em; color: #16624F;
+    background: var(--primary-tint); border-radius: 999px; padding: 2px 9px;
+  }
+
+  /* ---------- Article (reading view) ---------- */
+  body.reading .cv-grid { grid-template-columns: minmax(0, 1fr); }
+  body.reading .profile { display: none; }
+  .doc { overflow: hidden; }
+  .doc-back {
+    display: inline-block; margin: 14px 0 0 18px; color: var(--dim); font-size: var(--small); font-weight: 700;
+    transition: color 0.18s var(--ease);
+  }
+  .doc-back:hover { color: var(--primary-text); }
+  .doc-cover { margin: 12px 0 0; max-height: 300px; overflow: hidden; background: #F4F5F7; }
+  .doc-cover img { width: 100%; height: 100%; max-height: 300px; object-fit: cover; display: block; }
+  .doc-inner { width: min(700px, 100%); margin: 0 auto; padding: 26px 26px 44px; }
+  .doc-head { padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--line-soft); }
+  .doc-meta { color: var(--gray); font-size: var(--small); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+  .doc-head h1 { font-size: 33px; line-height: 1.22; margin-top: 7px; letter-spacing: -0.02em; }
+  .doc-head .doc-tags { margin-top: 12px; }
+
+  .doc-body { font-size: 16px; line-height: 1.78; color: #34383F; }
+  .doc-body > :first-child { margin-top: 0 !important; }
+  .doc-body p { margin: 0 0 18px; }
+  .doc-body h2 { font-size: 23px; line-height: 1.32; margin: 40px 0 12px; letter-spacing: -0.015em; }
+  .doc-body h3 { font-size: 20px; line-height: 1.38; margin: 32px 0 10px; letter-spacing: -0.012em; }
+  .doc-body h4, .doc-body h5 { font-size: 16px; line-height: 1.45; margin: 24px 0 7px; color: var(--black); font-weight: 700; }
+  .doc-body ul, .doc-body ol { margin: 0 0 18px; padding-left: 24px; display: grid; gap: 7px; }
+  .doc-body li { padding-left: 3px; }
+  .doc-body li::marker { color: var(--gray); }
+  .doc-body ul li::marker { color: var(--primary); }
+  .doc-body a { color: var(--primary-text); border-bottom: 1px solid rgba(11, 127, 105, 0.32); }
+  .doc-body a:hover { border-color: var(--primary-text); }
+  .doc-body b { font-weight: 700; color: var(--black); }
+  .doc-body em { font-style: italic; }
+  .doc-body blockquote {
+    margin: 0 0 20px; padding: 4px 0 4px 18px; border-left: 3px solid var(--primary);
+    color: var(--dim); font-size: 16px;
+  }
+  .doc-body code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em; background: #F2F4F6; border: 1px solid var(--line-soft);
+    border-radius: 4px; padding: 1px 5px; color: #B04A6E;
+  }
+  .doc-body pre {
+    margin: 0 0 20px; background: #14171B; border-radius: var(--radius-sm); padding: 16px 18px;
+    overflow-x: auto; position: relative;
+  }
+  .doc-body pre code { background: none; border: 0; padding: 0; color: #E4E8EC; font-size: 13px; line-height: 1.65; }
+  .doc-body pre[data-lang]::after {
+    content: attr(data-lang); position: absolute; top: 8px; right: 12px;
+    color: #6B7480; font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700;
+  }
+  .doc-body hr { border: 0; height: 1px; background: var(--line-soft); margin: 34px 0; }
+  .doc-fig { margin: 0 0 22px; display: grid; gap: 7px; justify-items: center; }
+  .doc-fig img { max-width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--line-soft); display: block; }
+  .doc-fig figcaption { color: var(--gray); font-size: var(--small); text-align: center; }
+
   /* ---------- Lightbox ---------- */
   .lightbox {
     position: fixed; inset: 0; z-index: 100; display: none; grid-template-rows: 1fr auto;
@@ -452,6 +530,11 @@
     .entry .when { white-space: normal; }
     .post-media.n-3 { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .post-media.n-3 .media-cell:first-child { grid-row: auto; grid-column: span 2; max-height: 250px; }
+    .bi { flex-direction: column; gap: 10px; }
+    .bi-cover { width: 100%; height: 150px; }
+    .doc-inner { padding: 20px 16px 34px; }
+    .doc-head h1 { font-size: 26px; }
+    .doc-body { font-size: 15.5px; }
     .race-row { flex-wrap: wrap; }
     .race-stats { margin-left: 51px; width: 100%; gap: 13px; order: 3; }
     .race-chev { order: 2; margin-left: auto; }
@@ -662,6 +745,7 @@
         return '<div class="stat"><div class="value num">' + esc(s.value) + '</div><div class="label">' + esc(s.label) + '</div></div>';
       }).join('') + '</div>';
     },
+    blog: function (b) { return renderBlogIndex(b, activeTab); },
     races: function (b) {
       var races = (b.races || []).slice().sort(function (a, c) {
         var da = raceDate(a), dc = raceDate(c);
@@ -750,6 +834,164 @@
       (body ? '<div class="post-copy">' + body + '</div>' : '') +
       (media.length ? '<div' + galleryAttr(media) + '>' + mediaGrid(media, 0) + '</div>' : '') +
       '</article>';
+  }
+
+  /* ---------- blog: a small Markdown subset ---------- */
+  function slugify(s) {
+    return String(s || '').toLowerCase().trim()
+      .replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'post';
+  }
+
+  // Escape first, then stash finished HTML behind markers so later passes
+  // cannot reach inside it.
+  function mdInline(text) {
+    var stash = [];
+    var MARK = '\u0000';
+    function keep(html) { return MARK + (stash.push(html) - 1) + MARK; }
+    var out = esc(text);
+    out = out.replace(/`([^`\n]+)`/g, function (_, code) { return keep('<code>' + code + '</code>'); });
+    out = out.replace(/\[([^\]\n]+)\]\(([^)\s]+)\)/g, function (_, label, href) {
+      var ext = /^https?:/.test(href);
+      return keep('<a href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' + label + '</a>');
+    });
+    out = out.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]])/g, function (url) {
+      return keep('<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>');
+    });
+    out = out.replace(/\*\*([^\n]+?)\*\*/g, '<b>$1</b>');
+    out = out.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+    out = out.replace(/~~([^\n]+?)~~/g, '<s>$1</s>');
+    return out.replace(new RegExp(MARK + '(\\d+)' + MARK, 'g'), function (_, i) { return stash[+i]; });
+  }
+
+  // Headings, lists, quotes, code fences, rules, images and paragraphs.
+  function renderDoc(body) {
+    var lines = String(body || '').replace(/\r\n?/g, '\n').split('\n');
+    var html = '', i = 0;
+
+    function list(ordered, items) {
+      var tag = ordered ? 'ol' : 'ul';
+      return '<' + tag + '>' + items.map(function (t) { return '<li>' + mdInline(t) + '</li>'; }).join('') + '</' + tag + '>';
+    }
+
+    while (i < lines.length) {
+      var line = lines[i];
+      if (/^\s*$/.test(line)) { i++; continue; }
+
+      if (/^```/.test(line)) {
+        var lang = line.replace(/^```\s*/, '').trim(), code = [];
+        i++;
+        while (i < lines.length && !/^```/.test(lines[i])) { code.push(lines[i]); i++; }
+        i++;
+        html += '<pre' + (lang ? ' data-lang="' + esc(lang) + '"' : '') + '><code>' + esc(code.join('\n')) + '</code></pre>';
+        continue;
+      }
+
+      if (/^\s*(---+|\*\*\*+)\s*$/.test(line)) { html += '<hr>'; i++; continue; }
+
+      var img = /^\s*!\[([^\]]*)\]\(([^)\s]+)\)\s*$/.exec(line);
+      if (img) {
+        html += '<figure class="doc-fig"><img src="' + esc(img[2]) + '" alt="' + esc(img[1]) + '" loading="lazy">' +
+          (img[1] ? '<figcaption>' + esc(img[1]) + '</figcaption>' : '') + '</figure>';
+        i++; continue;
+      }
+
+      var h = /^(#{1,4})\s+(.*)$/.exec(line);
+      if (h) {
+        var level = Math.min(h[1].length + 1, 5);   // '#' renders as h2; the title owns h1
+        html += '<h' + level + ' id="' + esc(slugify(h[2])) + '">' + mdInline(h[2]) + '</h' + level + '>';
+        i++; continue;
+      }
+
+      if (/^\s*>\s?/.test(line)) {
+        var quote = [];
+        while (i < lines.length && /^\s*>\s?/.test(lines[i])) { quote.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+        html += '<blockquote>' + mdInline(quote.join('\n')).replace(/\n/g, '<br>') + '</blockquote>';
+        continue;
+      }
+
+      if (/^\s*(?:[-*+])\s+/.test(line)) {
+        var ul = [];
+        while (i < lines.length && /^\s*(?:[-*+])\s+/.test(lines[i])) { ul.push(lines[i].replace(/^\s*(?:[-*+])\s+/, '')); i++; }
+        html += list(false, ul);
+        continue;
+      }
+
+      if (/^\s*\d+[.)]\s+/.test(line)) {
+        var ol = [];
+        while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) { ol.push(lines[i].replace(/^\s*\d+[.)]\s+/, '')); i++; }
+        html += list(true, ol);
+        continue;
+      }
+
+      var para = [];
+      while (i < lines.length && !/^\s*$/.test(lines[i]) &&
+             !/^(#{1,4}\s|```|\s*>|\s*[-*+]\s|\s*\d+[.)]\s|\s*---+\s*$)/.test(lines[i])) {
+        para.push(lines[i]); i++;
+      }
+      html += '<p>' + mdInline(para.join('\n')).replace(/\n/g, '<br>') + '</p>';
+    }
+    return html;
+  }
+
+  function postSlug(p, i) { return p.slug || slugify(p.title) || ('post-' + (i + 1)); }
+  function readMinutes(body) {
+    var words = String(body || '').trim().split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200));
+  }
+  function excerptOf(p) {
+    if (p.excerpt) return p.excerpt;
+    var first = String(p.body || '').split(/\n{2,}/).map(function (b) { return b.trim(); })
+      .filter(function (b) { return b && !/^(#|>|```|!\[|\s*[-*+]\s|\s*\d+[.)]\s|---)/.test(b); })[0] || '';
+    first = first.replace(/[*`~\[\]]/g, '').replace(/\s+/g, ' ');
+    return first.length > 180 ? first.slice(0, 180).replace(/\s+\S*$/, '') + '…' : first;
+  }
+
+  /* ---------- blog: index and article ---------- */
+  function blogPosts(b) {
+    return (b.posts || []).slice().sort(function (a, c) {
+      var da = isoDate(a.date), dc = isoDate(c.date);
+      if (da && dc) return da === dc ? 0 : (dc < da ? -1 : 1);
+      if (da) return -1;
+      if (dc) return 1;
+      return 0;
+    });
+  }
+
+  function renderBlogIndex(b, tabId) {
+    var posts = blogPosts(b);
+    if (!posts.length) return '<p class="feed-empty">Nothing published here yet.</p>';
+    return '<div class="blog-index">' + posts.map(function (p, i) {
+      var slug = postSlug(p, i);
+      var meta = [niceDate(p.date), readMinutes(p.body) + ' min read'].filter(Boolean).join(' · ');
+      var ex = excerptOf(p);
+      return '<a class="bi" href="#' + esc(tabId) + '/' + esc(slug) + '">' +
+        (p.cover ? '<span class="bi-cover"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' : '') +
+        '<span class="bi-text">' +
+          '<span class="bi-meta num">' + esc(meta) + '</span>' +
+          '<span class="bi-title">' + esc(p.title || 'Untitled') + '</span>' +
+          (ex ? '<span class="bi-ex">' + esc(ex) + '</span>' : '') +
+          ((p.tags || []).length ? '<span class="bi-tags">' + p.tags.map(function (t) {
+            return '<span class="bi-tag">' + esc(t) + '</span>';
+          }).join('') + '</span>' : '') +
+        '</span></a>';
+    }).join('') + '</div>';
+  }
+
+  function renderArticle(p, i, tabId) {
+    var meta = [niceDate(p.date), readMinutes(p.body) + ' min read'].filter(Boolean).join(' · ');
+    return '<article class="card doc">' +
+      '<a class="doc-back" href="#' + esc(tabId) + '">← All posts</a>' +
+      (p.cover ? '<div class="doc-cover"><img src="' + esc(p.cover) + '" alt=""></div>' : '') +
+      '<div class="doc-inner">' +
+        '<header class="doc-head">' +
+          '<div class="doc-meta num">' + esc(meta) + '</div>' +
+          '<h1>' + esc(p.title || 'Untitled') + '</h1>' +
+          ((p.tags || []).length ? '<div class="doc-tags">' + p.tags.map(function (t) {
+            return '<span class="bi-tag">' + esc(t) + '</span>';
+          }).join('') + '</div>' : '') +
+        '</header>' +
+        '<div class="doc-body">' + renderDoc(p.body) + '</div>' +
+      '</div></article>';
   }
 
   /* ---------- races ---------- */
@@ -925,8 +1167,11 @@
     });
   }
 
+  // The hash is either "#tab" or "#tab/post-slug".
   function show(id, push) {
-    var tab = content.tabs.filter(function (t) { return t.id === id; })[0] || content.tabs[0];
+    var parts = String(id == null ? '' : id).split('/');
+    var tab = content.tabs.filter(function (t) { return t.id === parts[0]; })[0] || content.tabs[0];
+    var slug = parts.length > 1 ? parts.slice(1).join('/') : '';
     activeTab = tab.id;
     Array.prototype.forEach.call(tabButtons(), function (btn) {
       var on = btn.dataset.tab === tab.id;
@@ -935,9 +1180,24 @@
     });
     moveInk();
     el('main').setAttribute('aria-labelledby', 'tab-' + tab.id);
-    el('main').innerHTML = tab.blocks.map(renderBlock).join('');
-    if (push && location.hash !== '#' + tab.id) history.replaceState(null, '', '#' + tab.id);
-    if (push) window.scrollTo({ top: 0 });
+
+    // A slug opens that one article in place of the tab's usual sections.
+    var opened = null;
+    if (slug) {
+      tab.blocks.forEach(function (b) {
+        if (b.type !== 'blog' || opened) return;
+        blogPosts(b).forEach(function (p, i) {
+          if (!opened && postSlug(p, i) === slug) opened = renderArticle(p, i, tab.id);
+        });
+      });
+    }
+    el('main').innerHTML = opened || tab.blocks.map(renderBlock).join('');
+    // Reading an article gets the full width; the CV sidebar steps aside.
+    document.body.classList.toggle('reading', !!opened);
+
+    var want = '#' + tab.id + (opened ? '/' + slug : '');
+    if (push && location.hash !== want) history.replaceState(null, '', want);
+    if (push || opened) window.scrollTo({ top: 0 });
   }
 
   function renderAll(c) {

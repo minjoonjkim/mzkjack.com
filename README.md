@@ -21,6 +21,7 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 
 - **Compose** — a social-post screen with two kinds of entry:
   - **Update** — pick which tab to post in, add a title and body, drag in (or paste, or browse for) as many photos and videos as you like, then hit **Post**.
+  - **Blog post** — title, date, tags, cover image and a Markdown body, with a formatting toolbar and an **＋ Image** button that uploads and drops the Markdown tag at the cursor.
   - **Race result** — race name, date, location, distance, finish time, average pace, notes, a route map and photos. Pace fills itself in from the finish time and distance until you type your own, and picking a distance preset fills in the kilometres.
 
   Either way the files upload to the repo and the entry goes live in one step. Existing entries are listed underneath, with Edit and Delete.
@@ -38,6 +39,7 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
 - `skills` — label / chips rows
 - `stats` — three big numbers with labels
 - `cards` — a two-column grid of small cards with facts
+- `blog` — a writing tab: an index of posts, and a full-width reading view for each one. Post bodies are Markdown (headings, lists, quotes, code fences, images, links, bold/italic). The index shows date, reading time, tags and an auto-excerpt; each post lives at `#<tab>/<slug>`.
 - `posts` — a feed of dated posts with a title, body and any number of photos or videos. Every tab starts with one; Compose → Update writes into it.
 - `races` — a race log. Shows a tally across the top (**full marathons**, **half marathons**, **10 km races**, plus any other category you have raced) and the **next upcoming** race with a countdown, then one card per race with distance, finish time, average pace, notes, route map and photos. Compose → Race result writes into it; the Hobbies tab starts with one.
 
