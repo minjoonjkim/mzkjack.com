@@ -576,6 +576,9 @@
     .tab:first-child { padding-left: 0; }
     .cv-grid { grid-template-columns: 1fr; }
     .profile { position: static; }
+    /* Stacked, the profile card would push every tab's content below the fold,
+       so it stays on the first tab only. */
+    body.off-home .profile { display: none; }
     .stats { grid-template-columns: 1fr 1fr; }
     .race-summary { grid-template-columns: 1fr; }
   }
@@ -1438,6 +1441,8 @@
     el('main').innerHTML = opened || tab.blocks.map(renderBlock).join('');
     // Reading an article gets the full width; the CV sidebar steps aside.
     document.body.classList.toggle('reading', !!opened);
+    // On narrow screens the profile card shows on the first tab only.
+    document.body.classList.toggle('off-home', tab !== content.tabs[0]);
     initCarousels();
 
     var want = '#' + tab.id + (opened ? '/' + slug : '');
