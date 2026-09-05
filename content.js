@@ -364,6 +364,21 @@ window.SITE_CONTENT = {
                   "type": "image",
                   "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
                   "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
+                  "alt": ""
                 }
               ]
             },
