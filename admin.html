@@ -10,7 +10,8 @@
   :root {
     color-scheme: light;
     --white: #FFFFFF; --black: #0B0C0E;
-    --primary: #50EACE; --primary-text: #0B7F69; --primary-tint: #E9FBF6;
+    --primary: #57EBDE; --primary-2: #AEFB2A; --grad: linear-gradient(90deg, #57EBDE, #AEFB2A);
+    --primary-text: #0B7F69; --primary-tint: #EAFDF3;
     --bg: #F1F2F4; --bolder: #E4E6E9; --line-soft: #EDEFF1;
     --slate: #2F333A; --dim: #5E6570; --gray: #8A919B;
     --danger: #C0392B;
@@ -40,7 +41,7 @@
   .btn:hover { background: var(--white); color: var(--black); }
   .btn.secondary { background: var(--white); color: var(--black); border-color: var(--bolder); }
   .btn.secondary:hover { border-color: var(--black); }
-  .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--black); }
+  .btn.primary { background: var(--grad); border-color: transparent; color: var(--black); }
   .btn.primary:hover { background: var(--white); }
   .btn.danger { color: var(--danger); border-color: var(--bolder); background: var(--white); }
   .btn.danger:hover { border-color: var(--danger); }
@@ -197,7 +198,7 @@
   .btn { border-radius: 8px; transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease), box-shadow 0.18s var(--ease), transform 0.12s var(--ease); }
   .btn:active { transform: translateY(1px); }
   .btn.primary { box-shadow: 0 1px 2px rgba(11, 127, 105, 0.22); }
-  .btn.primary:hover { background: #6DF0D8; border-color: #6DF0D8; color: var(--black); }
+  .btn.primary:hover { background: var(--grad); border-color: transparent; color: var(--black); filter: brightness(1.04); }
   .btn.secondary:hover { border-color: #C9CDD3; box-shadow: var(--sh-1); }
   .btn.small { border-radius: 7px; padding: 4px 9px; }
   input[type=text], input[type=password], input[type=url], input[type=date], input[type=time], textarea, select {
@@ -211,7 +212,7 @@
   label { color: var(--gray); font-size: 10px; letter-spacing: 0.08em; }
 
   .topbar { padding: 0 20px; min-height: 56px; box-shadow: var(--sh-1); position: relative; z-index: 5; }
-  .brand::before { border-radius: 3px; box-shadow: 0 0 0 3px var(--primary-tint); }
+  .brand::before { border-radius: 3px; background: var(--grad); box-shadow: 0 0 0 3px var(--primary-tint); }
   .status {
     font-size: 12px; color: var(--dim); padding: 3px 10px; border-radius: 999px; background: var(--bg);
     max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
