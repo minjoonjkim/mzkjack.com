@@ -5,7 +5,7 @@ window.SITE_CONTENT = {
     "title": "Minjoon Jack Kim",
     "brand": "JAↃK.KIM",
     "footer": "© 2026 Minjoon Jack Kim",
-    "footerNote": "Seoul · State College"
+    "footerNote": "Seoul, Cape Town, State College"
   },
   "profile": {
     "name": "Minjoon Jack Kim",
@@ -16,11 +16,31 @@ window.SITE_CONTENT = {
       "Computer Science & Statistics Student"
     ],
     "contact": [
-      { "label": "Affiliation", "value": "Penn State (B.S. '28)\nRLWRLD (Intern)", "href": "" },
-      { "label": "Location", "value": "Seoul, Republic of Korea", "href": "" },
-      { "label": "Email", "value": "minjoonkim15@gmail.com", "href": "mailto:minjoonkim15@gmail.com" },
-      { "label": "Phone", "value": "+82 10-6295-3580", "href": "tel:+821062953580" },
-      { "label": "LinkedIn", "value": "linkedin.com/in/…", "href": "https://www.linkedin.com/" }
+      {
+        "label": "Affiliation",
+        "value": "Penn State (B.S. '28)\nRLWRLD (Intern)",
+        "href": ""
+      },
+      {
+        "label": "Location",
+        "value": "Seoul, Republic of Korea",
+        "href": ""
+      },
+      {
+        "label": "Email",
+        "value": "minjoonkim15@gmail.com",
+        "href": "mailto:minjoonkim15@gmail.com"
+      },
+      {
+        "label": "Phone",
+        "value": "+82 10-6295-3580",
+        "href": "tel:+821062953580"
+      },
+      {
+        "label": "LinkedIn",
+        "value": "linkedin.com/in/…",
+        "href": "https://www.linkedin.com/"
+      }
     ],
     "focus": [
       "Robotics Deployment",
@@ -149,19 +169,60 @@ window.SITE_CONTENT = {
           "type": "table",
           "title": "Projects",
           "rows": [
-            { "name": "Blackjack RL", "text": "Q-learning agent built in Gymnasium, with an integrated GUI to visualize how the model interacts with the environment.", "tag": "Python" },
-            { "name": "Chess AI", "text": "Evaluation function and minimax algorithm with alpha-beta pruning to enhance move selection.", "tag": "Python" },
-            { "name": "Airbnb Pricing", "text": "Regression and stepwise model selection to analyze rental price drivers from socio-economic datasets.", "tag": "R" }
+            {
+              "name": "Blackjack RL",
+              "text": "Q-learning agent built in Gymnasium, with an integrated GUI to visualize how the model interacts with the environment.",
+              "tag": "Python"
+            },
+            {
+              "name": "Chess AI",
+              "text": "Evaluation function and minimax algorithm with alpha-beta pruning to enhance move selection.",
+              "tag": "Python"
+            },
+            {
+              "name": "Airbnb Pricing",
+              "text": "Regression and stepwise model selection to analyze rental price drivers from socio-economic datasets.",
+              "tag": "R"
+            }
           ]
         },
         {
           "type": "skills",
           "title": "Skills",
           "rows": [
-            { "label": "Programming", "items": ["Python", "C++", "C", "C#", "Java", "SQL", "R", "Linux"], "text": "" },
-            { "label": "Infrastructure", "items": ["AWS EC2", "RDS PostgreSQL", "S3"], "text": "" },
-            { "label": "Office", "items": [], "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · License EF16D26" },
-            { "label": "Finance", "items": [], "text": "DCF and comparable company valuation, P&L attribution, deal screening, CFA Level II curriculum" }
+            {
+              "label": "Programming",
+              "items": [
+                "Python",
+                "C++",
+                "C",
+                "C#",
+                "Java",
+                "SQL",
+                "R",
+                "Linux"
+              ],
+              "text": ""
+            },
+            {
+              "label": "Infrastructure",
+              "items": [
+                "AWS EC2",
+                "RDS PostgreSQL",
+                "S3"
+              ],
+              "text": ""
+            },
+            {
+              "label": "Office",
+              "items": [],
+              "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · License EF16D26"
+            },
+            {
+              "label": "Finance",
+              "items": [],
+              "text": "DCF and comparable company valuation, P&L attribution, deal screening, CFA Level II curriculum"
+            }
           ]
         }
       ]
@@ -181,9 +242,18 @@ window.SITE_CONTENT = {
           "type": "stats",
           "title": "At a glance",
           "stats": [
-            { "value": "3.70", "label": "GPA / 4.0, Penn State" },
-            { "value": "Level II", "label": "CFA Program candidate" },
-            { "value": "2028", "label": "Expected graduation" }
+            {
+              "value": "3.70",
+              "label": "GPA / 4.0, Penn State"
+            },
+            {
+              "value": "Level II",
+              "label": "CFA Program candidate"
+            },
+            {
+              "value": "2028",
+              "label": "Expected graduation"
+            }
           ]
         },
         {
@@ -225,8 +295,16 @@ window.SITE_CONTENT = {
           "type": "table",
           "title": "Certifications",
           "rows": [
-            { "name": "MOS Expert 2016", "text": "Microsoft Office Specialist Expert: Excel, PowerPoint, Word.", "tag": "License EF16D26" },
-            { "name": "NLCG Training Program", "text": "Ten-week consulting bootcamp at Penn State: market sizing, issue trees, hypothesis-driven problem solving, client communication.", "tag": "Jan – May 2024" }
+            {
+              "name": "MOS Expert 2016",
+              "text": "Microsoft Office Specialist Expert: Excel, PowerPoint, Word.",
+              "tag": "License EF16D26"
+            },
+            {
+              "name": "NLCG Training Program",
+              "text": "Ten-week consulting bootcamp at Penn State: market sizing, issue trees, hypothesis-driven problem solving, client communication.",
+              "tag": "Jan – May 2024"
+            }
           ]
         },
         {
@@ -258,9 +336,18 @@ window.SITE_CONTENT = {
               "title": "Ironman 70.3",
               "text": "Half-distance triathlon. Three sports, one clock, and a long day of pacing decisions.",
               "facts": [
-                { "label": "Swim", "value": "1.9 km" },
-                { "label": "Bike", "value": "90 km" },
-                { "label": "Run", "value": "21.1 km" }
+                {
+                  "label": "Swim",
+                  "value": "1.9 km"
+                },
+                {
+                  "label": "Bike",
+                  "value": "90 km"
+                },
+                {
+                  "label": "Run",
+                  "value": "21.1 km"
+                }
               ]
             },
             {
@@ -268,7 +355,10 @@ window.SITE_CONTENT = {
               "title": "Marathon",
               "text": "The distance where fueling and negative splits matter more than fitness alone.",
               "facts": [
-                { "label": "Distance", "value": "42.195 km" }
+                {
+                  "label": "Distance",
+                  "value": "42.195 km"
+                }
               ]
             },
             {
@@ -276,7 +366,10 @@ window.SITE_CONTENT = {
               "title": "Ultramarathon",
               "text": "Anything past the marathon. I race the 50 km and 100 km distances, where the goal shifts from speed to staying steady for hours.",
               "facts": [
-                { "label": "Distances", "value": "50 km · 100 km" }
+                {
+                  "label": "Distances",
+                  "value": "50 km · 100 km"
+                }
               ]
             },
             {
@@ -284,7 +377,10 @@ window.SITE_CONTENT = {
               "title": "Hyrox",
               "text": "Eight 1 km runs, each followed by a workout station: SkiErg, sled push and pull, burpee broad jumps, rowing, farmers carry, sandbag lunges, wall balls.",
               "facts": [
-                { "label": "Format", "value": "8 × 1 km + 8 stations" }
+                {
+                  "label": "Format",
+                  "value": "8 × 1 km + 8 stations"
+                }
               ]
             }
           ]
