@@ -21,9 +21,9 @@ window.SITE_CONTENT = {
         "href": "",
         "lines": [
           {
-            "value": "Pennsylvania State University\n(B.S in Computer Science and Statistics)",
+            "value": "Pennsylvania State University\n(B.S Computer Science & Statistics)",
             "href": "https://www.psu.edu/",
-            "icon": "images/logos/images.jpeg"
+            "icon": "images/logos/university-seal.jpg"
           },
           {
             "value": "RLWRLD (Intern)",
