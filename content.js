@@ -35,7 +35,7 @@ window.SITE_CONTENT = {
       },
       {
         "label": "Location",
-        "value": "Seoul, Republic of Korea",
+        "value": "Seoul, South Korea",
         "href": ""
       },
       {
