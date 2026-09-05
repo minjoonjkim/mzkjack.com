@@ -256,7 +256,7 @@ window.SITE_CONTENT = {
           "title": "Extracurricular Activities ",
           "entries": [
             {
-              "heading": "B.S. Computer Science, Minor in Statistics",
+              "heading": "Penn State Derivatives Association ",
               "org": "Pennsylvania State University",
               "location": "",
               "when": "2021 – 2028",
@@ -266,6 +266,22 @@ window.SITE_CONTENT = {
                 "**Statistics.** Regression, model selection, and applied data analysis in R, the foundation for the Airbnb pricing project and the feasibility scoring framework at RLWRLD.",
                 "**Applied AI.** Reinforcement learning (Q-learning in Gymnasium) and adversarial search (minimax with alpha-beta pruning), built as standalone projects."
               ]
+            },
+            {
+              "heading": "Penn State Student Investment Fund",
+              "org": "",
+              "location": "",
+              "when": "",
+              "current": false,
+              "bullets": []
+            },
+            {
+              "heading": "Nittany Lion Consulting Group",
+              "org": "",
+              "location": "",
+              "when": "",
+              "current": false,
+              "bullets": []
             }
           ]
         },
@@ -310,6 +326,16 @@ window.SITE_CONTENT = {
                 {
                   "type": "image",
                   "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
                   "alt": ""
                 },
                 {
