@@ -249,11 +249,11 @@ window.SITE_CONTENT = {
     },
     {
       "id": "study",
-      "label": "Study",
+      "label": "Academics",
       "blocks": [
         {
           "type": "entries",
-          "title": "Degree",
+          "title": "Extracurricular Activities ",
           "entries": [
             {
               "heading": "B.S. Computer Science, Minor in Statistics",
@@ -285,34 +285,6 @@ window.SITE_CONTENT = {
               ]
             }
           ]
-        },
-        {
-          "type": "table",
-          "title": "Certifications",
-          "rows": [
-            {
-              "name": "MOS Expert 2016",
-              "text": "Microsoft Office Specialist Expert: Excel, PowerPoint, Word.",
-              "tag": "License EF16D26"
-            },
-            {
-              "name": "NLCG Training Program",
-              "text": "Ten-week consulting bootcamp at Penn State: market sizing, issue trees, hypothesis-driven problem solving, client communication.",
-              "tag": "Jan – May 2024"
-            }
-          ]
-        },
-        {
-          "type": "text",
-          "title": "Currently reading",
-          "paragraphs": [
-            "CFA Level II curriculum, with a focus on equity and fixed income valuation. Alongside it, papers and technical reports on robot foundation models and imitation learning, to keep pace with the R&D team."
-          ]
-        },
-        {
-          "type": "posts",
-          "title": "Study log",
-          "posts": []
         }
       ]
     },
