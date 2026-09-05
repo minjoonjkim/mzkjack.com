@@ -252,31 +252,6 @@ window.SITE_CONTENT = {
       "label": "Study",
       "blocks": [
         {
-          "type": "text",
-          "title": "What I'm learning, and why",
-          "paragraphs": [
-            "Two tracks run in parallel: a computer science degree with a statistics minor, and the CFA Program. One teaches me how systems are built, the other how they're valued. The robotics work at RLWRLD is where the two meet."
-          ]
-        },
-        {
-          "type": "stats",
-          "title": "At a glance",
-          "stats": [
-            {
-              "value": "3.70",
-              "label": "GPA / 4.0, Penn State"
-            },
-            {
-              "value": "Level II",
-              "label": "CFA Program candidate"
-            },
-            {
-              "value": "2028",
-              "label": "Expected graduation"
-            }
-          ]
-        },
-        {
           "type": "entries",
           "title": "Degree",
           "entries": [
