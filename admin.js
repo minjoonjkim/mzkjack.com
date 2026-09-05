@@ -214,6 +214,38 @@
     return Math.floor(per / 60) + ':' + ('0' + (per % 60)).slice(-2);
   }
 
+  /* ================= entry dates ("May 2026 – Present") ================= */
+  var MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // "May 2026", "2026년 5월", "2026-05", "2026" -> "YYYY-MM-DD"; '' when it is not a date.
+  function monthISO(txt) {
+    var t = String(txt || '').trim(), m, i;
+    if ((m = /^(\d{4})[-./](\d{1,2})(?:[-./](\d{1,2}))?$/.exec(t)) || (m = /^(\d{4})년\s*(\d{1,2})월(?:\s*(\d{1,2})일)?$/.exec(t))) {
+      return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + (m[3] ? ('0' + m[3]).slice(-2) : '01');
+    }
+    if ((m = /^([A-Za-z]{3,9})\.?\s+(\d{4})$/.exec(t))) {
+      for (i = 0; i < 12; i++) if (MONTHS_EN[i].toLowerCase() === m[1].slice(0, 3).toLowerCase()) return m[2] + '-' + ('0' + (i + 1)).slice(-2) + '-01';
+    }
+    if ((m = /^(\d{4})년?$/.exec(t))) return m[1] + '-01-01';
+    return '';
+  }
+  // Splits on an en dash, em dash, tilde, "to", or a spaced hyphen; a bare hyphen
+  // stays, so an ISO date is not cut in half.
+  function parseWhen(v) {
+    var parts = String(v || '').split(/\s+[–—-]\s+|\s*[–—~]\s*|\s+to\s+/i).map(function (s) { return s.trim(); });
+    var toTxt = parts[1] || '';
+    var present = /^(present|current|now|ongoing|현재|재직\s*중|재학\s*중)$/i.test(toTxt);
+    return { from: monthISO(parts[0]), to: present ? '' : monthISO(toTxt), present: present };
+  }
+  function fmtMonth(iso) {
+    var m = /^(\d{4})-(\d{2})/.exec(iso || '');
+    if (!m) return '';
+    return lang === 'ko' ? m[1] + '년 ' + (+m[2]) + '월' : MONTHS_EN[+m[2] - 1] + ' ' + m[1];
+  }
+  function whenText(from, to, present) {
+    var a = fmtMonth(from), b = present ? (lang === 'ko' ? '현재' : 'Present') : fmtMonth(to);
+    return a && b ? a + ' – ' + b : (a || b);
+  }
+
   /* ================= form rendering ================= */
   var LABELS = {
     nameKo: 'Name (Korean)', footerNote: 'Footer note (right)', href: 'Link (URL, mailto:, tel:)',
@@ -329,6 +361,21 @@
     if (typeof v === 'boolean') {
       return '<div class="field check"><input type="checkbox" id="f' + p + '" data-path="' + p + '" data-kind="bool"' + (v ? ' checked' : '') + '>' +
              '<label for="f' + p + '">' + esc(humanize(key)) + '</label></div>';
+    }
+    // Entry dates come from two calendar pickers and a Present switch; the text
+    // underneath is what the site shows and can still be edited by hand.
+    if (key === 'when' && typeof v === 'string') {
+      var span = parseWhen(v);
+      return '<div class="field when-field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<div class="when-row">' +
+          '<span class="when-part"><span class="when-l">From</span><input type="date" class="when-from" value="' + esc(span.from) + '" aria-label="Start date"></span>' +
+          '<span class="when-arrow">\u2013</span>' +
+          '<span class="when-part"><span class="when-l">To</span><input type="date" class="when-to" value="' + esc(span.to) + '"' + (span.present ? ' disabled' : '') + ' aria-label="End date"></span>' +
+          '<label class="when-present"><input type="checkbox" class="when-now"' + (span.present ? ' checked' : '') + '> Present</label>' +
+        '</div>' +
+        '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '" placeholder="' + (lang === 'ko' ? '2026년 5월 – 현재' : 'May 2026 – Present') + '">' +
+        '<span class="hint">Pick from the calendars and the month and year are written for you. The text can also be edited by hand.</span>' +
+        '</div>';
     }
     // Date fields open the browser's calendar. A value we cannot parse stays in a
     // text box so nothing is silently thrown away.
@@ -521,6 +568,34 @@
     if (!e.target.classList || !e.target.classList.contains('title-edit')) return;
     if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
     if (e.key === ' ') e.stopPropagation();
+  });
+  // Entry date pickers write the text field, the model and the preview; typing in
+  // the text field moves the pickers.
+  $('form').addEventListener('input', function (e) {
+    var box = e.target.closest ? e.target.closest('.when-field') : null;
+    if (!box) return;
+    var from = box.querySelector('.when-from'), to = box.querySelector('.when-to'), now = box.querySelector('.when-now');
+    var text = box.querySelector('input[data-path]');
+    if (e.target === text) {
+      var span = parseWhen(text.value);
+      from.value = span.from; to.value = span.to; now.checked = span.present; to.disabled = span.present;
+      return;   // the generic handler above has already stored the text
+    }
+    to.disabled = now.checked;
+    text.value = whenText(from.value, to.value, now.checked);
+    var path = decPath(text.dataset.path);
+    setAt(path, text.value);
+    // "Present" also switches on the entry's current marker.
+    if (now.checked) {
+      var cp = path.slice(0, -1).concat(['current']);
+      if (typeof getAt(cp) === 'boolean') {
+        setAt(cp, true);
+        var cb = document.querySelector('input[data-path="' + encPath(cp) + '"]');
+        if (cb) cb.checked = true;
+      }
+    }
+    markDirty();
+    schedulePreview(path);
   });
   // Chrome toggles a <summary> on the space key's release, so that is cancelled too.
   $('form').addEventListener('keyup', function (e) {
