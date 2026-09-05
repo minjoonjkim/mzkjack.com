@@ -5,20 +5,19 @@ window.SITE_CONTENT = {
     "title": "Minjoon Jack Kim",
     "brand": "JAↃK.KIM",
     "footer": "© 2026 Minjoon Jack Kim",
-    "footerNote": "Seoul, Cape Town, State College"
+    "footerNote": "Seoul · State College"
   },
   "profile": {
     "name": "Minjoon Jack Kim",
     "nameKo": "김민준",
     "photo": "images/profile.jpg",
     "roles": [
-      "RLWRLD Robotics Transformation Consultant Intern",
-      "Computer Science & Statistics Student"
+      "Robotics Transformation (RX) Consultant @RLWRLD"
     ],
     "contact": [
       {
         "label": "Affiliation",
-        "value": "Penn State (B.S. '28)\nRLWRLD (Intern)",
+        "value": "Pennsylvania State University\nB.S in Computer Science and Statistics \nRLWRLD (Intern)",
         "href": ""
       },
       {
@@ -32,23 +31,17 @@ window.SITE_CONTENT = {
         "href": "mailto:minjoonkim15@gmail.com"
       },
       {
-        "label": "Phone",
-        "value": "+82 10-6295-3580",
-        "href": "tel:+821062953580"
-      },
-      {
         "label": "LinkedIn",
         "value": "linkedin.com/in/…",
         "href": "https://www.linkedin.com/"
       }
     ],
     "focus": [
-      "Robotics Deployment",
       "Physical AI",
-      "Consulting",
-      "Data Platforms",
-      "Valuation & M&A",
-      "Reinforcement Learning"
+      "VLMOps",
+      "Robotics Deployment",
+      "Reinforcement Learning",
+      "M&A"
     ]
   },
   "tabs": [
@@ -60,7 +53,10 @@ window.SITE_CONTENT = {
           "type": "text",
           "title": "About",
           "paragraphs": [
-            "Computer science and statistics student at **Penn State**, currently in Seoul as a Robotics Transformation consultant intern at **RLWRLD**. I work where finance, data, and physical AI meet: sizing the economics of robot deployments, building the data platforms behind them, and translating both for clients and investors."
+            "I was born in South Korea, and spent my childhood in Hong Kong before moving to South Africa, where I lived until studying Computer Science & Statistics at Penn State University.",
+            "After completing my military service for the Republic of Korea, I decided to take a gap year to intern at RLWRLD as Robotics Transformation Consultant. RLWRLD builds real-world intelligence for robotics, and our team works with clients across a range of industries to understand their operations and develop bespoke strategies for deploying robotics and Physical AI in the real world.",
+            "Outside of work, endurance sports are a big part of my life. I enjoy running including ultramarathons, and currently training for an Ironman.",
+            "I am a firm believer that where there’s a will, there’s a way, and that mindset shapes how I approach both professional challenges and personal goals."
           ]
         },
         {
