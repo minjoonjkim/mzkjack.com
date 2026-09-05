@@ -12,11 +12,17 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 | `admin.js`, `admin-core.js` | Editor logic. |
 | `admin-config.js` | Repo name plus your encrypted GitHub token (written by the editor on first setup). |
 | `images/profile.jpg` | Your portrait. Add it; the site shows a placeholder until it exists. |
+| `media/YYYY-MM/…` | Photos and videos attached to posts. Created by the editor when you post. |
 | `CNAME` | Custom domain for GitHub Pages. |
 
 ## Editing content
 
-**Option A: the editor.** Click **Edit** in the site footer (or open `https://mzkjack.com/admin.html`), enter your password, edit in the form on the left, watch the preview on the right, click **Publish**. The site updates within about a minute.
+**Option A: the editor.** Click **Edit** in the site footer (or open `https://mzkjack.com/admin.html`) and enter your password. The editor has two modes:
+
+- **Compose** — a social-post screen. Pick which tab to post in, add a title and body, drag in (or paste, or browse for) as many photos and videos as you like, then hit **Post**. The files upload to the repo and the post goes live in one step. Existing posts are listed underneath, with Edit, Delete and reorder.
+- **Structure** — the full form for everything else on the page (profile, experience, tables, skills…), with a live preview on the right. Edit, then click **Publish**.
+
+Either way the site updates within about a minute; freshly uploaded photos and videos appear once GitHub Pages finishes rebuilding.
 
 **Option B: by hand.** Edit `content.js` in any text editor and push. Text fields accept `**bold**` and line breaks.
 
@@ -28,6 +34,9 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
 - `skills` — label / chips rows
 - `stats` — three big numbers with labels
 - `cards` — a two-column grid of small cards with facts
+- `posts` — a feed of dated posts with a title, body and any number of photos or videos. Every tab starts with one; the Compose mode writes into it.
+
+Post bodies accept `**bold**`, a blank line starts a new paragraph, and bare URLs become links. Photos and videos open in a full-screen viewer when clicked.
 
 ## First-time editor setup
 
@@ -51,7 +60,7 @@ and open http://localhost:8000/admin.html.
 
 - `admin.html` and the encrypted vault are public, like every file on GitHub Pages. The password is the only thing standing between a visitor and edit access, so use a long passphrase.
 - The token is scoped to this repository's contents only. If it leaks, revoke it in GitHub settings.
-- Nothing runs server-side. Publishing is a commit made by your browser through the GitHub API.
+- Nothing runs server-side. Publishing is a commit made by your browser through the GitHub API, and uploaded photos and videos are commits too, so keep files reasonably small. The editor rejects anything over 40 MB.
 
 ## Domain
 
@@ -62,7 +71,7 @@ A     @    185.199.108.153
 A     @    185.199.109.153
 A     @    185.199.110.153
 A     @    185.199.111.153
-CNAME www  minjoonkimzk.github.io
+CNAME www  minjoonjkim.github.io
 ```
 
 Then in the repo: Settings → Pages → Custom domain `mzkjack.com` → wait for the DNS check → tick **Enforce HTTPS**.
