@@ -72,6 +72,15 @@
            '   Text fields support **bold** and line breaks. */\n' +
            'window.SITE_CONTENT = ' + JSON.stringify(content, null, 2) + ';\n';
   }
+  // Inverse of serializeContent: the object inside a content.js / content.ko.js file.
+  // Returns null when the text is not a content file.
+  function parseContent(text) {
+    var s = String(text || '');
+    var a = s.indexOf('{'), b = s.lastIndexOf('}');
+    if (a < 0 || b < a) return null;
+    try { var o = JSON.parse(s.slice(a, b + 1)); return o && typeof o === 'object' ? o : null; }
+    catch (e) { return null; }
+  }
   function serializeConfig(config) {
     return '/* Admin settings. The "vault" holds your GitHub token encrypted with your admin\n' +
            '   password (AES-GCM, key derived with PBKDF2). It is written by admin.html during\n' +
@@ -142,7 +151,7 @@
   root.AdminCore = {
     utf8ToB64: utf8ToB64, b64ToUtf8: b64ToUtf8, bytesToB64: bytesToB64,
     sealVault: sealVault, openVault: openVault,
-    serializeContent: serializeContent, serializeConfig: serializeConfig,
+    serializeContent: serializeContent, parseContent: parseContent, serializeConfig: serializeConfig,
     GitHub: GitHub
   };
 })(typeof window !== 'undefined' ? window : globalThis);

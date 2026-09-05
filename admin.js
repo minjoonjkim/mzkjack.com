@@ -9,10 +9,15 @@
   var lang = 'en';
   var model = models.en;
   // Content written before the banner existed still gets the banner fields.
-  Object.keys(models).forEach(function (k) {
-    var m = models[k];
+  function normalize(m) {
     if (m.profile && !m.profile.cover) m.profile.cover = { theme: 'mint', image: '' };
-  });
+    return m;
+  }
+  Object.keys(models).forEach(function (k) { normalize(models[k]); });
+  // What the live file held when each model was loaded, adopted or published.
+  // Publish compares against it so a stale tab cannot silently overwrite a newer copy.
+  function snapshot(m) { return JSON.stringify(m); }
+  var baseline = { en: snapshot(models.en), ko: snapshot(models.ko) };
   var token = null;
   var dirty = false;
   var dirtyBy = { en: false, ko: false };
@@ -894,11 +899,40 @@
         return extras.reduce(function (chain, l) {
           return chain.then(function () {
             return gh.putFile(contentPathFor(l), Core.serializeContent(models[l], l), 'Sync media across languages')
-              .then(function () { mediaDirty[l] = false; dirtyBy[l] = false; });
+              .then(function () { mediaDirty[l] = false; dirtyBy[l] = false; baseline[l] = snapshot(models[l]); });
           });
         }, Promise.resolve());
       })
-      .then(function () { setDirty(false); return payload; });
+      .then(function () { setDirty(false); baseline[lang] = snapshot(model); return payload; });
+  }
+
+  /* ---- keeping the editor in step with the live file ---- */
+
+  // The live copy of one language's file, parsed; null when it cannot be read.
+  function fetchLive(l) {
+    return fetch(contentPathFor(l) + '?cb=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) { var o = Core.parseContent(t); return o ? normalize(o) : null; })
+      .catch(function () { return null; });
+  }
+  // 'same' when the live file is what this editor started from, 'changed' when
+  // something else published since, 'unknown' when it could not be read.
+  function compareLive(l, live) {
+    if (!live) return 'unknown';
+    return snapshot(live) === baseline[l] ? 'same' : 'changed';
+  }
+  // Replaces a language's model with the live copy and redraws if it is on screen.
+  function adoptLive(l, live) {
+    models[l] = live;
+    baseline[l] = snapshot(live);
+    dirtyBy[l] = false;
+    mediaDirty[l] = false;
+    if (l !== lang) return;
+    model = models[l];
+    setDirty(false);
+    renderForm();
+    renderCompose();
+    pushPreview(model.tabs && model.tabs[composeTab] ? model.tabs[composeTab].id : null);
   }
 
   /* ---- waiting for GitHub Pages to serve the new file ---- */
@@ -960,9 +994,19 @@
   $('btn-publish').addEventListener('click', function () {
     var btn = $('btn-publish');
     btn.disabled = true;
-    setStatus('Publishing…');
-    publishContent('Update site content')
-      .then(function (payload) { return confirmLive(payload); })
+    setStatus('Checking the live site\u2026');
+    fetchLive(lang)
+      .then(function (live) {
+        if (compareLive(lang, live) === 'changed' &&
+            !confirm('The live site has changed since this editor loaded \u2014 probably published from another tab or device.\n\n' +
+                     'Publish anyway and replace it with what is in this editor?\n' +
+                     'Cancel keeps your draft; click Refresh to see the live version instead.')) {
+          setStatus('Not published. The live site is newer than this editor \u2014 click Refresh to load it.', 'error');
+          return null;
+        }
+        setStatus('Publishing\u2026');
+        return publishContent('Update site content').then(function (payload) { return confirmLive(payload); });
+      })
       .catch(function (err) { setStatus(err.message, 'error'); })
       .then(function () { btn.disabled = false; });
   });
@@ -971,22 +1015,25 @@
     var btn = $('btn-refresh');
     btn.disabled = true;
     refreshPreview();
-    if (!isLiveHost()) {
-      setStatus('Preview reloaded.', 'ok');
-      btn.disabled = false;
-      return;
-    }
     setStatus('Reloading the preview and checking the live site\u2026');
-    var mine = Core.serializeContent(model, lang);
-    fetch(contentPathFor(lang) + '?cb=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.text() : ''; })
-      .then(function (t) {
-        if (t.trim() === mine.trim()) setStatus('Preview reloaded. The live site matches this editor.', 'ok');
-        else if (dirty) setStatus('Preview reloaded. You have unpublished changes, so the live site is behind.', 'ok');
-        else setStatus('Preview reloaded. The live site is still rebuilding; check again in a moment.', 'ok');
-      })
-      .catch(function () { setStatus('Preview reloaded. The live site could not be checked.', 'ok'); })
-      .then(function () { btn.disabled = false; });
+    // Both languages are checked; the one on screen decides the message.
+    Promise.all(['en', 'ko'].map(fetchLive)).then(function (lives) {
+      var state = {};
+      ['en', 'ko'].forEach(function (l, i) {
+        state[l] = compareLive(l, lives[i]);
+        // A live copy that differs replaces the model, unless a draft here would be lost.
+        if (state[l] === 'changed' && !dirtyBy[l] && !mediaDirty[l] && !(l === lang && editingIndex >= 0)) {
+          adoptLive(l, lives[i]);
+          state[l] = 'adopted';
+        }
+      });
+      var s = state[lang];
+      if (s === 'adopted') setStatus('Preview reloaded. The editor now shows what is live \u2014 it had changed since this page opened.', 'ok');
+      else if (s === 'same' && dirty) setStatus('Preview reloaded. You have unpublished changes; the live site is behind this editor.', 'ok');
+      else if (s === 'same') setStatus('Preview reloaded. The live site matches this editor.', 'ok');
+      else if (s === 'changed') setStatus('Preview reloaded. The live site changed since this page opened, but your draft was kept. Publish will ask before replacing it.', 'error');
+      else setStatus('Preview reloaded. The live site could not be checked.', 'ok');
+    }).then(function () { btn.disabled = false; });
   });
 
   $('btn-download').addEventListener('click', function () {

@@ -36,6 +36,8 @@ The two languages are independent copies. `content.js` is English and `content.k
 
 Either way the site updates within about a minute; freshly uploaded photos and videos appear once GitHub Pages finishes rebuilding.
 
+The editor always opens on the copy that is live right now. If you publish from another tab or device, click **Refresh** here: it reloads the preview and, when this tab has no unpublished changes, brings the form up to date with the live site. If you do have unpublished changes, your draft is kept and **Publish** asks before replacing a live version that is newer than the one this tab started from.
+
 **Option B: by hand.** Edit `content.js` (or `content.ko.js` for Korean) in any text editor and push. Text fields accept `**bold**` and line breaks.
 
 Section types available in `content.js` (and in the editor's "Add section" menu):
