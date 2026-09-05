@@ -5,12 +5,16 @@ window.SITE_CONTENT = {
     "title": "Minjoon Jack Kim",
     "brand": "JAↃK.KIM",
     "footer": "© 2026 Minjoon Jack Kim",
-    "footerNote": "Seoul · State College"
+    "footerNote": "Seoul, Cape Town, State College"
   },
   "profile": {
     "name": "Minjoon Jack Kim",
     "nameKo": "김민준",
     "photo": "images/profile.jpg",
+    "cover": {
+      "theme": "mint",
+      "image": ""
+    },
     "roles": [
       "Robotics Transformation (RX) Consultant @RLWRLD"
     ],
@@ -21,9 +25,9 @@ window.SITE_CONTENT = {
         "href": "",
         "lines": [
           {
-            "value": "Pennsylvania State University\nB.S in Computer Science and Statistics",
+            "value": "Pennsylvania State University\n(B.S Computer Science & Statistics)",
             "href": "https://www.psu.edu/",
-            "icon": "images/logos/penn-state.png"
+            "icon": "images/logos/university-seal.jpg"
           },
           {
             "value": "RLWRLD (Intern)",

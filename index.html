@@ -105,14 +105,28 @@
 
   /* ---------- Profile panel ---------- */
   .profile { padding: 0; overflow: hidden; position: sticky; top: 78px; }
-  .profile-cover { height: 62px; background: linear-gradient(115deg, #50EACE 0%, #35D6C0 45%, #0B7F69 100%); position: relative; }
+  .profile-cover {
+    height: 132px; position: relative;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+  }
   .profile-cover::after {
     content: ""; position: absolute; inset: 0;
-    background: radial-gradient(120% 140% at 82% -20%, rgba(255,255,255,0.55), transparent 60%);
+    background: radial-gradient(120% 140% at 82% -20%, rgba(255,255,255,0.45), transparent 60%);
   }
+  /* A wallpaper replaces the gradient; the scrim keeps the card edge readable. */
+  .profile-cover.has-image::after {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.3) 100%);
+  }
+  .cover-mint     { background-color: #35D6C0; background-image: linear-gradient(115deg, #50EACE 0%, #35D6C0 45%, #0B7F69 100%); }
+  .cover-midnight { background-color: #1B2A4A; background-image: linear-gradient(115deg, #2E4B7C 0%, #1B2A4A 55%, #0B1220 100%); }
+  .cover-sand     { background-color: #E4C79B; background-image: linear-gradient(115deg, #F6E3C3 0%, #E4C79B 50%, #B98A55 100%); }
+  .cover-slate    { background-color: #55606F; background-image: linear-gradient(115deg, #8894A6 0%, #55606F 55%, #2C333D 100%); }
+  .cover-plum     { background-color: #6B3F7A; background-image: linear-gradient(115deg, #B57BC6 0%, #6B3F7A 55%, #3A1F45 100%); }
+  .cover-sunrise  { background-color: #F08A5D; background-image: linear-gradient(115deg, #FFC978 0%, #F08A5D 50%, #C6417A 100%); }
+  .cover-ink      { background-color: #14161A; background-image: linear-gradient(115deg, #3A3F49 0%, #14161A 60%, #0B0C0E 100%); }
   .profile-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 14px; }
   .portrait {
-    width: 88px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; margin-top: -32px;
+    width: 96px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; margin-top: -44px;
     border: 3px solid var(--white); background: var(--bg); box-shadow: var(--sh-2);
     display: grid; place-items: center; position: relative;
   }
@@ -381,6 +395,8 @@
     .race-summary { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) {
+    .profile-cover { height: 108px; }
+    .portrait { width: 84px; margin-top: -38px; }
     .profile-body, .section { padding-left: 16px; padding-right: 16px; }
     .section { padding-top: 16px; padding-bottom: 16px; }
     .cards, .stats { grid-template-columns: 1fr; }
@@ -427,7 +443,11 @@
   <div class="lb-rail" id="lb-rail"></div>
 </div>
 
-<script src="content.js"></script>
+<script>
+  // Load the content with a short-lived cache key, so a fresh publish shows up
+  // instead of a copy the browser or CDN held on to.
+  document.write('<script src="content.js?v=' + Math.floor(Date.now() / 30000) + '"><\/script>');
+</script>
 <script>
 (function () {
   'use strict';
@@ -487,6 +507,13 @@
   }
 
   /* ---------- profile panel ---------- */
+  var COVER_THEMES = ['mint', 'midnight', 'sand', 'slate', 'plum', 'sunrise', 'ink'];
+
+  // Only a plain path or URL belongs inside url(); quotes and parens are dropped.
+  function cssUrl(v) {
+    return String(v == null ? '' : v).replace(/["'()\\\s]/g, '');
+  }
+
   function linkOr(value, href) {
     if (!href) return esc(value);
     return '<a href="' + esc(href) + '"' + (/^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(value) + '</a>';
@@ -494,7 +521,12 @@
 
   function renderProfile(p) {
     var initials = (p.name || '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 3);
-    var html = '<div class="profile-cover"></div><div class="profile-body">';
+    var cover = p.cover || {};
+    var theme = COVER_THEMES.indexOf(cover.theme) === -1 ? 'mint' : cover.theme;
+    var wall = cssUrl(cover.image);
+    var html = '<div class="profile-cover cover-' + theme + (wall ? ' has-image' : '') + '"' +
+               (wall ? ' style="background-image:url(\'' + wall + '\')"' : '') + '></div>' +
+               '<div class="profile-body">';
     html += '<div class="portrait" id="portrait">' +
               '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" id="portrait-img">' +
               '<div class="placeholder"><b>' + esc(initials) + '</b>Add photo at<br>' + esc(p.photo || 'images/profile.jpg') + '</div>' +

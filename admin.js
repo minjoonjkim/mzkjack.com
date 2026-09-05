@@ -4,6 +4,8 @@
   var Core = window.AdminCore;
   var CONFIG = window.ADMIN_CONFIG || {};
   var model = JSON.parse(JSON.stringify(window.SITE_CONTENT || {}));
+  // Content written before the banner existed still gets the banner fields.
+  if (model.profile && !model.profile.cover) model.profile.cover = { theme: 'mint', image: '' };
   var token = null;
   var dirty = false;
 
@@ -146,6 +148,7 @@
     cards:   { meta: '', title: '', text: '', facts: [] },
     facts:   { label: '', value: '' },
     contact: { label: '', value: '', href: '', lines: [] },
+    cover:   { theme: 'mint', image: '' },
     lines:   { value: '', href: '', icon: '' },
     posts:   { title: '', date: '', body: '', media: [] },
     media:   { type: 'image', src: '', alt: '' },
@@ -194,7 +197,8 @@
     date: 'Date (YYYY-MM-DD)', posts: 'Posts', author: 'Author (defaults to your name)',
     races: 'Races', km: 'Distance in km', time: 'Finish time', pace: 'Average pace per km',
     note: 'Notes', map: 'Route map (file path)', distance: 'Distance',
-    lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo'
+    lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo',
+    cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper'
   };
   var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
   var MULTILINE = { text: 1, value: 1, body: 1, note: 1 };
@@ -202,6 +206,12 @@
   var OBJECT_LISTS = { lines: 1, media: 1, facts: 1, races: 1, posts: 1 };
   // Nicer wording for the "+ Add" button where the plural is not a simple -s.
   var ADD_LABEL = { lines: 'box' };
+  // Fields that hold an image path, with where an upload of one should land.
+  var ASSET_FIELDS = {
+    icon:  { dir: 'images/logos/', hint: 'PNG, JPEG, WebP or SVG. Saves under images/logos/ and shows next to the text.' },
+    image: { dir: 'images/covers/', hint: 'Wide image works best, about 1200 by 400. Saves under images/covers/.' }
+  };
+  var COVER_THEMES = ['mint', 'midnight', 'sand', 'slate', 'plum', 'sunrise', 'ink'];
 
   function humanize(k) {
     if (LABELS[k]) return LABELS[k];
@@ -253,21 +263,31 @@
           '</div>' +
         '</div></div>';
     }
-    if (key === 'icon') {
+    if (key === 'theme' && path[path.length - 2] === 'cover') {
+      return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<select id="f' + p + '" data-path="' + p + '" data-kind="str">' +
+        COVER_THEMES.map(function (o) {
+          return '<option value="' + o + '"' + (o === v ? ' selected' : '') + '>' + o + '</option>';
+        }).join('') + '</select>' +
+        '<span class="hint">Used on its own, or as the colour behind a wallpaper.</span></div>';
+    }
+    if (ASSET_FIELDS[key] && typeof v === 'string') {
+      var asset = ASSET_FIELDS[key];
       return '<div class="field">' +
         '<label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
         '<div class="photo-row">' +
-          '<div class="photo-thumb icon-thumb" data-icon-thumb="' + p + '">' +
+          '<div class="photo-thumb icon-thumb' + (key === 'image' ? ' cover-thumb' : '') + '" data-icon-thumb="' + p + '">' +
             (v ? '<img src="' + esc(v) + '" alt="" onerror="this.remove()">' : '') +
           '</div>' +
           '<div class="photo-controls">' +
             '<div class="photo-buttons">' +
-              '<button type="button" class="btn secondary small" data-act="pick-icon" data-path="' + p + '">Upload logo\u2026</button>' +
+              '<button type="button" class="btn secondary small" data-act="pick-icon" data-path="' + p + '">' +
+                (key === 'icon' ? 'Upload logo\u2026' : 'Upload wallpaper\u2026') + '</button>' +
               (v ? '<button type="button" class="btn secondary small" data-act="clear-icon" data-path="' + p + '">Remove</button>' : '') +
             '</div>' +
             '<input type="file" class="icon-file" data-path="' + p + '" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>' +
             '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">' +
-            '<span class="hint">PNG, JPEG, WebP or SVG. Saves under images/logos/ and shows next to the text.</span>' +
+            '<span class="hint">' + esc(asset.hint) + '</span>' +
           '</div>' +
         '</div></div>';
     }
@@ -606,15 +626,16 @@
 
   function uploadIcon(path, file) {
     if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
-    var dest = LOGO_DIR + slugify(file.name);
+    var field = ASSET_FIELDS[path[path.length - 1]] || { dir: LOGO_DIR };
+    var dest = field.dir + slugify(file.name);
     setStatus('Uploading logo\u2026');
     fileToB64(file)
-      .then(function (b64) { return github().putBase64(dest, b64, 'Add logo ' + dest); })
+      .then(function (b64) { return github().putBase64(dest, b64, 'Add image ' + dest); })
       .then(function () {
         var url = URL.createObjectURL(file);
         localUrls[dest] = url;
         setIcon(path, dest, url);
-        setStatus('Logo uploaded to ' + dest + '. Publish to save it on the page.', 'ok');
+        setStatus('Uploaded to ' + dest + '. Publish to put it on the page.', 'ok');
       })
       .catch(function (err) { setStatus(err.message || 'Could not upload that logo.', 'error'); });
   }
@@ -624,7 +645,7 @@
       var f = e.target.files[0];
       e.target.value = '';
       if (!/^image\//.test(f.type)) { setStatus('Choose an image file (PNG, JPEG, WebP or SVG).', 'error'); return; }
-      if (f.size > 2 * 1024 * 1024) { setStatus('That logo is over 2 MB. Use a smaller one.', 'error'); return; }
+      if (f.size > 6 * 1024 * 1024) { setStatus('That image is over 6 MB. Use a smaller one.', 'error'); return; }
       uploadIcon(decPath(e.target.dataset.path), f);
       return;
     }
@@ -658,9 +679,66 @@
 
   function publishContent(message) {
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
+    var payload = Core.serializeContent(model);
     return github()
-      .putFile(CONFIG.contentPath || 'content.js', Core.serializeContent(model), message || 'Update site content')
-      .then(function (r) { setDirty(false); return r; });
+      .putFile(CONFIG.contentPath || 'content.js', payload, message || 'Update site content')
+      .then(function () { setDirty(false); return payload; });
+  }
+
+  /* ---- waiting for GitHub Pages to serve the new file ---- */
+
+  // Locally there is nothing to rebuild, so polling would only stall.
+  function isLiveHost() {
+    return /^https?:$/.test(location.protocol) &&
+           !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  }
+
+  // Polls the published file until it matches what was just written.
+  function waitForLive(expected, onTick) {
+    var url = CONFIG.contentPath || 'content.js';
+    var started = Date.now();
+    var LIMIT = 150000;
+    function check() {
+      return fetch(url + '?cb=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.text() : ''; })
+        .then(function (t) { return t.trim() === expected.trim(); })
+        .catch(function () { return false; });
+    }
+    function loop() {
+      return check().then(function (ok) {
+        if (ok) return true;
+        if (Date.now() - started > LIMIT) return false;
+        if (onTick) onTick(Math.round((Date.now() - started) / 1000));
+        return new Promise(function (go) { setTimeout(go, 2500); }).then(loop);
+      });
+    }
+    return loop();
+  }
+
+  // Shared tail for every publish: report progress, then confirm it is really live.
+  function confirmLive(payload, doneWord) {
+    if (!isLiveHost()) {
+      setStatus((doneWord || 'Published') + ' to GitHub. Reload the site file locally to see it.', 'ok');
+      return Promise.resolve(false);
+    }
+    setStatus((doneWord || 'Published') + '. Waiting for the site to rebuild\u2026');
+    return waitForLive(payload, function (secs) {
+      setStatus((doneWord || 'Published') + '. Waiting for the site to rebuild\u2026 ' + secs + 's');
+    }).then(function (live) {
+      if (live) {
+        setStatus((doneWord || 'Published') + ' and live now.', 'ok');
+        refreshPreview();
+      } else {
+        setStatus((doneWord || 'Published') + '. GitHub is still rebuilding \u2014 use Refresh in a moment.', 'ok');
+      }
+      return live;
+    });
+  }
+
+  // Reloads the preview frame from the network, then re-sends the current draft.
+  function refreshPreview() {
+    previewReady = false;
+    iframe.src = 'index.html?preview=1&cb=' + Date.now();
   }
 
   $('btn-publish').addEventListener('click', function () {
@@ -668,8 +746,30 @@
     btn.disabled = true;
     setStatus('Publishing…');
     publishContent('Update site content')
-      .then(function () { setStatus('Published. The live site updates within about a minute.', 'ok'); })
+      .then(function (payload) { return confirmLive(payload); })
       .catch(function (err) { setStatus(err.message, 'error'); })
+      .then(function () { btn.disabled = false; });
+  });
+
+  $('btn-refresh').addEventListener('click', function () {
+    var btn = $('btn-refresh');
+    btn.disabled = true;
+    refreshPreview();
+    if (!isLiveHost()) {
+      setStatus('Preview reloaded.', 'ok');
+      btn.disabled = false;
+      return;
+    }
+    setStatus('Reloading the preview and checking the live site\u2026');
+    var mine = Core.serializeContent(model);
+    fetch((CONFIG.contentPath || 'content.js') + '?cb=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) {
+        if (t.trim() === mine.trim()) setStatus('Preview reloaded. The live site matches this editor.', 'ok');
+        else if (dirty) setStatus('Preview reloaded. You have unpublished changes, so the live site is behind.', 'ok');
+        else setStatus('Preview reloaded. The live site is still rebuilding; check again in a moment.', 'ok');
+      })
+      .catch(function () { setStatus('Preview reloaded. The live site could not be checked.', 'ok'); })
       .then(function () { btn.disabled = false; });
   });
 
@@ -1186,12 +1286,12 @@
       else list.unshift(item);
       setStatus('Publishing…');
       return publishContent((editing ? 'Edit ' : 'Add ') + (race ? 'race' : 'post'));
-    }).then(function () {
+    }).then(function (payload) {
       resetComposer();
       renderCompose();
       renderForm();
       pushPreview(model.tabs[composeTab].id);
-      setStatus((race ? 'Race logged.' : 'Posted.') + ' The live site updates within about a minute; new files appear once it rebuilds.', 'ok');
+      return confirmLive(payload, race ? 'Race logged' : 'Posted');
     }).catch(function (err) {
       setStatus(err.message || String(err), 'error');
     }).then(function () {
@@ -1263,7 +1363,7 @@
     pushPreview(model.tabs[composeTab].id);
     setStatus('Publishing…');
     publishContent(act === 'del' ? 'Delete entry' : 'Reorder entries')
-      .then(function () { setStatus('Published. The live site updates within about a minute.', 'ok'); })
+      .then(function (payload) { return confirmLive(payload); })
       .catch(function (err) { setStatus(err.message, 'error'); markDirty(); });
   });
 

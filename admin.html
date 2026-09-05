@@ -119,6 +119,8 @@
   .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .icon-thumb { width: 48px; height: 48px; }
   .icon-thumb img { object-fit: contain; padding: 4px; background: #fff; }
+  .cover-thumb { width: 132px; height: 48px; }
+  .cover-thumb img { object-fit: cover; padding: 0; }
   .photo-controls { display: grid; gap: 6px; flex: 1 1 auto; min-width: 0; }
   .readonly { color: var(--gray); font-size: 12px; }
   .list { display: grid; gap: 8px; }
@@ -357,6 +359,7 @@
       <span class="status" id="status"></span>
     </div>
     <div class="right">
+      <button class="btn secondary small" id="btn-refresh" title="Reload the preview and check the live site">Refresh</button>
       <button class="btn secondary small" id="btn-download" title="Save content.js to your computer">Download</button>
       <button class="btn secondary small" id="btn-password">Change password</button>
       <button class="btn secondary small" id="btn-lock">Lock</button>
