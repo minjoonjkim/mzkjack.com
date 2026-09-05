@@ -3,7 +3,7 @@
 window.SITE_CONTENT = {
   "site": {
     "title": "Minjoon Jack Kim",
-    "brand": "JAↃK KIM",
+    "brand": "JAↃK ꓘIM",
     "footer": "© 2026 Minjoon Jack Kim",
     "footerNote": "Seoul, Cape Town, State College",
     "description": "Minjoon Jack Kim — computer science and statistics student at Penn State, robotics transformation consultant intern at RLWRLD, CFA Level II candidate, endurance athlete."
