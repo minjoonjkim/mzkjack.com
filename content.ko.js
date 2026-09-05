@@ -14,7 +14,7 @@ window.SITE_CONTENT_KO = {
     "nameKo": "Minjoon Jack Kim",
     "photo": "images/profile.jpg",
     "roles": [
-      "로보틱스 트랜스포메이션(RX) 컨설턴트 @RLWRLD"
+      "Robotics Transformation (RX) 컨설턴트"
     ],
     "contact": [
       {
@@ -23,12 +23,12 @@ window.SITE_CONTENT_KO = {
         "href": "",
         "lines": [
           {
-            "value": "펜실베이니아 주립대학교\n(컴퓨터과학·통계학 학사)",
+            "value": "펜실베이니아 주립대학교\n컴퓨터공학과",
             "href": "https://www.eecs.psu.edu/departments/EECS-Departments-Computer-Science-Engineering3.aspx",
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "RLWRLD 로보틱스 트랜스포메이션",
+            "value": "Robotics Transformation 컨설턴트",
             "href": "https://rlwrld.ai/",
             "icon": "images/logos/favi.webp"
           }
