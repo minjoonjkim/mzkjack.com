@@ -26,9 +26,9 @@ window.SITE_CONTENT = {
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "RLWRLD (Intern)",
+            "value": "Robotics Transformation @RLWRLD",
             "href": "https://rlwrld.ai/",
-            "icon": "images/logos/rlwrld.png"
+            "icon": "images/logos/favi.webp"
           }
         ]
       },
@@ -44,20 +44,22 @@ window.SITE_CONTENT = {
       },
       {
         "label": "LinkedIn",
-        "value": "linkedin.com/in/…",
+        "value": "Minjoon Jack Kim",
         "href": "https://www.linkedin.com/"
       }
     ],
     "focus": [
       "Physical AI",
+      "Robotics Foundation Model",
       "VLMOps",
       "Robotics Deployment",
       "Reinforcement Learning",
+      "Investment Banking",
       "M&A"
     ],
     "cover": {
       "theme": "mint",
-      "image": ""
+      "image": "images/covers/40522-61113-826.jpg"
     }
   },
   "tabs": [
@@ -348,14 +350,14 @@ window.SITE_CONTENT = {
           "races": [
             {
               "name": "Chuncheon Marathon",
-              "date": "",
+              "date": "2025-10-26",
               "distance": "full",
               "km": "",
               "time": "3:47:18",
               "pace": "",
               "location": "",
               "note": "",
-              "map": "media/2026-09/1788584577705-course-img.png",
+              "map": "media/2026-09/1788584801014-course-img.png",
               "media": []
             }
           ]
