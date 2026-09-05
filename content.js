@@ -18,8 +18,20 @@ window.SITE_CONTENT = {
     "contact": [
       {
         "label": "Affiliation",
-        "value": "Penn State (B.S. '28)\nRLWRLD (Intern)",
-        "href": ""
+        "value": "",
+        "href": "",
+        "lines": [
+          {
+            "value": "Penn State (B.S. '28)",
+            "href": "https://www.psu.edu/",
+            "icon": "images/logos/penn-state.png"
+          },
+          {
+            "value": "RLWRLD (Intern)",
+            "href": "https://rlwrld.ai/",
+            "icon": "images/logos/rlwrld.png"
+          }
+        ]
       },
       {
         "label": "Location",
@@ -224,6 +236,11 @@ window.SITE_CONTENT = {
               "text": "DCF and comparable company valuation, P&L attribution, deal screening, CFA Level II curriculum"
             }
           ]
+        },
+        {
+          "type": "posts",
+          "title": "Updates",
+          "posts": []
         }
       ]
     },
@@ -313,6 +330,11 @@ window.SITE_CONTENT = {
           "paragraphs": [
             "CFA Level II curriculum, with a focus on equity and fixed income valuation. Alongside it, papers and technical reports on robot foundation models and imitation learning, to keep pace with the R&D team."
           ]
+        },
+        {
+          "type": "posts",
+          "title": "Study log",
+          "posts": []
         }
       ]
     },
@@ -326,6 +348,11 @@ window.SITE_CONTENT = {
           "paragraphs": [
             "Endurance sport is the other half of my week. Most of it is running and triathlon; the rest is Hyrox, which is what happens when a race puts a gym in the middle of a run."
           ]
+        },
+        {
+          "type": "races",
+          "title": "Racing",
+          "races": []
         },
         {
           "type": "cards",
@@ -391,6 +418,11 @@ window.SITE_CONTENT = {
           "paragraphs": [
             "Off the course, I play poker, mostly for the math. Pot odds, expected value, and reading incomplete information are the same skills that show up in valuation and in deciding whether a robot deployment is worth the contract."
           ]
+        },
+        {
+          "type": "posts",
+          "title": "Training log",
+          "posts": []
         }
       ]
     }

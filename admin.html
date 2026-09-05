@@ -9,11 +9,15 @@
 <style>
   :root {
     color-scheme: light;
-    --white: #FFFFFF; --black: #000000;
-    --primary: #50EACE; --primary-text: #23B399; --primary-tint: #E6FBF6;
-    --bg: #EDEDED; --bolder: #DBDBDB;
-    --slate: #333333; --dim: #666666; --gray: #999999;
+    --white: #FFFFFF; --black: #0B0C0E;
+    --primary: #50EACE; --primary-text: #0B7F69; --primary-tint: #E9FBF6;
+    --bg: #F1F2F4; --bolder: #E4E6E9; --line-soft: #EDEFF1;
+    --slate: #2F333A; --dim: #5E6570; --gray: #8A919B;
     --danger: #C0392B;
+    --radius: 12px; --radius-sm: 8px;
+    --sh-1: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --sh-2: 0 3px 10px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+    --ease: cubic-bezier(0.2, 0.8, 0.25, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -100,9 +104,21 @@
   .field { display: grid; gap: 4px; }
   .field.check { grid-template-columns: auto 1fr; align-items: center; gap: 8px; }
   .field.check label { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--slate); font-size: 14px; }
+  .photo-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+  .crop-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,0.55); display: grid; place-items: center; padding: 20px; }
+  .crop-dialog { background: var(--white); border-radius: 6px; padding: 20px; width: min(380px, 100%); display: grid; gap: 12px; }
+  .crop-dialog h2 { font-size: 16px; color: var(--black); }
+  .crop-stage { justify-self: center; width: 320px; height: 320px; border: 1px solid var(--bolder); border-radius: 4px; overflow: hidden; background: var(--bg); }
+  .crop-stage canvas { display: block; width: 320px; height: 320px; cursor: grab; touch-action: none; }
+  .crop-stage canvas:active { cursor: grabbing; }
+  .crop-zoom-row { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+  .crop-zoom-row label { font-size: 12px; }
+  .crop-actions { display: flex; justify-content: flex-end; gap: 8px; }
   .photo-row { display: flex; gap: 12px; align-items: flex-start; }
   .photo-thumb { width: 72px; height: 72px; flex: 0 0 auto; border: 1px solid var(--bolder); border-radius: 4px; background: var(--bg); overflow: hidden; display: grid; place-items: center; }
   .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .icon-thumb { width: 48px; height: 48px; }
+  .icon-thumb img { object-fit: contain; padding: 4px; background: #fff; }
   .photo-controls { display: grid; gap: 6px; flex: 1 1 auto; min-width: 0; }
   .readonly { color: var(--gray); font-size: 12px; }
   .list { display: grid; gap: 8px; }
@@ -173,6 +189,100 @@
   .apost-media .thumb img, .apost-media .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
   .apost-media .thumb span { position: absolute; left: 3px; bottom: 3px; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; border-radius: 3px; padding: 0 4px; }
   .empty-note { color: var(--gray); text-align: center; padding: 18px; border: 1px dashed var(--bolder); border-radius: 6px; }
+
+  /* ================= polish pass ================= */
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  .btn { border-radius: 8px; transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease), box-shadow 0.18s var(--ease), transform 0.12s var(--ease); }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { box-shadow: 0 1px 2px rgba(11, 127, 105, 0.22); }
+  .btn.primary:hover { background: #6DF0D8; border-color: #6DF0D8; color: var(--black); }
+  .btn.secondary:hover { border-color: #C9CDD3; box-shadow: var(--sh-1); }
+  .btn.small { border-radius: 7px; padding: 4px 9px; }
+  input[type=text], input[type=password], input[type=url], input[type=date], input[type=time], textarea, select {
+    border-radius: 8px; border-color: var(--bolder); padding: 8px 10px;
+    transition: border-color 0.16s var(--ease), box-shadow 0.16s var(--ease);
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(80, 234, 206, 0.24); outline: none; }
+  .btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--primary-text); outline-offset: 1px;
+  }
+  label { color: var(--gray); font-size: 10px; letter-spacing: 0.08em; }
+
+  .topbar { padding: 0 20px; min-height: 56px; box-shadow: var(--sh-1); position: relative; z-index: 5; }
+  .brand::before { border-radius: 3px; box-shadow: 0 0 0 3px var(--primary-tint); }
+  .status {
+    font-size: 12px; color: var(--dim); padding: 3px 10px; border-radius: 999px; background: var(--bg);
+    max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .status:empty { background: none; padding: 0; }
+  .status.ok { color: var(--primary-text); background: var(--primary-tint); }
+  .status.error { color: var(--danger); background: #FDEDEB; }
+
+  .card { border-radius: var(--radius); box-shadow: var(--sh-1); border-color: var(--bolder); }
+  .gate-card, .crop-dialog { border-radius: var(--radius); box-shadow: var(--sh-2); }
+  details.group { border-radius: var(--radius-sm); }
+  .compose-col { gap: 13px; }
+  .composer { padding: 16px; gap: 11px; transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+  .composer.dragging { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(80, 234, 206, 0.2); background: var(--white); }
+  .avatar { box-shadow: 0 0 0 2px var(--white), 0 0 0 3px var(--line-soft); }
+  .composer-target { color: var(--gray); }
+  .pill { transition: border-color 0.16s var(--ease), color 0.16s var(--ease), background 0.16s var(--ease), box-shadow 0.16s var(--ease); }
+  .pill:hover { box-shadow: var(--sh-1); }
+  .pill[aria-pressed="true"] { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(80, 234, 206, 0.18); }
+  .media-tile { border-radius: var(--radius-sm); }
+  .dropnote { border-radius: var(--radius-sm); border-color: #D5D9DE; }
+  .apost { border-radius: var(--radius); }
+  .empty-note { border-radius: var(--radius); border-color: #D5D9DE; }
+
+  /* ---- what am I posting: note vs race ---- */
+  .kindswitch { display: inline-flex; gap: 3px; padding: 3px; background: var(--bg); border-radius: 10px; align-self: start; }
+  .kind {
+    appearance: none; border: 0; cursor: pointer; background: none; color: var(--dim);
+    font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 8px; line-height: 1.4;
+    transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .kind:hover { color: var(--black); }
+  .kind[aria-pressed="true"] { background: var(--white); color: var(--black); box-shadow: var(--sh-1); }
+
+  /* ---- race fields ---- */
+  .race-fields { display: grid; gap: 10px; }
+  .field-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .field-grid .field { min-width: 0; }
+  .field-grid input, .field-grid select { width: 100%; }
+  #race-name { font-size: 16px; font-weight: 700; color: var(--black); }
+  .map-row { display: flex; gap: 11px; align-items: center; }
+  .map-preview {
+    width: 132px; height: 62px; flex: 0 0 auto; border-radius: var(--radius-sm); overflow: hidden;
+    border: 1px dashed #D5D9DE; background: var(--bg); display: grid; place-items: center;
+    color: var(--gray); font-size: 10px; text-align: center; padding: 4px; position: relative;
+  }
+  .map-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .map-preview.has { border-style: solid; border-color: var(--bolder); }
+  .map-actions { display: grid; gap: 5px; justify-items: start; }
+  .pace-auto { color: var(--primary-text); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ---- race list under the composer ---- */
+  .arace { padding: 12px 14px; display: grid; gap: 9px; }
+  .arace-top { display: flex; align-items: center; gap: 10px; }
+  .arace-badge {
+    flex: 0 0 auto; min-width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;
+    background: linear-gradient(140deg, var(--primary), #2FCFB4); color: #06392F; font-size: 11px; font-weight: 700; padding: 0 7px;
+  }
+  .arace-badge.upcoming { background: var(--bg); color: var(--dim); box-shadow: inset 0 0 0 1px var(--bolder); }
+  .arace-id { min-width: 0; flex: 1; }
+  .arace-name { font-weight: 700; color: var(--black); }
+  .arace-sub { color: var(--gray); font-size: 12px; }
+  .arace-figs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .arace-figs span {
+    background: var(--bg); border-radius: 6px; padding: 2px 9px; font-size: 12px; color: var(--slate);
+    font-variant-numeric: tabular-nums;
+  }
+  .arace-figs span b { color: var(--black); }
+
+  @media (max-width: 720px) {
+    .field-grid, .field-grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
 
   @media (max-width: 900px) {
     .panes { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
@@ -263,8 +373,53 @@
           <span class="composer-badge" id="composer-badge" hidden>Editing</span>
         </div>
 
-        <input type="text" id="post-title" placeholder="Title (optional)" aria-label="Post title">
-        <textarea id="post-body" placeholder="What's new? Blank line starts a new paragraph, **text** is bold, links become clickable." aria-label="Post body"></textarea>
+        <div class="kindswitch" role="group" aria-label="What to add">
+          <button type="button" class="kind" id="kind-post" aria-pressed="true">Update</button>
+          <button type="button" class="kind" id="kind-race" aria-pressed="false">Race result</button>
+        </div>
+
+        <div id="post-fields">
+          <input type="text" id="post-title" placeholder="Title (optional)" aria-label="Post title">
+          <textarea id="post-body" placeholder="What's new? Blank line starts a new paragraph, **text** is bold, links become clickable." aria-label="Post body"></textarea>
+        </div>
+
+        <div class="race-fields" id="race-fields" hidden>
+          <input type="text" id="race-name" placeholder="Race name — e.g. Seoul Marathon" aria-label="Race name">
+          <div class="field-grid">
+            <div class="field"><label for="race-date">Date</label><input type="date" id="race-date"></div>
+            <div class="field"><label for="race-location">Location</label><input type="text" id="race-location" placeholder="Seoul, Korea"></div>
+          </div>
+          <div class="field-grid four">
+            <div class="field">
+              <label for="race-distance">Distance</label>
+              <select id="race-distance">
+                <option value="full">Full marathon</option>
+                <option value="half">Half marathon</option>
+                <option value="10k">10 km</option>
+                <option value="5k">5 km</option>
+                <option value="ultra">Ultramarathon</option>
+                <option value="tri">Triathlon</option>
+                <option value="hyrox">Hyrox</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field"><label for="race-km">Kilometres</label><input type="text" id="race-km" inputmode="decimal" placeholder="42.195"></div>
+            <div class="field"><label for="race-time">Finish time</label><input type="text" id="race-time" placeholder="3:42:15"></div>
+            <div class="field">
+              <label for="race-pace">Avg pace <span class="pace-auto" id="pace-auto" hidden>auto</span></label>
+              <input type="text" id="race-pace" placeholder="5:16">
+            </div>
+          </div>
+          <textarea id="race-note" placeholder="How did it go? (optional)" aria-label="Race notes"></textarea>
+          <div class="map-row">
+            <div class="map-preview" id="map-preview">Route map</div>
+            <div class="map-actions">
+              <label class="btn secondary small fake-file" for="race-map-file">＋ Route map</label>
+              <input type="file" id="race-map-file" accept="image/*" hidden>
+              <button type="button" class="btn secondary small" id="map-remove" hidden>Remove map</button>
+            </div>
+          </div>
+        </div>
 
         <div class="dropnote" id="dropnote">Drag photos or videos here, paste them, or use the button below.</div>
         <div class="media-strip" id="media-strip"></div>
@@ -295,6 +450,22 @@
         <a href="index.html" target="_blank" rel="noopener">Open site ↗</a>
       </div>
       <iframe id="preview" src="index.html?preview=1" title="Site preview"></iframe>
+    </div>
+  </div>
+</div>
+
+<div class="crop-overlay" id="crop-overlay" hidden>
+  <div class="crop-dialog" role="dialog" aria-modal="true" aria-labelledby="crop-title">
+    <h2 id="crop-title">Crop photo</h2>
+    <p class="hint">Drag the photo to move it. Zoom with the slider or the scroll wheel.</p>
+    <div class="crop-stage"><canvas id="crop-canvas" width="320" height="320"></canvas></div>
+    <div class="crop-zoom-row">
+      <label for="crop-zoom">Zoom</label>
+      <input type="range" id="crop-zoom" min="1" max="4" step="0.01" value="1">
+    </div>
+    <div class="crop-actions">
+      <button type="button" class="btn secondary small" id="crop-cancel">Cancel</button>
+      <button type="button" class="btn primary" id="crop-save">Use this crop</button>
     </div>
   </div>
 </div>

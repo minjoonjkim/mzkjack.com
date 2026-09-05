@@ -12,14 +12,18 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 | `admin.js`, `admin-core.js` | Editor logic. |
 | `admin-config.js` | Repo name plus your encrypted GitHub token (written by the editor on first setup). |
 | `images/profile.jpg` | Your portrait. Add it; the site shows a placeholder until it exists. |
-| `media/YYYY-MM/…` | Photos and videos attached to posts. Created by the editor when you post. |
+| `media/YYYY-MM/…` | Photos, videos and route maps attached to posts and races. Created by the editor when you post. |
 | `CNAME` | Custom domain for GitHub Pages. |
 
 ## Editing content
 
 **Option A: the editor.** Click **Edit** in the site footer (or open `https://mzkjack.com/admin.html`) and enter your password. The editor has two modes:
 
-- **Compose** — a social-post screen. Pick which tab to post in, add a title and body, drag in (or paste, or browse for) as many photos and videos as you like, then hit **Post**. The files upload to the repo and the post goes live in one step. Existing posts are listed underneath, with Edit, Delete and reorder.
+- **Compose** — a social-post screen with two kinds of entry:
+  - **Update** — pick which tab to post in, add a title and body, drag in (or paste, or browse for) as many photos and videos as you like, then hit **Post**.
+  - **Race result** — race name, date, location, distance, finish time, average pace, notes, a route map and photos. Pace fills itself in from the finish time and distance until you type your own, and picking a distance preset fills in the kilometres.
+
+  Either way the files upload to the repo and the entry goes live in one step. Existing entries are listed underneath, with Edit and Delete.
 - **Structure** — the full form for everything else on the page (profile, experience, tables, skills…), with a live preview on the right. Edit, then click **Publish**.
 
 Either way the site updates within about a minute; freshly uploaded photos and videos appear once GitHub Pages finishes rebuilding.
@@ -34,7 +38,10 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
 - `skills` — label / chips rows
 - `stats` — three big numbers with labels
 - `cards` — a two-column grid of small cards with facts
-- `posts` — a feed of dated posts with a title, body and any number of photos or videos. Every tab starts with one; the Compose mode writes into it.
+- `posts` — a feed of dated posts with a title, body and any number of photos or videos. Every tab starts with one; Compose → Update writes into it.
+- `races` — a race log. Shows a tally across the top (**full marathons**, **half marathons**, **10 km races**, plus any other category you have raced) and the **next upcoming** race with a countdown, then one card per race with distance, finish time, average pace, notes, route map and photos. Compose → Race result writes into it; the Hobbies tab starts with one.
+
+Race counts come from the entries themselves — a race dated in the future is listed as *Upcoming* and left out of the tally until the day passes. Cards are ordered by date, newest first, so there is nothing to reorder by hand. Distances: `full`, `half`, `10k`, `5k`, `ultra`, `tri`, `hyrox`, `other`; set `km` for anything without a fixed distance.
 
 Post bodies accept `**bold**`, a blank line starts a new paragraph, and bare URLs become links. Photos and videos open in a full-screen viewer when clicked.
 

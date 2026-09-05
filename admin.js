@@ -135,7 +135,8 @@
     skills:  { type: 'skills', title: 'Skills', rows: [{ label: 'Category', items: ['One', 'Two'], text: '' }] },
     stats:   { type: 'stats', title: 'At a glance', stats: [{ value: '1', label: 'Label' }] },
     cards:   { type: 'cards', title: 'New section', cards: [{ meta: 'Category', title: 'Card', text: 'Description', facts: [{ label: 'Fact', value: 'Value' }] }] },
-    posts:   { type: 'posts', title: 'Updates', posts: [] }
+    posts:   { type: 'posts', title: 'Updates', posts: [] },
+    races:   { type: 'races', title: 'Racing', races: [] }
   };
   var KEY_TEMPLATES = {
     tabs:    { id: 'new', label: 'New tab', blocks: [] },
@@ -144,9 +145,11 @@
     stats:   { value: '', label: '' },
     cards:   { meta: '', title: '', text: '', facts: [] },
     facts:   { label: '', value: '' },
-    contact: { label: '', value: '', href: '' },
+    contact: { label: '', value: '', href: '', lines: [] },
+    lines:   { value: '', href: '', icon: '' },
     posts:   { title: '', date: '', body: '', media: [] },
-    media:   { type: 'image', src: '', alt: '' }
+    media:   { type: 'image', src: '', alt: '' },
+    races:   { name: '', date: '', distance: 'full', km: '', time: '', pace: '', location: '', note: '', map: '', media: [] }
   };
   function templateFor(path, list) {
     var key = path[path.length - 1];
@@ -158,6 +161,28 @@
     return KEY_TEMPLATES[key] ? JSON.parse(JSON.stringify(KEY_TEMPLATES[key])) : {};
   }
 
+  /* ================= races: shared vocabulary ================= */
+  var RACE_OPTIONS = [
+    ['full', 'Full marathon'], ['half', 'Half marathon'], ['10k', '10 km'], ['5k', '5 km'],
+    ['ultra', 'Ultramarathon'], ['tri', 'Triathlon'], ['hyrox', 'Hyrox'], ['other', 'Other']
+  ];
+  var RACE_KM = { full: '42.195', half: '21.0975', '10k': '10', '5k': '5' };
+  var RACE_SHORT = { full: 'Full', half: 'Half', '10k': '10 km', '5k': '5 km', ultra: 'Ultra', tri: 'Tri', hyrox: 'Hyrox', other: 'Race' };
+  var PRESET_KM = Object.keys(RACE_KM).map(function (k) { return RACE_KM[k]; });
+
+  // "3:42:15" or "42:10" -> seconds. Anything else -> null.
+  function durationSeconds(txt) {
+    var m = /^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2})\s*$/.exec(txt || '');
+    if (!m) return null;
+    return (m[1] ? +m[1] : 0) * 3600 + (+m[2]) * 60 + (+m[3]);
+  }
+  function paceFor(timeTxt, kmTxt) {
+    var secs = durationSeconds(timeTxt), km = parseFloat(kmTxt);
+    if (!secs || !(km > 0)) return '';
+    var per = Math.round(secs / km);
+    return Math.floor(per / 60) + ':' + ('0' + (per % 60)).slice(-2);
+  }
+
   /* ================= form rendering ================= */
   var LABELS = {
     nameKo: 'Name (Korean)', footerNote: 'Footer note (right)', href: 'Link (URL, mailto:, tel:)',
@@ -166,10 +191,17 @@
     bullets: 'Bullet points', photo: 'Photo path', brand: 'Header name', roles: 'Roles / titles',
     focus: 'Focus areas', id: 'Tab id (used in the URL)', label: 'Label',
     body: 'Body', media: 'Photos and videos', src: 'File path or URL', alt: 'Caption / alt text',
-    date: 'Date (YYYY-MM-DD)', posts: 'Posts', author: 'Author (defaults to your name)'
+    date: 'Date (YYYY-MM-DD)', posts: 'Posts', author: 'Author (defaults to your name)',
+    races: 'Races', km: 'Distance in km', time: 'Finish time', pace: 'Average pace per km',
+    note: 'Notes', map: 'Route map (file path)', distance: 'Distance',
+    lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo'
   };
   var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
-  var MULTILINE = { text: 1, value: 1, body: 1 };
+  var MULTILINE = { text: 1, value: 1, body: 1, note: 1 };
+  // Lists whose items are objects, so an empty one is still edited as a list.
+  var OBJECT_LISTS = { lines: 1, media: 1, facts: 1, races: 1, posts: 1 };
+  // Nicer wording for the "+ Add" button where the plural is not a simple -s.
+  var ADD_LABEL = { lines: 'box' };
 
   function humanize(k) {
     if (LABELS[k]) return LABELS[k];
@@ -196,6 +228,13 @@
           return '<option value="' + o + '"' + (o === v ? ' selected' : '') + '>' + o + '</option>';
         }).join('') + '</select></div>';
     }
+    if (key === 'distance' && path[path.length - 3] === 'races') {
+      return '<div class="field"><label for="f' + p + '">Distance</label>' +
+        '<select id="f' + p + '" data-path="' + p + '" data-kind="str">' +
+        RACE_OPTIONS.map(function (o) {
+          return '<option value="' + o[0] + '"' + (o[0] === v ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+        }).join('') + '</select></div>';
+    }
     if (key === 'photo' && path.length === 2 && path[0] === 'profile') {
       return '<div class="field">' +
         '<label for="f' + p + '">Profile photo</label>' +
@@ -204,10 +243,31 @@
             (v ? '<img src="' + esc(v) + '" alt="" onerror="this.remove()">' : '') +
           '</div>' +
           '<div class="photo-controls">' +
-            '<button type="button" class="btn secondary small" data-act="pick-photo">Upload photo\u2026</button>' +
+            '<div class="photo-buttons">' +
+              '<button type="button" class="btn secondary small" data-act="pick-photo">Upload photo\u2026</button>' +
+              (v ? '<button type="button" class="btn secondary small" data-act="recrop-photo">Recrop current</button>' : '') +
+            '</div>' +
             '<input type="file" id="photo-file" accept="image/jpeg,image/png,image/webp" hidden>' +
             '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">' +
-            '<span class="hint">JPEG, PNG or WebP. Resized to 800px and saved as images/profile.jpg.</span>' +
+            '<span class="hint">JPEG, PNG or WebP. You choose the square crop; it saves as images/profile.jpg.</span>' +
+          '</div>' +
+        '</div></div>';
+    }
+    if (key === 'icon') {
+      return '<div class="field">' +
+        '<label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<div class="photo-row">' +
+          '<div class="photo-thumb icon-thumb" data-icon-thumb="' + p + '">' +
+            (v ? '<img src="' + esc(v) + '" alt="" onerror="this.remove()">' : '') +
+          '</div>' +
+          '<div class="photo-controls">' +
+            '<div class="photo-buttons">' +
+              '<button type="button" class="btn secondary small" data-act="pick-icon" data-path="' + p + '">Upload logo\u2026</button>' +
+              (v ? '<button type="button" class="btn secondary small" data-act="clear-icon" data-path="' + p + '">Remove</button>' : '') +
+            '</div>' +
+            '<input type="file" class="icon-file" data-path="' + p + '" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>' +
+            '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">' +
+            '<span class="hint">PNG, JPEG, WebP or SVG. Saves under images/logos/ and shows next to the text.</span>' +
           '</div>' +
         '</div></div>';
     }
@@ -223,7 +283,7 @@
           : '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">') +
         '</div>';
     }
-    if (isStringArray(v)) {
+    if (isStringArray(v) && !OBJECT_LISTS[key]) {
       return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
         '<textarea id="f' + p + '" data-path="' + p + '" data-kind="lines" rows="' + Math.min(10, Math.max(2, v.length + 1)) + '">' + esc(v.join('\n')) + '</textarea>' +
         (LINES_HINT[key] ? '<span class="hint">' + LINES_HINT[key] + '</span>' : '') + '</div>';
@@ -263,7 +323,7 @@
         Object.keys(BLOCK_TEMPLATES).map(function (t) { return '<option value="' + t + '">' + t + '</option>'; }).join('') +
         '</select><button type="button" class="btn secondary small" data-act="add-block" data-path="' + p + '">+ Add section</button>';
     } else {
-      foot = '<button type="button" class="btn secondary small" data-act="add" data-path="' + p + '">+ Add ' + esc(humanize(key).replace(/s$/, '').toLowerCase()) + '</button>';
+      foot = '<button type="button" class="btn secondary small" data-act="add" data-path="' + p + '">+ Add ' + esc(ADD_LABEL[key] || humanize(key).replace(/s$/, '').toLowerCase()) + '</button>';
     }
 
     return '<div class="field"><label>' + esc(humanize(key)) + '</label>' +
@@ -304,6 +364,17 @@
     if (!btn) return;
     e.preventDefault();
     if (btn.dataset.act === 'pick-photo') { var picker = $('photo-file'); if (picker) picker.click(); return; }
+    if (btn.dataset.act === 'pick-icon') {
+      var f = document.querySelector('input.icon-file[data-path="' + btn.dataset.path + '"]');
+      if (f) f.click();
+      return;
+    }
+    if (btn.dataset.act === 'clear-icon') { setIcon(decPath(btn.dataset.path), '', ''); return; }
+    if (btn.dataset.act === 'recrop-photo') {
+      var cur = (model.profile && model.profile.photo) || PHOTO_PATH;
+      cropThenUpload(cur + (cur.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now(), false);
+      return;
+    }
     var path = decPath(btn.dataset.path);
     var list = getAt(path);
     var i = parseInt(btn.dataset.index, 10);
@@ -349,64 +420,194 @@
   }
 
   /* ================= dirty state ================= */
-  /* ================= profile photo upload ================= */
+  /* ================= profile photo: upload + crop ================= */
   var PHOTO_PATH = 'images/profile.jpg';
+  var CROP_STAGE = 320;   // on-screen crop square, in CSS pixels
+  var CROP_OUT = 800;     // exported square, in pixels
 
-  // Decodes, downscales and re-encodes as JPEG so the repo stays small and the
-  // format is one every browser can render.
-  function imageToJpeg(file, maxDim, quality) {
+  function loadImage(src) {
     return new Promise(function (resolve, reject) {
-      var url = URL.createObjectURL(file);
       var img = new Image();
       img.onload = function () {
-        var w = img.naturalWidth, h = img.naturalHeight;
-        URL.revokeObjectURL(url);
-        if (!w || !h) { reject(new Error('That image could not be read.')); return; }
-        var scale = Math.min(1, maxDim / Math.max(w, h));
-        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
-        var canvas = document.createElement('canvas');
-        canvas.width = cw; canvas.height = ch;
-        var ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, cw, ch);
-        ctx.drawImage(img, 0, 0, cw, ch);
-        var dataUrl;
-        try { dataUrl = canvas.toDataURL('image/jpeg', quality); }
-        catch (err) { reject(new Error('That image could not be processed.')); return; }
-        resolve({ dataUrl: dataUrl, b64: dataUrl.slice(dataUrl.indexOf(',') + 1) });
+        if (!img.naturalWidth || !img.naturalHeight) { reject(new Error('That image could not be read.')); return; }
+        resolve(img);
       };
       img.onerror = function () {
-        URL.revokeObjectURL(url);
         reject(new Error('Your browser cannot read that file. iPhone HEIC photos are not supported: export it as JPEG first.'));
       };
-      img.src = url;
+      img.src = src;
     });
   }
 
-  function uploadProfilePhoto(file) {
-    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
-    if (!/^image\//.test(file.type)) { setStatus('Choose an image file (JPEG, PNG or WebP).', 'error'); return; }
-    setStatus('Preparing photo\u2026');
-    imageToJpeg(file, 800, 0.85).then(function (out) {
-      setStatus('Uploading photo\u2026');
-      return github().putBase64(PHOTO_PATH, out.b64, 'Update profile photo').then(function () {
-        var thumb = $('photo-thumb');
-        if (thumb) thumb.innerHTML = '<img src="' + out.dataUrl + '" alt="">';
-        var field = document.querySelector('[data-path="' + encPath(['profile', 'photo']) + '"]');
-        if (field) field.value = PHOTO_PATH;
-        if (model.profile) model.profile.photo = PHOTO_PATH;
-        setStatus('Photo uploaded. The live site shows it once GitHub rebuilds, about a minute.', 'ok');
-      });
-    }).catch(function (err) {
-      setStatus(err.message || 'Could not upload the photo.', 'error');
+  // Square cropper: drag to pan, slider or wheel to zoom.
+  // Resolves to {dataUrl, b64}, or null when cancelled.
+  function cropSquare(img) {
+    return new Promise(function (resolve) {
+      var overlay = $('crop-overlay'), canvas = $('crop-canvas'), zoom = $('crop-zoom');
+      var ctx = canvas.getContext('2d');
+      var minScale = Math.max(CROP_STAGE / img.naturalWidth, CROP_STAGE / img.naturalHeight);
+      var scale = minScale, ox = 0, oy = 0, dragging = false, lastX = 0, lastY = 0;
+
+      function clamp() {
+        var w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+        ox = Math.min(0, Math.max(CROP_STAGE - w, ox));
+        oy = Math.min(0, Math.max(CROP_STAGE - h, oy));
+      }
+      function draw() {
+        ctx.fillStyle = '#ededed';
+        ctx.fillRect(0, 0, CROP_STAGE, CROP_STAGE);
+        ctx.drawImage(img, ox, oy, img.naturalWidth * scale, img.naturalHeight * scale);
+      }
+      function setZoom(mult, cx, cy) {
+        var next = minScale * mult;
+        if (cx == null) { cx = CROP_STAGE / 2; cy = CROP_STAGE / 2; }
+        ox = cx - (cx - ox) * (next / scale);
+        oy = cy - (cy - oy) * (next / scale);
+        scale = next; clamp(); draw();
+      }
+
+      ox = (CROP_STAGE - img.naturalWidth * scale) / 2;
+      oy = (CROP_STAGE - img.naturalHeight * scale) / 2;
+      clamp(); draw();
+      zoom.value = '1';
+
+      function onZoom() { setZoom(parseFloat(zoom.value)); }
+      function onDown(e) {
+        dragging = true; lastX = e.clientX; lastY = e.clientY;
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        ox += e.clientX - lastX; oy += e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        clamp(); draw();
+      }
+      function onUp(e) {
+        dragging = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      function onWheel(e) {
+        e.preventDefault();
+        var rect = canvas.getBoundingClientRect();
+        var mult = Math.min(4, Math.max(1, parseFloat(zoom.value) * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+        zoom.value = String(mult);
+        setZoom(mult, e.clientX - rect.left, e.clientY - rect.top);
+      }
+      function onKey(e) { if (e.key === 'Escape') finish(null); }
+
+      function cleanup() {
+        zoom.removeEventListener('input', onZoom);
+        canvas.removeEventListener('pointerdown', onDown);
+        canvas.removeEventListener('pointermove', onMove);
+        canvas.removeEventListener('pointerup', onUp);
+        canvas.removeEventListener('pointercancel', onUp);
+        canvas.removeEventListener('wheel', onWheel);
+        document.removeEventListener('keydown', onKey);
+        $('crop-save').removeEventListener('click', onSave);
+        $('crop-cancel').removeEventListener('click', onCancel);
+        overlay.hidden = true;
+      }
+      function finish(v) { cleanup(); resolve(v); }
+      function onCancel() { finish(null); }
+      function onSave() {
+        var out = document.createElement('canvas');
+        out.width = CROP_OUT; out.height = CROP_OUT;
+        var octx = out.getContext('2d');
+        var r = CROP_OUT / CROP_STAGE;
+        octx.fillStyle = '#ffffff';
+        octx.fillRect(0, 0, CROP_OUT, CROP_OUT);
+        octx.drawImage(img, ox * r, oy * r, img.naturalWidth * scale * r, img.naturalHeight * scale * r);
+        var dataUrl;
+        try { dataUrl = out.toDataURL('image/jpeg', 0.88); }
+        catch (err) { finish(null); setStatus('That image could not be processed.', 'error'); return; }
+        finish({ dataUrl: dataUrl, b64: dataUrl.slice(dataUrl.indexOf(',') + 1) });
+      }
+
+      zoom.addEventListener('input', onZoom);
+      canvas.addEventListener('pointerdown', onDown);
+      canvas.addEventListener('pointermove', onMove);
+      canvas.addEventListener('pointerup', onUp);
+      canvas.addEventListener('pointercancel', onUp);
+      canvas.addEventListener('wheel', onWheel, { passive: false });
+      document.addEventListener('keydown', onKey);
+      $('crop-save').addEventListener('click', onSave);
+      $('crop-cancel').addEventListener('click', onCancel);
+      overlay.hidden = false;
+      $('crop-save').focus();
     });
+  }
+
+  function commitPhoto(out) {
+    setStatus('Uploading photo\u2026');
+    return github().putBase64(PHOTO_PATH, out.b64, 'Update profile photo').then(function () {
+      var thumb = $('photo-thumb');
+      if (thumb) thumb.innerHTML = '<img src="' + out.dataUrl + '" alt="">';
+      var field = document.querySelector('[data-path="' + encPath(['profile', 'photo']) + '"]');
+      if (field) field.value = PHOTO_PATH;
+      if (model.profile) model.profile.photo = PHOTO_PATH;
+      setStatus('Photo updated. The live site shows it once GitHub rebuilds, about a minute.', 'ok');
+    });
+  }
+
+  function cropThenUpload(src, revoke) {
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    setStatus('Opening the photo\u2026');
+    loadImage(src).then(function (img) {
+      if (revoke) URL.revokeObjectURL(src);
+      return cropSquare(img);
+    }).then(function (out) {
+      if (!out) { setStatus('Photo unchanged.'); return; }
+      return commitPhoto(out);
+    }).catch(function (err) {
+      if (revoke) URL.revokeObjectURL(src);
+      setStatus(err.message || 'Could not use that photo.', 'error');
+    });
+  }
+
+  /* ================= contact icons: logo upload ================= */
+  var LOGO_DIR = 'images/logos/';
+
+  // Writes the icon path into the model, the text field and the thumbnail.
+  function setIcon(path, value, previewUrl) {
+    setAt(path, value);
+    var p = encPath(path);
+    var field = document.querySelector('input[data-path="' + p + '"][data-kind="str"]');
+    if (field) field.value = value;
+    var thumb = document.querySelector('[data-icon-thumb="' + p + '"]');
+    if (thumb) thumb.innerHTML = value ? '<img src="' + esc(previewUrl || value) + '" alt="" onerror="this.remove()">' : '';
+    markDirty();
+    schedulePreview(path);
+  }
+
+  function uploadIcon(path, file) {
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    var dest = LOGO_DIR + slugify(file.name);
+    setStatus('Uploading logo\u2026');
+    fileToB64(file)
+      .then(function (b64) { return github().putBase64(dest, b64, 'Add logo ' + dest); })
+      .then(function () {
+        var url = URL.createObjectURL(file);
+        localUrls[dest] = url;
+        setIcon(path, dest, url);
+        setStatus('Logo uploaded to ' + dest + '. Publish to save it on the page.', 'ok');
+      })
+      .catch(function (err) { setStatus(err.message || 'Could not upload that logo.', 'error'); });
   }
 
   $('form').addEventListener('change', function (e) {
-    if (e.target && e.target.id === 'photo-file' && e.target.files && e.target.files[0]) {
-      uploadProfilePhoto(e.target.files[0]);
+    if (e.target && e.target.classList && e.target.classList.contains('icon-file') && e.target.files && e.target.files[0]) {
+      var f = e.target.files[0];
       e.target.value = '';
+      if (!/^image\//.test(f.type)) { setStatus('Choose an image file (PNG, JPEG, WebP or SVG).', 'error'); return; }
+      if (f.size > 2 * 1024 * 1024) { setStatus('That logo is over 2 MB. Use a smaller one.', 'error'); return; }
+      uploadIcon(decPath(e.target.dataset.path), f);
+      return;
     }
+    if (!e.target || e.target.id !== 'photo-file' || !e.target.files || !e.target.files[0]) return;
+    var file = e.target.files[0];
+    e.target.value = '';
+    if (!/^image\//.test(file.type)) { setStatus('Choose an image file (JPEG, PNG or WebP).', 'error'); return; }
+    cropThenUpload(URL.createObjectURL(file), true);
   });
 
   function markDirty() {
@@ -487,8 +688,11 @@
 
   /* ================= compose: social-style posts ================= */
   var composeTab = 0;
-  var draft = [];          // { kind: 'new' | 'existing', mtype, src, alt, file, url, name }
-  var editingIndex = -1;   // index in the tab's post list, -1 while writing a new post
+  var composeKind = 'post';   // 'post' writes an update, 'race' writes a race result
+  var draft = [];             // { kind: 'new' | 'existing', mtype, src, alt, file, url, name }
+  var mapDraft = null;        // the route map, same shape as a draft item
+  var paceTouched = false;
+  var editingIndex = -1;      // index in the tab's list, -1 while writing something new
   var MAX_BYTES = 40 * 1024 * 1024;
   var nextDraftId = 1;
   // Freshly uploaded files 404 until GitHub Pages rebuilds, so preview them from memory.
@@ -511,38 +715,62 @@
     return item.mtype === 'video' || item.type === 'video' || /\.(mp4|webm|mov|m4v|ogg)$/i.test(item.src || '');
   }
 
-  // Every tab keeps one "posts" section; it is created the first time you post there.
-  function postsBlock(tabIndex, create) {
+  // Each tab keeps at most one "posts" and one "races" section, created on first use.
+  var BLOCK_FOR = {
+    post: { type: 'posts', key: 'posts', title: 'Updates' },
+    race: { type: 'races', key: 'races', title: 'Racing' }
+  };
+  function blockFor(tabIndex, kind, create) {
+    var spec = BLOCK_FOR[kind];
     var tab = model.tabs[tabIndex];
     if (!tab) return null;
     tab.blocks = tab.blocks || [];
     for (var i = 0; i < tab.blocks.length; i++) {
-      if (tab.blocks[i].type === 'posts') return tab.blocks[i];
+      if (tab.blocks[i].type === spec.type) return tab.blocks[i];
     }
     if (!create) return null;
-    var block = { type: 'posts', title: 'Updates', posts: [] };
+    var block = { type: spec.type, title: spec.title };
+    block[spec.key] = [];
     tab.blocks.push(block);
     return block;
   }
-  function postsOf(tabIndex) {
-    var b = postsBlock(tabIndex, false);
-    return (b && b.posts) || [];
+  function itemsOf(tabIndex, kind) {
+    var b = blockFor(tabIndex, kind, false);
+    return (b && b[BLOCK_FOR[kind].key]) || [];
   }
+  function postsOf(tabIndex) { return itemsOf(tabIndex, 'post'); }
+  function currentItems() { return itemsOf(composeTab, composeKind); }
 
   function renderCompose() {
     renderComposeTabs();
     renderComposerHead();
     renderDraftMedia();
+    renderMapPreview();
     renderComposeFeed();
   }
 
+  function setComposeKind(kind) {
+    if (kind === composeKind) return;
+    if (editingIndex >= 0 && !confirm('Discard the item you are editing?')) return;
+    composeKind = kind;
+    resetComposer();
+    $('kind-post').setAttribute('aria-pressed', kind === 'post' ? 'true' : 'false');
+    $('kind-race').setAttribute('aria-pressed', kind === 'race' ? 'true' : 'false');
+    $('post-fields').hidden = kind !== 'post';
+    $('race-fields').hidden = kind !== 'race';
+    $('post-date').hidden = kind !== 'post';
+    renderCompose();
+  }
+  $('kind-post').addEventListener('click', function () { setComposeKind('post'); });
+  $('kind-race').addEventListener('click', function () { setComposeKind('race'); });
+
   function renderComposeTabs() {
     var host = $('compose-tabs');
-    host.innerHTML = '<span class="pill-label">Post in</span>' + (model.tabs || []).map(function (t, i) {
-      var n = postsOf(i).length;
-      return '<button type="button" class="pill" data-tab="' + i + '" aria-pressed="' + (i === composeTab) + '">' +
-        esc(t.label || t.id) + '<span class="count">' + n + '</span></button>';
-    }).join('');
+    host.innerHTML = '<span class="pill-label">' + (composeKind === 'race' ? 'Add to' : 'Post in') + '</span>' +
+      (model.tabs || []).map(function (t, i) {
+        return '<button type="button" class="pill" data-tab="' + i + '" aria-pressed="' + (i === composeTab) + '">' +
+          esc(t.label || t.id) + '<span class="count">' + itemsOf(i, composeKind).length + '</span></button>';
+      }).join('');
   }
 
   function renderComposerHead() {
@@ -552,12 +780,22 @@
       : esc(initialsOf(pro.name));
     $('composer-author').textContent = pro.name || 'You';
     var tab = model.tabs[composeTab];
+    var where = tab ? tab.label : '';
+    var noun = composeKind === 'race' ? 'race result' : 'post';
     $('composer-target').textContent = editingIndex >= 0
-      ? 'Editing a post in ' + (tab ? tab.label : '')
-      : 'Posting to ' + (tab ? tab.label : '');
+      ? 'Editing a ' + noun + ' in ' + where
+      : (composeKind === 'race' ? 'Logging a race in ' : 'Posting to ') + where;
     $('composer-badge').hidden = editingIndex < 0;
-    $('post-cancel').hidden = editingIndex < 0 && !draft.length && !$('post-title').value && !$('post-body').value;
-    $('post-submit').textContent = editingIndex >= 0 ? 'Save changes' : 'Post';
+    $('post-cancel').hidden = editingIndex < 0 && !composerHasContent();
+    $('post-submit').textContent = editingIndex >= 0
+      ? 'Save changes'
+      : (composeKind === 'race' ? 'Log race' : 'Post');
+  }
+
+  function composerHasContent() {
+    if (draft.length || mapDraft) return true;
+    if (composeKind === 'race') return !!($('race-name').value.trim() || $('race-time').value.trim() || $('race-note').value.trim());
+    return !!($('post-title').value.trim() || $('post-body').value.trim());
   }
 
   function renderDraftMedia() {
@@ -577,7 +815,99 @@
     $('dropnote').hidden = draft.length > 0;
   }
 
+  function renderMapPreview() {
+    var box = $('map-preview');
+    var src = mapDraft ? (mapDraft.kind === 'new' ? mapDraft.url : previewSrc(mapDraft.src)) : '';
+    box.className = 'map-preview' + (src ? ' has' : '');
+    box.innerHTML = src ? '<img src="' + esc(src) + '" alt="Route map">' : 'Route map';
+    $('map-remove').hidden = !mapDraft;
+  }
+
+  // Pace fills itself in from finish time and distance until you type your own.
+  function syncPace() {
+    if (paceTouched) { $('pace-auto').hidden = true; return; }
+    var auto = paceFor($('race-time').value, $('race-km').value);
+    $('race-pace').value = auto;
+    $('pace-auto').hidden = !auto;
+  }
+  $('race-distance').addEventListener('change', function () {
+    var km = $('race-km').value.trim();
+    if (!km || PRESET_KM.indexOf(km) !== -1) $('race-km').value = RACE_KM[this.value] || '';
+    syncPace();
+  });
+  $('race-time').addEventListener('input', syncPace);
+  $('race-km').addEventListener('input', syncPace);
+  $('race-pace').addEventListener('input', function () {
+    paceTouched = true;
+    $('pace-auto').hidden = true;
+  });
+  ['race-name', 'race-note', 'race-time'].forEach(function (id) {
+    $(id).addEventListener('input', renderComposerHead);
+  });
+  $('race-map-file').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { setStatus('The route map needs to be an image.', 'error'); return; }
+    if (file.size > MAX_BYTES) { setStatus('That map is over 40 MB.', 'error'); return; }
+    if (mapDraft && mapDraft.kind === 'new' && mapDraft.url && !mapDraft.keepUrl) URL.revokeObjectURL(mapDraft.url);
+    mapDraft = { kind: 'new', file: file, url: URL.createObjectURL(file), mtype: 'image', name: file.name, alt: '' };
+    renderMapPreview();
+    renderComposerHead();
+  });
+  $('map-remove').addEventListener('click', function () {
+    if (mapDraft && mapDraft.kind === 'new' && mapDraft.url && !mapDraft.keepUrl) URL.revokeObjectURL(mapDraft.url);
+    mapDraft = null;
+    renderMapPreview();
+    renderComposerHead();
+  });
+
   function renderComposeFeed() {
+    if (composeKind === 'race') return renderRaceFeed();
+    return renderPostFeed();
+  }
+
+  function raceUpcoming(r) { return !!r.date && r.date > todayISO(); }
+
+  function renderRaceFeed() {
+    var list = itemsOf(composeTab, 'race');
+    $('feed-count').textContent = list.length
+      ? list.length + (list.length === 1 ? ' race' : ' races') + ' in this tab'
+      : '';
+    if (!list.length) {
+      $('compose-feed').innerHTML = '<div class="empty-note">No races logged in this tab yet.</div>';
+      return;
+    }
+    // Shown newest first, like the site, but each row keeps its real index.
+    var order = list.map(function (_, i) { return i; }).sort(function (a, b) {
+      return (list[b].date || '') < (list[a].date || '') ? -1 : 1;
+    });
+    $('compose-feed').innerHTML = order.map(function (i) {
+      var r = list[i];
+      var up = raceUpcoming(r);
+      var figs = [];
+      if (r.km) figs.push('<span><b>' + esc(r.km) + '</b> km</span>');
+      if (r.time) figs.push('<span>' + esc(r.time) + '</span>');
+      if (r.pace) figs.push('<span>' + esc(r.pace) + ' /km</span>');
+      if (r.map) figs.push('<span>route map</span>');
+      if ((r.media || []).length) figs.push('<span>' + r.media.length + ' photo' + (r.media.length === 1 ? '' : 's') + '</span>');
+      return '<article class="card arace">' +
+        '<div class="arace-top">' +
+          '<span class="arace-badge' + (up ? ' upcoming' : '') + '">' + esc(RACE_SHORT[r.distance] || 'Race') + '</span>' +
+          '<div class="arace-id"><div class="arace-name">' + esc(r.name || '(unnamed race)') + '</div>' +
+          '<div class="arace-sub">' + esc([niceDate(r.date), r.location].filter(Boolean).join(' · ') || 'No date') +
+          (up ? ' · upcoming' : '') + '</div></div>' +
+          '<span class="apost-tools">' +
+            '<button type="button" class="btn secondary small" data-pact="edit" data-i="' + i + '">Edit</button>' +
+            '<button type="button" class="btn danger small" data-pact="del" data-i="' + i + '">Delete</button>' +
+          '</span>' +
+        '</div>' +
+        (figs.length ? '<div class="arace-figs">' + figs.join('') + '</div>' : '') +
+        '</article>';
+    }).join('');
+  }
+
+  function renderPostFeed() {
     var posts = postsOf(composeTab);
     $('feed-count').textContent = posts.length
       ? posts.length + (posts.length === 1 ? ' post' : ' posts') + ' in this tab'
@@ -639,11 +969,24 @@
 
   function resetComposer() {
     clearDraft();
+    if (mapDraft && mapDraft.kind === 'new' && mapDraft.url && !mapDraft.keepUrl) URL.revokeObjectURL(mapDraft.url);
+    mapDraft = null;
     editingIndex = -1;
+    paceTouched = false;
     $('post-title').value = '';
     $('post-body').value = '';
     $('post-date').value = todayISO();
+    $('race-name').value = '';
+    $('race-date').value = todayISO();
+    $('race-location').value = '';
+    $('race-distance').value = 'full';
+    $('race-km').value = RACE_KM.full;
+    $('race-time').value = '';
+    $('race-pace').value = '';
+    $('race-note').value = '';
+    $('pace-auto').hidden = true;
     renderDraftMedia();
+    renderMapPreview();
     renderComposerHead();
   }
 
@@ -662,30 +1005,49 @@
     });
   }
 
-  // Uploads each new file to media/YYYY-MM/ and resolves to the finished media list.
-  function uploadDraft() {
+  // Uploads every new file (route map first, then photos) to media/YYYY-MM/.
+  // Resolves to { map, media } with repo paths in place of the local files.
+  function uploadPending() {
     var gh = github();
     var stamp = Date.now();
     var folder = 'media/' + todayISO().slice(0, 7);
-    var todo = draft.filter(function (m) { return m.kind === 'new'; });
+    var pending = (mapDraft && mapDraft.kind === 'new' ? 1 : 0) +
+      draft.filter(function (m) { return m.kind === 'new'; }).length;
     var done = 0;
+    var out = { map: '', media: [] };
 
-    return draft.reduce(function (chain, m, i) {
-      return chain.then(function (out) {
-        if (m.kind !== 'new') { out.push({ type: isVideoSrc(m) ? 'video' : 'image', src: m.src, alt: m.alt || '' }); return out; }
-        var path = folder + '/' + stamp + '-' + i + '-' + slugify(m.name);
-        setStatus('Uploading ' + (done + 1) + ' of ' + todo.length + '…');
-        return fileToB64(m.file)
-          .then(function (b64) { return gh.putBase64(path, b64, 'Add media ' + path); })
-          .then(function () {
-            done++;
-            localUrls[path] = m.url;
-            m.keepUrl = true;
-            out.push({ type: m.mtype, src: path, alt: m.alt || '' });
-            return out;
-          });
+    function upload(m, tag) {
+      var path = folder + '/' + stamp + '-' + tag + '-' + slugify(m.name);
+      setStatus('Uploading ' + (done + 1) + ' of ' + pending + '…');
+      return fileToB64(m.file)
+        .then(function (b64) { return gh.putBase64(path, b64, 'Add media ' + path); })
+        .then(function () {
+          done++;
+          localUrls[path] = m.url;
+          m.keepUrl = true;
+          return path;
+        });
+    }
+
+    var chain = Promise.resolve();
+    if (mapDraft) {
+      chain = chain.then(function () {
+        if (mapDraft.kind !== 'new') { out.map = mapDraft.src; return; }
+        return upload(mapDraft, 'map').then(function (path) { out.map = path; });
       });
-    }, Promise.resolve([]));
+    }
+    draft.forEach(function (m, i) {
+      chain = chain.then(function () {
+        if (m.kind !== 'new') {
+          out.media.push({ type: isVideoSrc(m) ? 'video' : 'image', src: m.src, alt: m.alt || '' });
+          return;
+        }
+        return upload(m, i).then(function (path) {
+          out.media.push({ type: m.mtype, src: path, alt: m.alt || '' });
+        });
+      });
+    });
+    return chain.then(function () { return out; });
   }
 
   /* ---- events ---- */
@@ -694,7 +1056,7 @@
     if (!pill) return;
     var i = parseInt(pill.dataset.tab, 10);
     if (i === composeTab) return;
-    if (editingIndex >= 0 && !confirm('Discard the post you are editing?')) return;
+    if (editingIndex >= 0 && !confirm('Discard the item you are editing?')) return;
     composeTab = i;
     resetComposer();
     renderCompose();
@@ -748,28 +1110,52 @@
   composer.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+
+    var race = composeKind === 'race';
     var title = $('post-title').value.trim();
     var body = $('post-body').value.trim();
-    if (!title && !body && !draft.length) { setStatus('Add a title, some text, or a file first.', 'error'); return; }
+    var raceName = $('race-name').value.trim();
+
+    if (race && !raceName) { setStatus('Give the race a name first.', 'error'); return; }
+    if (!race && !title && !body && !draft.length) { setStatus('Add a title, some text, or a file first.', 'error'); return; }
 
     var submit = $('post-submit');
     submit.disabled = true;
     $('post-cancel').disabled = true;
-    setStatus(draft.some(function (m) { return m.kind === 'new'; }) ? 'Uploading…' : 'Publishing…');
+    var uploading = (mapDraft && mapDraft.kind === 'new') || draft.some(function (m) { return m.kind === 'new'; });
+    setStatus(uploading ? 'Uploading…' : 'Publishing…');
 
-    uploadDraft().then(function (media) {
-      var post = { title: title, date: $('post-date').value || todayISO(), body: body, media: media };
-      var block = postsBlock(composeTab, true);
-      if (editingIndex >= 0) block.posts[editingIndex] = post;
-      else block.posts.unshift(post);
+    uploadPending().then(function (up) {
+      var editing = editingIndex >= 0;
+      var block, list, item;
+      if (race) {
+        item = {
+          name: raceName,
+          date: $('race-date').value || todayISO(),
+          distance: $('race-distance').value,
+          km: $('race-km').value.trim(),
+          time: $('race-time').value.trim(),
+          pace: $('race-pace').value.trim(),
+          location: $('race-location').value.trim(),
+          note: $('race-note').value.trim(),
+          map: up.map,
+          media: up.media
+        };
+      } else {
+        item = { title: title, date: $('post-date').value || todayISO(), body: body, media: up.media };
+      }
+      block = blockFor(composeTab, composeKind, true);
+      list = block[BLOCK_FOR[composeKind].key];
+      if (editing) list[editingIndex] = item;
+      else list.unshift(item);
       setStatus('Publishing…');
-      return publishContent(editingIndex >= 0 ? 'Edit post' : 'Add post');
+      return publishContent((editing ? 'Edit ' : 'Add ') + (race ? 'race' : 'post'));
     }).then(function () {
       resetComposer();
       renderCompose();
       renderForm();
       pushPreview(model.tabs[composeTab].id);
-      setStatus('Posted. The live site updates within about a minute; new files appear once it rebuilds.', 'ok');
+      setStatus((race ? 'Race logged.' : 'Posted.') + ' The live site updates within about a minute; new files appear once it rebuilds.', 'ok');
     }).catch(function (err) {
       setStatus(err.message || String(err), 'error');
     }).then(function () {
@@ -778,40 +1164,60 @@
     });
   });
 
+  function mediaToDraft(media) {
+    return (media || []).filter(function (m) { return m && m.src; }).map(function (m) {
+      return { id: nextDraftId++, kind: 'existing', src: m.src, mtype: m.type || 'image', alt: m.alt || '' };
+    });
+  }
+
   $('compose-feed').addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-pact]');
     if (!btn) return;
-    var posts = postsOf(composeTab);
+    var race = composeKind === 'race';
+    var list = currentItems();
     var i = parseInt(btn.dataset.i, 10);
     var act = btn.dataset.pact;
+    var item = list[i];
 
     if (act === 'edit') {
-      var post = posts[i];
-      clearDraft();
+      resetComposer();
       editingIndex = i;
-      $('post-title').value = post.title || '';
-      $('post-body').value = post.body || '';
-      $('post-date').value = /^\d{4}-\d{2}-\d{2}$/.test(post.date || '') ? post.date : todayISO();
-      draft = (post.media || []).filter(function (m) { return m && m.src; }).map(function (m) {
-        return { id: nextDraftId++, kind: 'existing', src: m.src, mtype: m.type || 'image', alt: m.alt || '' };
-      });
+      draft = mediaToDraft(item.media);
+      if (race) {
+        $('race-name').value = item.name || '';
+        $('race-date').value = /^\d{4}-\d{2}-\d{2}$/.test(item.date || '') ? item.date : todayISO();
+        $('race-location').value = item.location || '';
+        $('race-distance').value = RACE_KM.hasOwnProperty(item.distance) || RACE_SHORT[item.distance] ? item.distance : 'other';
+        $('race-km').value = item.km || RACE_KM[item.distance] || '';
+        $('race-time').value = item.time || '';
+        $('race-pace').value = item.pace || '';
+        $('race-note').value = item.note || '';
+        paceTouched = !!item.pace && item.pace !== paceFor(item.time, item.km);
+        mapDraft = item.map ? { kind: 'existing', src: item.map, mtype: 'image', alt: '' } : null;
+      } else {
+        $('post-title').value = item.title || '';
+        $('post-body').value = item.body || '';
+        $('post-date').value = /^\d{4}-\d{2}-\d{2}$/.test(item.date || '') ? item.date : todayISO();
+      }
       renderDraftMedia();
+      renderMapPreview();
       renderComposerHead();
       $('compose-pane').scrollTo({ top: 0, behavior: 'smooth' });
-      $('post-body').focus();
-      setStatus('Editing a post. Save changes to publish, or Cancel to leave it as it is.');
+      $(race ? 'race-name' : 'post-body').focus();
+      setStatus('Editing. Save changes to publish, or Cancel to leave it as it is.');
       return;
     }
 
     if (act === 'del') {
-      if (!confirm('Delete "' + (posts[i].title || 'this post') + '"? The uploaded files stay in the repository.')) return;
-      posts.splice(i, 1);
+      var name = (race ? item.name : item.title) || (race ? 'this race' : 'this post');
+      if (!confirm('Delete "' + name + '"? The uploaded files stay in the repository.')) return;
+      list.splice(i, 1);
       if (editingIndex === i) resetComposer();
       else if (editingIndex > i) editingIndex--;
     } else if (act === 'up' && i > 0) {
-      posts.splice(i - 1, 0, posts.splice(i, 1)[0]);
-    } else if (act === 'down' && i < posts.length - 1) {
-      posts.splice(i + 1, 0, posts.splice(i, 1)[0]);
+      list.splice(i - 1, 0, list.splice(i, 1)[0]);
+    } else if (act === 'down' && i < list.length - 1) {
+      list.splice(i + 1, 0, list.splice(i, 1)[0]);
     } else {
       return;
     }
@@ -820,7 +1226,7 @@
     renderForm();
     pushPreview(model.tabs[composeTab].id);
     setStatus('Publishing…');
-    publishContent(act === 'del' ? 'Delete post' : 'Reorder posts')
+    publishContent(act === 'del' ? 'Delete entry' : 'Reorder entries')
       .then(function () { setStatus('Published. The live site updates within about a minute.', 'ok'); })
       .catch(function (err) { setStatus(err.message, 'error'); markDirty(); });
   });
@@ -828,6 +1234,8 @@
   /* ================= boot ================= */
   (function boot() {
     $('post-date').value = todayISO();
+    $('race-date').value = todayISO();
+    $('race-km').value = RACE_KM.full;
     if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
       showGateError('This editor needs a secure context (https:// or localhost). Run a local server, e.g. `python3 -m http.server`, or use the live site.');
     }

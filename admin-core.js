@@ -95,7 +95,10 @@
         });
       },
       getFileSha: function (path) {
-        return call('/repos/' + repo + '/contents/' + encodeURI(path) + '?ref=' + encodeURIComponent(branch)).then(function (r) {
+        // Cache-bust with a query param. A Cache-Control header cannot be used:
+        // it is not CORS-safelisted and GitHub does not allow it, which fails the
+        // preflight and surfaces as "Failed to fetch".
+        return call('/repos/' + repo + '/contents/' + encodeURI(path) + '?ref=' + encodeURIComponent(branch) + '&_=' + Date.now()).then(function (r) {
           if (r.status === 404) return null;
           if (!r.ok) throw new Error('GitHub read failed (' + r.status + ')');
           return r.json().then(function (j) { return j.sha; });
@@ -106,18 +109,25 @@
       },
       // Writes any file from base64 content (used for photo and video uploads).
       putBase64: function (path, b64, message) {
-        return this.getFileSha(path).then(function (sha) {
-          var body = { message: message, content: b64, branch: branch };
-          if (sha) body.sha = sha;
-          return call('/repos/' + repo + '/contents/' + encodeURI(path), { method: 'PUT', body: JSON.stringify(body) });
-        }).then(function (r) {
-          if (!r.ok) {
+        var self = this;
+        // The contents API is eventually consistent: a correct sha can still be
+        // rejected with 409 moments after another write. Re-read and retry.
+        function attempt(n) {
+          return self.getFileSha(path).then(function (sha) {
+            var body = { message: message, content: b64, branch: branch };
+            if (sha) body.sha = sha;
+            return call('/repos/' + repo + '/contents/' + encodeURI(path), { method: 'PUT', body: JSON.stringify(body) });
+          }).then(function (r) {
+            if (r.ok) return r.json();
+            if ((r.status === 409 || r.status === 422) && n < 4) {
+              return new Promise(function (go) { setTimeout(go, 500 * n); }).then(function () { return attempt(n + 1); });
+            }
             return r.json().catch(function () { return {}; }).then(function (j) {
               throw new Error('GitHub write failed (' + r.status + '): ' + (j.message || 'unknown error'));
             });
-          }
-          return r.json();
-        });
+          });
+        }
+        return attempt(1);
       }
     };
   }
