@@ -4,10 +4,11 @@
 window.SITE_CONTENT_KO = {
   "site": {
     "title": "김민준 Minjoon Jack Kim",
-    "brand": "JAↃK KIM",
+    "brand": "JAↃK ꓘIM",
     "footer": "© 2026 김민준 Minjoon Jack Kim",
     "footerNote": "서울 · 케이프타운 · 스테이트칼리지",
-    "description": "김민준 (Minjoon Jack Kim) — 펜실베이니아 주립대학교 컴퓨터과학·통계학 전공, RLWRLD 로보틱스 트랜스포메이션 컨설턴트 인턴, CFA Level II 응시자, 지구력 스포츠 애호가."
+    "description": "김민준 — 로보틱스 도입, 기술 시스템, 사업 전략이 만나는 지점에서 일합니다. RLWRLD 로보틱스 트랜스포메이션 컨설턴트 인턴, 펜실베이니아 주립대 컴퓨터과학·통계학, CFA Level II 응시자.",
+    "url": "https://mzkjack.com/"
   },
   "profile": {
     "name": "김민준",
@@ -97,7 +98,9 @@ window.SITE_CONTENT_KO = {
                 "회사 IR 덱 제작에 참여했습니다. 아키텍처 시각 자료, 경쟁 차별화 슬라이드(Scale AI, Encord 대비), 글로벌 투자자를 위한 방법론 섹션 전체 영문 번역을 담당했습니다.",
                 "**RXDE.** AWS(EC2, RDS PostgreSQL, S3) 기반 회사 프로덕션 데이터 플랫폼의 개발을 처음부터 끝까지 담당했습니다. 전사적으로 채택된 통합 5-테이블 스키마를 설계하고, GPU 인프라 투자 결정에 근거가 된 비용-성능 벤치마크를 수행했습니다.",
                 "7개 성능 축, 28개 세부 기준으로 로봇 도입 준비도를 평가하는 과업 실행 가능성 평가 프레임워크를 개발해 기업 PoC 우선순위 결정의 go/no-go 판단을 표준화했으며, R&D 팀과 직접 조율하며 고도화했습니다."
-              ]
+              ],
+              "overview": "RLWRLD 로보틱스 트랜스포메이션 팀의 컨설턴트 인턴으로, 기업 고객과 함께 로보틱스와 Physical AI를 어디에 어떻게 도입할지 다루고, 팀이 실제로 쓰는 내부 도구를 만듭니다.",
+              "lead": 3
             },
             {
               "heading": "리서치 어시스턴트",
@@ -108,7 +111,8 @@ window.SITE_CONTENT_KO = {
               "bullets": [
                 "국내 로보틱스 산업을 중심으로 TMT 섹터 산업 리서치를 파트타임으로 수행하며, 산업용 로봇과 부품 하위 세그먼트의 주요 기업을 분석했습니다.",
                 "딜 소싱을 위해 매출 규모, 마진 구조, 지배구조를 평가하여 잠재 인수 대상을 검토했습니다."
-              ]
+              ],
+              "overview": "TMT 섹터 산업 조사, 특히 한국 로보틱스 시장에 집중한 파트타임 리서치."
             },
             {
               "heading": "병역 (대한민국)",
@@ -119,7 +123,8 @@ window.SITE_CONTENT_KO = {
               "bullets": [
                 "지하철 역사 내 감시 시스템을 관리하며 승객 안전을 확보했습니다.",
                 "비근무 시간을 활용해 독학으로 CFA 프로그램 2개 레벨에 응시했습니다."
-              ]
+              ],
+              "overview": "자원 입대. 지하철역 감시 시스템을 관리하며 비번 시간에 CFA를 공부했습니다."
             }
           ]
         },
@@ -365,8 +370,24 @@ window.SITE_CONTENT_KO = {
                   "type": "image",
                   "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
                   "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
+                  "alt": ""
                 }
-              ]
+              ],
+              "id": "chuncheon-marathon-2025-1"
             },
             {
               "name": "파리 생제르맹앙레 20K",
@@ -378,7 +399,8 @@ window.SITE_CONTENT_KO = {
               "location": "프랑스 생제르맹앙레",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "paris-saint-germain-en-laye-20k-2"
             },
             {
               "name": "춘천호반마라톤 대회",
@@ -390,7 +412,8 @@ window.SITE_CONTENT_KO = {
               "location": "강원 춘천",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "춘천호반마라톤-대회-3"
             },
             {
               "name": "마블런",
@@ -402,7 +425,8 @@ window.SITE_CONTENT_KO = {
               "location": "",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "marvel-run-4"
             },
             {
               "name": "스포츠서울 하프마라톤",
@@ -414,7 +438,8 @@ window.SITE_CONTENT_KO = {
               "location": "서울",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "sports-seoul-half-marathon-5"
             },
             {
               "name": "서울 MBN 하프마라톤",
@@ -426,7 +451,8 @@ window.SITE_CONTENT_KO = {
               "location": "서울",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-mbn-half-marathon-6"
             },
             {
               "name": "서울마라톤 10K",
@@ -438,7 +464,8 @@ window.SITE_CONTENT_KO = {
               "location": "서울",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-marathon-10k-7"
             },
             {
               "name": "더 레이스 서울",
@@ -450,7 +477,8 @@ window.SITE_CONTENT_KO = {
               "location": "서울",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "the-race-seoul-8"
             },
             {
               "name": "서울 하프마라톤",
@@ -462,7 +490,8 @@ window.SITE_CONTENT_KO = {
               "location": "서울",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-half-marathon-9"
             },
             {
               "name": "트레일러닝 23K",
@@ -474,7 +503,8 @@ window.SITE_CONTENT_KO = {
               "location": "",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "trail-running-23k-10"
             }
           ]
         },
@@ -561,5 +591,139 @@ window.SITE_CONTENT_KO = {
         }
       ]
     }
-  ]
+  ],
+  "portfolio": {
+    "nav": {
+      "work": "프로젝트",
+      "experience": "경력",
+      "background": "배경",
+      "outside": "일 밖에서",
+      "education": "학력",
+      "writing": "글",
+      "contact": "연락",
+      "updates": "소식",
+      "menu": "메뉴",
+      "skip": "본문으로 건너가기"
+    },
+    "hero": {
+      "statement": "로보틱스 도입, 기술 시스템, 사업 전략이 만나는 지점에서 일합니다. 현장의 운영 문제를 구조화된 도입 결정과 실제로 쓰이는 도구로 바꾸는 일입니다.",
+      "role": "로보틱스 트랜스포메이션(RX) 컨설턴트 인턴, RLWRLD",
+      "location": "서울",
+      "credentials": "펜실베이니아 주립대 컴퓨터과학·통계학 · CFA Level II 응시자",
+      "primary": {
+        "label": "프로젝트 보기",
+        "href": "#work"
+      },
+      "secondary": {
+        "label": "연락하기",
+        "href": "#contact"
+      }
+    },
+    "work": {
+      "title": "주요 프로젝트",
+      "intro": "2026년 RLWRLD 로보틱스 트랜스포메이션 팀에서 수행한 네 가지 작업입니다. 고객사 관련 내용은 이미 공개된 범위로 한정했습니다.",
+      "detailsLabel": "자세히",
+      "items": [
+        {
+          "label": "로보틱스 도입 · RLWRLD · 2026",
+          "title": "과업 실행 가능성 평가 프레임워크",
+          "summary": "어떤 기업용 로보틱스 파일럿이 실행 준비가 되었는지 판단하는 평가 체계입니다. 7개 성능 축, 28개 세부 기준으로 도입 준비도를 점수화해 PoC 우선순위를 정하는 단일 go/no-go 기준을 제공합니다.",
+          "details": [
+            "R&D 팀과 직접 반복 검토하며 기준이 로봇의 현재 실제 역량을 반영하도록 맞췄습니다.",
+            "건별 판단을 대체해 기업 도입 후보 간 비교 가능한 표준 평가로 정착시켰습니다."
+          ],
+          "meta": [
+            "로보틱스 도입",
+            "평가 설계",
+            "PoC 우선순위"
+          ]
+        },
+        {
+          "label": "데이터 플랫폼 · RLWRLD · 2026",
+          "title": "RXDE — 프로덕션 데이터 플랫폼",
+          "summary": "RLWRLD의 AWS 기반 프로덕션 데이터 플랫폼을 처음부터 끝까지 담당했습니다. EC2 컴퓨트, RDS PostgreSQL, S3 스토리지 위에 통합 5-테이블 스키마를 설계했고, 이 스키마는 전사 표준으로 채택되었습니다.",
+          "details": [
+            "로보틱스 데이터의 전사 표준이 된 5-테이블 스키마를 설계했습니다.",
+            "비용·성능 벤치마크를 수행해 GPU 인프라 투자 결정에 근거를 제공했습니다."
+          ],
+          "meta": [
+            "AWS EC2",
+            "RDS PostgreSQL",
+            "S3",
+            "스키마 설계",
+            "인프라 벤치마크"
+          ]
+        },
+        {
+          "label": "현장 전략 · 롯데호텔 · 2026",
+          "title": "4개 호텔 로보틱스 도입 제안 분석",
+          "summary": "롯데호텔 4·5성급 4개 지점을 현장 실사하고, 운영 범위·인력 구조·손익 귀속·소유 구조별 승인 체계를 지점별로 비교해 로보틱스 도입 계약 제안의 근거를 만들었습니다.",
+          "details": [
+            "학습곡선 경제성, 경쟁 선점, 일정 의존성, SOP 전환 시점 — 네 가지 논거로 2026년 11월 계약 개시 안을 구성했습니다.",
+            "고객사 경영진에게 직접 제안을 발표했습니다."
+          ],
+          "meta": [
+            "현장 실사",
+            "손익 분석",
+            "고객 발표"
+          ]
+        },
+        {
+          "label": "전략 · 투자자 자료 · RLWRLD · 2026",
+          "title": "기업 고객과 투자자를 위한 도입 전략",
+          "summary": "세 종류의 청중을 위한 전략 작업입니다. 글로벌 전자 제조사 대상 제안, CJ대한통운 로보틱스 PoC 제안, 그리고 RLWRLD 투자자 자료.",
+          "details": [
+            "전자 제조사: 고객의 자동화 제약을 전략적 근거 · 경제적 동인 · 실행 로드맵의 세 축으로 구조화하고, 4개 로봇 도입 유형의 수요를 분석했습니다.",
+            "CJ대한통운: 국내 최대 물류사 중 하나를 대상으로 한 PoC 제안의 시장 조사와 산출물 준비를 맡았습니다.",
+            "투자자 자료: 아키텍처 시각 자료, Scale AI · Encord 대비 차별화 슬라이드, 방법론 섹션 전체 영문 번역을 담당했습니다."
+          ],
+          "meta": [
+            "시장 분석",
+            "논리 구조화",
+            "IR"
+          ]
+        }
+      ]
+    },
+    "experience": {
+      "title": "경력",
+      "earlier": "이전 활동",
+      "more": "전체 보기",
+      "less": "접기"
+    },
+    "background": {
+      "title": "배경",
+      "paragraphs": [
+        "한국에서 태어나 홍콩과 남아프리카공화국에서 자랐고, 케이프타운에서 학교를 마친 뒤 펜실베이니아 주립대에서 컴퓨터과학을 전공하고 통계학을 부전공하고 있습니다.",
+        "서울에서 2년간 군 복무를 하는 동안 비번 시간에 CFA를 공부했고, 지금은 Level II 응시자입니다. 전공은 시스템이 어떻게 만들어지는지를, CFA는 그것이 어떻게 평가되는지를 가르쳐 줍니다.",
+        "RLWRLD는 그 둘이 만나는 곳입니다. 로봇 도입이 계약할 가치가 있는지 판단하려면 시스템이 무엇을 할 수 있는지에 대한 기술적 판단, 고객 현장이 실제로 어떻게 돌아가는지에 대한 운영적 판단, 그리고 숫자가 맞는지에 대한 재무적 판단이 모두 필요합니다."
+      ]
+    },
+    "outside": {
+      "title": "일 밖에서",
+      "paragraphs": [
+        "지구력 스포츠가 일주일의 나머지 절반입니다. 로드 마라톤, 50km와 100km 울트라마라톤, 하이록스, 트라이애슬론을 하고, 지금은 아이언맨을 준비하고 있습니다.",
+        "코스 밖에서는 포커를 칩니다. 주로 수학 때문입니다. 팟 오즈, 기대값, 불완전한 정보를 읽는 습관은 기업 가치 평가에서도, 로봇 도입이 계약할 가치가 있는지 판단할 때도 그대로 쓰입니다."
+      ],
+      "goalLabel": "현재 목표",
+      "goal": "아이언맨",
+      "bestFull": "풀 마라톤",
+      "bestHalf": "하프 마라톤",
+      "finished": "완주 대회",
+      "archive": "대회 기록"
+    },
+    "education": {
+      "title": "학력 · 자격",
+      "toolsLabel": "기술",
+      "tools": "Python, C++, C, C#, Java, SQL, R, Linux · AWS EC2, RDS PostgreSQL, S3",
+      "financeLabel": "재무",
+      "finance": "DCF · 유사기업 비교 가치평가, 손익 귀속 분석, 딜 스크리닝, CFA Level II 커리큘럼"
+    },
+    "contact": {
+      "title": "연락",
+      "lead": "이메일이 가장 빠릅니다. 서울에 있습니다.",
+      "emailLabel": "이메일",
+      "linkedinLabel": "LinkedIn"
+    }
+  }
 };

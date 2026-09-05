@@ -13,6 +13,12 @@
     var m = models[k];
     if (m.profile && !m.profile.cover) m.profile.cover = { theme: 'mint', image: '' };
   });
+  // What each file held when the editor loaded; a publish rewrites the other
+  // language only when the shared feeds changed it.
+  var published = {
+    en: Core.serializeContent(models.en, 'en'),
+    ko: window.SITE_CONTENT_KO ? Core.serializeContent(models.ko, 'ko') : ''
+  };
   var token = null;
   var dirty = false;
   var dirtyBy = { en: false, ko: false };
@@ -20,6 +26,95 @@
     return l === 'ko' ? (CONFIG.contentPathKo || 'content.ko.js') : (CONFIG.contentPath || 'content.js');
   }
   function anyDirty() { return dirty || Object.keys(dirtyBy).some(function (k) { return k !== lang && dirtyBy[k]; }); }
+
+  /* ================= feeds shared between languages =================
+     Updates, race results and blog posts are the same entries in both languages:
+     photos, dates and numbers are shared, the words are per language. Entries are
+     paired by id; older entries without one are paired by their shared fields. */
+  var FEED_KINDS = ['post', 'race', 'blog'];
+  var SHARED = {
+    post: ['date', 'media'],
+    race: ['date', 'distance', 'km', 'time', 'pace', 'map', 'media'],
+    blog: ['date', 'cover']
+  };
+  var WORDS = { post: ['title', 'body'], race: ['name', 'location', 'note'], blog: ['title', 'body', 'tags'] };
+  function otherLang(l) { return l === 'ko' ? 'en' : 'ko'; }
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function copyOf(o) { return JSON.parse(JSON.stringify(o)); }
+  function sameJson(a, b) { return JSON.stringify(a == null ? '' : a) === JSON.stringify(b == null ? '' : b); }
+  function legacyKey(kind, item) {
+    if (kind === 'race') return [item.date, item.time, item.distance, item.km].join('|');
+    var first = (item.media || []).filter(function (m) { return m && m.src; })[0];
+    if (kind === 'post') return first ? item.date + '|' + first.src : '';
+    return item.cover ? item.date + '|' + item.cover : '';
+  }
+  function findTwin(kind, list, item) {
+    var i;
+    if (item.id) {
+      for (i = 0; i < list.length; i++) if (list[i].id === item.id) return i;
+    }
+    var key = legacyKey(kind, item);
+    if (!key) return -1;
+    for (i = 0; i < list.length; i++) if (!list[i].id && legacyKey(kind, list[i]) === key) return i;
+    return -1;
+  }
+  function tabIndexIn(m, tabId) {
+    for (var i = 0; i < (m.tabs || []).length; i++) if (m.tabs[i].id === tabId) return i;
+    return -1;
+  }
+  function otherList(kind, tabId, create) {
+    var o = otherLang(lang), om = models[o];
+    var ti = tabIndexIn(om, tabId);
+    if (ti < 0) return null;
+    var block = blockIn(om, o, ti, kind, create);
+    return block ? block[BLOCK_FOR[kind].key] : null;
+  }
+  // Bring the other language's copy of one entry in line: shared fields always,
+  // words only while they are empty or still match what this language said before.
+  function syncItem(kind, tabId, item, prev, index) {
+    var list = otherList(kind, tabId, true);
+    if (!list) return;
+    var j = findTwin(kind, list, prev || item);
+    if (j < 0) { list.splice(Math.min(index, list.length), 0, copyOf(item)); return; }
+    var twin = list[j];
+    twin.id = item.id;
+    SHARED[kind].forEach(function (f) { if (item[f] !== undefined) twin[f] = copyOf(item[f]); });
+    WORDS[kind].forEach(function (f) {
+      var empty = twin[f] == null || twin[f] === '' || (Array.isArray(twin[f]) && !twin[f].length);
+      if (item[f] !== undefined && (empty || (prev && sameJson(twin[f], prev[f])))) twin[f] = copyOf(item[f]);
+    });
+  }
+  function syncDelete(kind, tabId, item) {
+    var list = otherList(kind, tabId, false);
+    if (!list) return;
+    var j = findTwin(kind, list, item);
+    if (j >= 0) list.splice(j, 1);
+  }
+  function syncOrder(kind, tabId, list) {
+    var other = otherList(kind, tabId, false);
+    if (!other) return;
+    var rank = {};
+    list.forEach(function (it, i) { if (it.id) rank[it.id] = i; });
+    other.sort(function (a, b) {
+      var ra = a.id in rank ? rank[a.id] : Infinity, rb = b.id in rank ? rank[b.id] : Infinity;
+      return ra === rb ? 0 : ra - rb;
+    });
+  }
+  // Everything in this language's feeds, mirrored into the other language.
+  function syncFeeds() {
+    (model.tabs || []).forEach(function (t, ti) {
+      FEED_KINDS.forEach(function (kind) {
+        var block = blockIn(model, lang, ti, kind, false);
+        if (!block) return;
+        var list = block[BLOCK_FOR[kind].key] || [];
+        list.forEach(function (item, i) {
+          if (!item.id) item.id = newId();
+          syncItem(kind, t.id, item, null, i);
+        });
+        syncOrder(kind, t.id, list);
+      });
+    });
+  }
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -219,10 +314,16 @@
     races: 'Races', km: 'Distance in km', time: 'Finish time', pace: 'Average pace per km',
     note: 'Notes', map: 'Route map (file path)', distance: 'Distance',
     lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo',
-    cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper'
+    cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper',
+    portfolio: 'Portfolio (public page sections)', hero: 'Opening', statement: 'Positioning statement',
+    credentials: 'Credentials line', primary: 'Primary action', secondary: 'Secondary action',
+    work: 'Selected work', summary: 'Summary', details: 'Details', intro: 'Intro',
+    overview: 'Overview (one line)', lead: 'Bullets shown before the disclosure',
+    background: 'Background', outside: 'Outside work', education: 'Education & credentials',
+    contact: 'Contact', nav: 'Navigation labels', experience: 'Experience labels'
   };
-  var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
-  var MULTILINE = { text: 1, value: 1, body: 1, note: 1 };
+  var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.', details: 'One point per line.', meta: 'One per line.' };
+  var MULTILINE = { text: 1, value: 1, body: 1, note: 1, statement: 1, summary: 1, overview: 1 };
   // Lists whose items are objects, so an empty one is still edited as a list.
   var OBJECT_LISTS = { lines: 1, media: 1, facts: 1, races: 1, posts: 1 };
   // Nicer wording for the "+ Add" button where the plural is not a simple -s.
@@ -311,6 +412,10 @@
             '<span class="hint">' + esc(asset.hint) + '</span>' +
           '</div>' +
         '</div></div>';
+    }
+    if (typeof v === 'number') {
+      return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<input type="number" id="f' + p + '" data-path="' + p + '" data-kind="num" value="' + v + '" step="1" min="0"></div>';
     }
     if (typeof v === 'boolean') {
       return '<div class="field check"><input type="checkbox" id="f' + p + '" data-path="' + p + '" data-kind="bool"' + (v ? ' checked' : '') + '>' +
@@ -480,6 +585,7 @@
     var path = decPath(t.dataset.path);
     var v;
     if (t.dataset.kind === 'bool') v = t.checked;
+    else if (t.dataset.kind === 'num') v = parseFloat(t.value) || 0;
     else if (t.dataset.kind === 'lines') v = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
     else v = t.value;
     if (path[path.length - 1] === 'date' && t.type !== 'date') v = isoDate(v) || v;
@@ -779,15 +885,27 @@
   /* ================= publish / download / lock / password ================= */
   function github() { return Core.GitHub(token, CONFIG.repo, CONFIG.branch || 'main'); }
 
+  // The feeds are shared, so a publish syncs them and writes the other language's
+  // file too whenever that changed it. Resolves with this language's payload.
   var lastPublishedPath = contentPathFor('en');
   function publishContent(message) {
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
-    var payload = Core.serializeContent(model, lang);
-    var path = contentPathFor(lang);
-    lastPublishedPath = path;
-    return github()
-      .putFile(path, payload, (message || 'Update site content') + (lang === 'ko' ? ' (Korean)' : ''))
-      .then(function () { setDirty(false); return payload; });
+    syncFeeds();
+    var mine = lang, other = otherLang(lang);
+    var payload = Core.serializeContent(models[mine], mine);
+    var otherPayload = Core.serializeContent(models[other], other);
+    var gh = github();
+    lastPublishedPath = contentPathFor(mine);
+    message = message || 'Update site content';
+    return gh.putFile(contentPathFor(mine), payload, message + (mine === 'ko' ? ' (Korean)' : ''))
+      .then(function () {
+        published[mine] = payload;
+        setDirty(false);
+        if (otherPayload === published[other]) return;
+        return gh.putFile(contentPathFor(other), otherPayload, message + (other === 'ko' ? ' (Korean)' : ''))
+          .then(function () { published[other] = otherPayload; dirtyBy[other] = false; });
+      })
+      .then(function () { return payload; });
   }
 
   /* ---- waiting for GitHub Pages to serve the new file ---- */
@@ -944,8 +1062,8 @@
     renderCompose();
     pushPreview(model.tabs && model.tabs[composeTab] ? model.tabs[composeTab].id : null);
     setStatus(l === 'ko'
-      ? 'Editing the Korean site (content.ko.js). Publish writes only this language.'
-      : 'Editing the English site (content.js). Publish writes only this language.');
+      ? 'Editing the Korean site (content.ko.js). Photos, dates and results are shared with English; the words are separate.'
+      : 'Editing the English site (content.js). Photos, dates and results are shared with Korean; the words are separate.');
   }
   $('lang-en').addEventListener('click', function () { setEditLang('en'); });
   $('lang-ko').addEventListener('click', function () { setEditLang('ko'); });
@@ -984,20 +1102,21 @@
     race: { type: 'races', key: 'races', title: 'Racing',  titleKo: '\uB808\uC774\uC2A4' },
     blog: { type: 'blog',  key: 'posts', title: 'Writing', titleKo: '\uAE00' }
   };
-  function blockFor(tabIndex, kind, create) {
+  function blockIn(m, l, tabIndex, kind, create) {
     var spec = BLOCK_FOR[kind];
-    var tab = model.tabs[tabIndex];
+    var tab = (m.tabs || [])[tabIndex];
     if (!tab) return null;
     tab.blocks = tab.blocks || [];
     for (var i = 0; i < tab.blocks.length; i++) {
       if (tab.blocks[i].type === spec.type) return tab.blocks[i];
     }
     if (!create) return null;
-    var block = { type: spec.type, title: lang === 'ko' ? spec.titleKo : spec.title };
+    var block = { type: spec.type, title: l === 'ko' ? spec.titleKo : spec.title };
     block[spec.key] = [];
     tab.blocks.push(block);
     return block;
   }
+  function blockFor(tabIndex, kind, create) { return blockIn(model, lang, tabIndex, kind, create); }
   function itemsOf(tabIndex, kind) {
     var b = blockFor(tabIndex, kind, false);
     return (b && b[BLOCK_FOR[kind].key]) || [];
@@ -1588,8 +1707,11 @@
       }
       block = blockFor(composeTab, composeKind, true);
       list = block[BLOCK_FOR[composeKind].key];
+      var prev = editing ? list[editingIndex] : null;
+      item.id = (prev && prev.id) || newId();
       if (editing) list[editingIndex] = item;
       else list.unshift(item);
+      syncItem(composeKind, model.tabs[composeTab].id, item, prev, editing ? editingIndex : 0);
       setStatus('Publishing…');
       return publishContent((editing ? 'Edit ' : 'Add ') + (race ? 'race' : blog ? 'blog post' : 'post'));
     }).then(function (payload) {
@@ -1620,6 +1742,7 @@
     var i = parseInt(btn.dataset.i, 10);
     var act = btn.dataset.pact;
     var item = list[i];
+    var tabId = model.tabs[composeTab].id;
 
     if (act === 'edit') {
       resetComposer();
@@ -1661,6 +1784,7 @@
     if (act === 'del') {
       var name = (race ? item.name : item.title) || (race ? 'this race' : 'this post');
       if (!confirm('Delete "' + name + '"? The uploaded files stay in the repository.')) return;
+      syncDelete(composeKind, tabId, item);
       list.splice(i, 1);
       if (editingIndex === i) resetComposer();
       else if (editingIndex > i) editingIndex--;
@@ -1671,6 +1795,7 @@
     } else {
       return;
     }
+    if (act !== 'del') syncOrder(composeKind, tabId, list);
 
     renderCompose();
     renderForm();
@@ -1690,6 +1815,7 @@
     if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
       showGateError('This editor needs a secure context (https:// or localhost). Run a local server, e.g. `python3 -m http.server`, or use the live site.');
     }
+    syncFeeds();
     var vault = currentVault();
     setMode(!vault);
     try {

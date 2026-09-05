@@ -20,7 +20,26 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 
 The site is available in English and Korean. Visitors switch with the **ENG / 한국어** control in the header; the choice is remembered in the browser, and a first visit from a Korean-language browser starts in Korean. `?lang=ko` or `?lang=en` in the URL forces one. Everything the page says on its own (dates, race tallies, empty states, buttons) follows the chosen language; everything else comes from the matching content file.
 
-The two languages are independent copies. `content.js` is English and `content.ko.js` is Korean; a post added to one does not appear in the other, so post in both if it should. In the editor, the **ENG / 한국어** switch in the top bar chooses which file you are editing and publishing. Tab ids (`about`, `study`, …) should stay the same in both files so links keep working across the switch.
+`content.js` is English and `content.ko.js` is Korean. The page itself (profile, experience, tables, skills, section titles) is written separately in each. The feeds are shared: updates, race results and blog posts are the same entries in both languages, paired by an `id`. Photos, videos, route maps, cover images, dates, distances and times are copied across on every publish, so a photo posted in English shows up in Korean. The words (titles, bodies, race names, notes, tags) stay per language: a new entry starts with the same text in both, and the other language keeps following your edits until you change its text yourself, after which it is left alone. Deleting or reordering an entry in Compose does the same in the other language.
+
+In the editor, the **ENG / 한국어** switch in the top bar chooses which language's words you are editing; **Publish** writes that file and, when the shared feeds changed it, the other one too. Tab ids (`about`, `study`, …) should stay the same in both files so links and the feed pairing keep working.
+
+## Page structure
+
+The public page is a single scrolling portfolio built from `content.js` (and `content.ko.js` for Korean):
+
+1. **Opening** — name, positioning statement, current role, one primary action (`portfolio.hero`)
+2. **Selected work** — three or four editorial project entries with a Details disclosure (`portfolio.work`)
+3. **Experience** — a timeline from the `about` tab's first `entries` block; each role can carry an `overview` and a `lead` count for how many bullets show before "All contributions"
+4. **Background** — narrative paragraphs (`portfolio.background`)
+5. **Outside work** — curated summary plus facts computed from the race data; the full race list sits behind a "Race archive" disclosure (`portfolio.outside` + the `races` block)
+6. **Education & credentials** — compact rows from the Education entries and Certifications table
+7. **Updates** / **Writing** — appear only once a post exists; hidden otherwise, including from navigation
+8. **Contact** — email, and LinkedIn only when the href is a real `linkedin.com/in/...` profile URL
+
+There is deliberately no public link to the editor. Open `/admin.html` directly.
+
+**Known content TODOs:** the LinkedIn entry in `content.js` points at `https://www.linkedin.com/` (the homepage), so it is not rendered — set the real profile URL. No résumé PDF exists in the repository, so there is no Résumé link.
 
 ## Editing content
 

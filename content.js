@@ -6,7 +6,8 @@ window.SITE_CONTENT = {
     "brand": "JAↃK ꓘIM",
     "footer": "© 2026 Minjoon Jack Kim",
     "footerNote": "Seoul, Cape Town, State College",
-    "description": "Minjoon Jack Kim — computer science and statistics student at Penn State, robotics transformation consultant intern at RLWRLD, CFA Level II candidate, endurance athlete."
+    "description": "Minjoon Jack Kim works where robotics deployment, technical systems and commercial strategy meet: Robotics Transformation consultant intern at RLWRLD, Computer Science & Statistics at Penn State, CFA Level II candidate.",
+    "url": "https://mzkjack.com/"
   },
   "profile": {
     "name": "Minjoon Jack Kim",
@@ -89,14 +90,16 @@ window.SITE_CONTENT = {
               "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "**Lotte Hotel.** Led client engagement analysis across four 4- and 5-star properties, running on-site due diligence and benchmarking each hotel on operating scope, labor structure, P&L attribution, and ownership approval structure to support a robotics deployment contract proposal.",
-                "Built the core argument for accelerating contract initiation to November 2026, structured around four rationales (learning-curve economics, competitive pre-emption, schedule dependency, SOP transition timing) and presented to the client's senior management.",
-                "Supported the CJ Logistics project team on a robotics PoC proposal for one of Korea's largest logistics providers, contributing market research and deliverable preparation.",
-                "Prepared a pitch deck for a leading global electronics manufacturer, structuring the client's automation constraints into a three-part narrative (strategic rationale, economic drivers, execution roadmap) and analyzing demand across four robot deployment categories.",
-                "Contributed to the company IR deck: architecture visuals, competitive differentiation slides (vs. Scale AI, Encord), and the full English translation of the methodology section for global investors.",
-                "**RXDE.** Owned end-to-end development of the company's production data platform on AWS (EC2, RDS PostgreSQL, S3), designing a unified five-table schema adopted company-wide and running cost-performance benchmarks that informed a GPU infrastructure investment decision.",
-                "Developed a task feasibility evaluation framework scoring robotic deployment readiness across 28 sub-criteria on 7 performance axes, standardizing go/no-go assessment for enterprise PoC prioritization, iterated in direct alignment with the R&D team."
-              ]
+                "**Task feasibility framework.** Designed a readiness assessment scoring robotic deployments across 28 sub-criteria on 7 performance axes, now the standard go/no-go check for enterprise PoC prioritisation; iterated with the R&D team.",
+                "**RXDE.** Owned the company’s production data platform on AWS (EC2, RDS PostgreSQL, S3) end to end, including a unified five-table schema adopted company-wide and cost-performance benchmarks that informed a GPU infrastructure decision.",
+                "**Lotte Hotel.** Ran on-site due diligence across four 4- and 5-star properties, benchmarking operating scope, labour structure, P&L attribution and ownership approval structure for a robotics deployment contract proposal.",
+                "Made the case for bringing contract initiation forward to November 2026 — learning-curve economics, competitive pre-emption, schedule dependency, SOP transition timing — and presented it to the client’s senior management.",
+                "Supported the CJ Logistics team on a robotics PoC proposal for one of Korea’s largest logistics providers with market research and deliverable preparation.",
+                "Prepared a pitch for a leading global electronics manufacturer, structuring its automation constraints into strategic rationale, economic drivers and execution roadmap, and analysing demand across four robot deployment categories.",
+                "Contributed to the investor deck: architecture visuals, competitive differentiation against Scale AI and Encord, and the full English translation of the methodology section."
+              ],
+              "overview": "Consulting intern on RLWRLD’s Robotics Transformation team: working with enterprise clients on where and how to deploy robotics and Physical AI, and building the internal tools the team runs on.",
+              "lead": 3
             },
             {
               "heading": "Research Assistant",
@@ -107,7 +110,8 @@ window.SITE_CONTENT = {
               "bullets": [
                 "Part-time industry research across the TMT sector with a focus on the Korean robotics landscape, analyzing key players across industrial robots and component sub-segments.",
                 "Assessed potential acquisition targets by evaluating revenue scale, margin profile, and ownership structure for deal origination."
-              ]
+              ],
+              "overview": "Part-time industry research across TMT with a focus on the Korean robotics landscape."
             },
             {
               "heading": "Military Service, Republic of Korea",
@@ -118,7 +122,8 @@ window.SITE_CONTENT = {
               "bullets": [
                 "Managed surveillance systems across a metro station to ensure passenger safety.",
                 "Used off-duty hours to self-study for and write two levels of the CFA Program."
-              ]
+              ],
+              "overview": "Voluntary enlistment. Managed surveillance systems across a metro station; studied for the CFA Program off duty."
             }
           ]
         },
@@ -380,7 +385,8 @@ window.SITE_CONTENT = {
                   "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
                   "alt": ""
                 }
-              ]
+              ],
+              "id": "chuncheon-marathon-2025-1"
             },
             {
               "name": "Paris-Saint-Germain-en-Laye 20K",
@@ -392,7 +398,8 @@ window.SITE_CONTENT = {
               "location": "Saint-Germain-en-Laye, France",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "paris-saint-germain-en-laye-20k-2"
             },
             {
               "name": "춘천호반마라톤 대회",
@@ -404,7 +411,8 @@ window.SITE_CONTENT = {
               "location": "Chuncheon, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "춘천호반마라톤-대회-3"
             },
             {
               "name": "Marvel Run",
@@ -416,7 +424,8 @@ window.SITE_CONTENT = {
               "location": "",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "marvel-run-4"
             },
             {
               "name": "Sports Seoul Half Marathon",
@@ -428,7 +437,8 @@ window.SITE_CONTENT = {
               "location": "Seoul, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "sports-seoul-half-marathon-5"
             },
             {
               "name": "Seoul MBN Half Marathon",
@@ -440,7 +450,8 @@ window.SITE_CONTENT = {
               "location": "Seoul, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-mbn-half-marathon-6"
             },
             {
               "name": "Seoul Marathon 10K",
@@ -452,7 +463,8 @@ window.SITE_CONTENT = {
               "location": "Seoul, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-marathon-10k-7"
             },
             {
               "name": "The Race Seoul",
@@ -464,7 +476,8 @@ window.SITE_CONTENT = {
               "location": "Seoul, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "the-race-seoul-8"
             },
             {
               "name": "Seoul Half Marathon",
@@ -476,7 +489,8 @@ window.SITE_CONTENT = {
               "location": "Seoul, South Korea",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "seoul-half-marathon-9"
             },
             {
               "name": "Trail Running 23K",
@@ -488,7 +502,8 @@ window.SITE_CONTENT = {
               "location": "",
               "note": "",
               "map": "",
-              "media": []
+              "media": [],
+              "id": "trail-running-23k-10"
             }
           ]
         },
@@ -575,5 +590,139 @@ window.SITE_CONTENT = {
         }
       ]
     }
-  ]
+  ],
+  "portfolio": {
+    "nav": {
+      "work": "Work",
+      "experience": "Experience",
+      "background": "Background",
+      "outside": "Outside work",
+      "education": "Education",
+      "writing": "Writing",
+      "contact": "Contact",
+      "updates": "Updates",
+      "menu": "Menu",
+      "skip": "Skip to content"
+    },
+    "hero": {
+      "statement": "I work where robotics deployment, technical systems and commercial strategy meet — turning real operating problems into structured deployment decisions and production tools.",
+      "role": "Robotics Transformation (RX) Consultant Intern, RLWRLD",
+      "location": "Seoul",
+      "credentials": "Computer Science & Statistics, Penn State · CFA Level II candidate",
+      "primary": {
+        "label": "View selected work",
+        "href": "#work"
+      },
+      "secondary": {
+        "label": "Contact",
+        "href": "#contact"
+      }
+    },
+    "work": {
+      "title": "Selected work",
+      "intro": "Four pieces of work from RLWRLD’s Robotics Transformation team in 2026. Client detail is limited to what is already public.",
+      "detailsLabel": "Details",
+      "items": [
+        {
+          "label": "Robotics deployment · RLWRLD · 2026",
+          "title": "Task feasibility evaluation framework",
+          "summary": "A scoring framework for deciding which enterprise robotics pilots are ready to run. It rates deployment readiness across 28 sub-criteria on 7 performance axes, giving the team one standard go/no-go assessment for prioritising PoCs.",
+          "details": [
+            "Iterated directly with the R&D team so the criteria track what the robots can actually do today.",
+            "Standardises go/no-go assessment across prospective enterprise deployments, replacing case-by-case judgement."
+          ],
+          "meta": [
+            "Robotics deployment",
+            "Evaluation design",
+            "PoC prioritisation"
+          ]
+        },
+        {
+          "label": "Data platform · RLWRLD · 2026",
+          "title": "RXDE — production data platform",
+          "summary": "RLWRLD’s production data platform on AWS, which I owned end to end: EC2 compute, RDS PostgreSQL and S3 storage behind a unified five-table schema that was adopted company-wide.",
+          "details": [
+            "Designed the five-table schema that became the company-wide standard for robotics data.",
+            "Ran cost-performance benchmarks that informed a GPU infrastructure investment decision."
+          ],
+          "meta": [
+            "AWS EC2",
+            "RDS PostgreSQL",
+            "S3",
+            "Schema design",
+            "Infrastructure benchmarking"
+          ]
+        },
+        {
+          "label": "Field strategy · Lotte Hotel · 2026",
+          "title": "Robotics deployment case for a four-property hotel group",
+          "summary": "On-site due diligence across four 4- and 5-star Lotte Hotel properties, benchmarking each on operating scope, labour structure, P&L attribution and ownership approval structure to support a robotics deployment contract proposal.",
+          "details": [
+            "Built the case for starting the contract in November 2026 around four rationales — learning-curve economics, competitive pre-emption, schedule dependency and SOP transition timing.",
+            "Presented the recommendation to the client’s senior management."
+          ],
+          "meta": [
+            "Due diligence",
+            "P&L analysis",
+            "Client presentation"
+          ]
+        },
+        {
+          "label": "Strategy & investor materials · RLWRLD · 2026",
+          "title": "Deployment strategy for enterprise clients and investors",
+          "summary": "Strategy work for three audiences: a pitch for a leading global electronics manufacturer, a robotics PoC proposal for CJ Logistics, and RLWRLD’s own investor deck.",
+          "details": [
+            "Electronics manufacturer: structured the client’s automation constraints into a three-part narrative — strategic rationale, economic drivers, execution roadmap — and analysed demand across four robot deployment categories.",
+            "CJ Logistics: market research and deliverable preparation for a PoC proposal to one of Korea’s largest logistics providers.",
+            "Investor deck: architecture visuals, competitive differentiation against Scale AI and Encord, and the full English translation of the methodology section."
+          ],
+          "meta": [
+            "Market analysis",
+            "Narrative structure",
+            "Investor relations"
+          ]
+        }
+      ]
+    },
+    "experience": {
+      "title": "Experience",
+      "earlier": "Earlier",
+      "more": "All contributions",
+      "less": "Fewer"
+    },
+    "background": {
+      "title": "Background",
+      "paragraphs": [
+        "Born in South Korea, raised in Hong Kong and then South Africa, where I finished school in Cape Town before moving to Penn State for Computer Science with a minor in Statistics.",
+        "During two years of military service in Seoul I used off-duty hours to study for the CFA Program, and I am now a Level II candidate. The degree teaches how systems are built; the CFA teaches how they are valued.",
+        "RLWRLD is where the two meet. Deciding whether a robot deployment is worth a contract takes a technical read on what the system can do, an operating read on how the client’s site actually runs, and a financial read on whether the numbers hold."
+      ]
+    },
+    "outside": {
+      "title": "Outside work",
+      "paragraphs": [
+        "Endurance sport is the other half of my week: road marathons, ultramarathons at the 50 and 100 km distances, Hyrox, and triathlon. I am currently training for an Ironman.",
+        "Off the course I play poker, mostly for the maths. Pot odds, expected value and reading incomplete information are the same habits that show up in valuation and in deciding whether a deployment is worth the contract."
+      ],
+      "goalLabel": "Current goal",
+      "goal": "Ironman",
+      "bestFull": "Marathon",
+      "bestHalf": "Half marathon",
+      "finished": "Races finished",
+      "archive": "Race archive"
+    },
+    "education": {
+      "title": "Education & credentials",
+      "toolsLabel": "Technical",
+      "tools": "Python, C++, C, C#, Java, SQL, R, Linux · AWS EC2, RDS PostgreSQL, S3",
+      "financeLabel": "Finance",
+      "finance": "DCF and comparable-company valuation, P&L attribution, deal screening, CFA Level II curriculum"
+    },
+    "contact": {
+      "title": "Contact",
+      "lead": "Email is the fastest way to reach me. Based in Seoul.",
+      "emailLabel": "Email",
+      "linkedinLabel": "LinkedIn"
+    }
+  }
 };
