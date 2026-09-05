@@ -359,9 +359,10 @@
   .race-more { border-top: 1px solid var(--line-soft); animation: rise 0.26s var(--ease) both; }
   .race-more > :first-child { border-top: 0; }
   .race-badge {
-    flex: 0 0 auto; min-width: 33px; height: 24px; border-radius: 7px; display: grid; place-items: center;
+    flex: 0 0 auto; width: 46px; height: 24px; border-radius: 7px; display: grid; place-items: center;
     background: linear-gradient(140deg, var(--primary) 0%, #2FCFB4 100%); color: #06392F;
-    font-weight: 700; font-size: 10px; letter-spacing: 0.02em; padding: 0 7px; text-align: center; line-height: 1.15;
+    font-weight: 700; font-size: 10px; letter-spacing: 0.02em; padding: 0 3px; text-align: center; line-height: 1.15;
+    white-space: nowrap; overflow: hidden;
     box-shadow: inset 0 -1px 0 rgba(0,0,0,0.08);
   }
   .race-badge.upcoming { background: #F4F5F7; color: var(--dim); box-shadow: inset 0 0 0 1px var(--bolder); }
@@ -430,7 +431,7 @@
   .race-note { padding: 11px 14px; color: var(--slate); border-top: 1px solid var(--line-soft); }
   .race-note p + p { margin-top: 7px; }
   .race-map { border-top: 1px solid var(--bolder); }
-  .race-map .media-cell { aspect-ratio: 21 / 9; max-height: 320px; background: #F4F5F7; }
+  .race-map .media-cell { aspect-ratio: 21 / 9; max-height: 200px; background: #F4F5F7; }
   .race-map .media-cell img { object-fit: cover; }
   .race-map .map-tag {
     position: absolute; left: 10px; top: 10px; z-index: 1; background: rgba(255,255,255,0.92); color: var(--slate);
@@ -596,7 +597,8 @@
     /* Badge, name and meta stay on one line; only the numbers drop below it. */
     .race-row { flex-wrap: wrap; row-gap: 1px; padding: 6px 11px; }
     .race-chev { order: 1; }
-    .race-stats { order: 2; flex: 1 1 100%; margin-left: 42px; gap: 11px; }
+    /* line up under the name: badge (46) + row gap (9) */
+    .race-stats { order: 2; flex: 1 1 100%; margin-left: 55px; gap: 11px; }
     .tally-n { font-size: 21px; }
   }
 
