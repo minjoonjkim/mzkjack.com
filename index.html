@@ -356,20 +356,62 @@
     color: var(--primary-text); background: var(--primary-tint); border: 1px solid rgba(80,234,206,0.55);
     border-radius: 999px; padding: 3px 9px; white-space: nowrap;
   }
-  .race-gallery { display: grid; gap: 14px; padding: 14px 15px 16px; border-top: 1px solid var(--line-soft); justify-items: center; }
-  .race-gallery .shot { margin: 0; display: grid; gap: 5px; justify-items: center; max-width: 100%; }
-  .race-gallery .shot-open {
-    display: block; margin: 0; padding: 0; border: 0; background: none; cursor: zoom-in; max-width: 100%;
-    aspect-ratio: auto; max-height: none; overflow: visible; line-height: 0;
+  .carousel { position: relative; background: #0E1012; border-top: 1px solid var(--line-soft); overflow: hidden; }
+  .carousel .track {
+    display: flex; overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;
+    /* An explicit height, not aspect-ratio + max-height: with both, Chrome derives
+       the width back from the clamped height and the whole strip narrows. */
+    height: clamp(260px, 46vw, 480px);
   }
-  .race-gallery .shot-open::after { content: none; }
-  .race-gallery img, .race-gallery video {
-    display: block; width: auto; height: auto; max-width: 100%; max-height: 620px;
-    border-radius: var(--radius-sm); border: 1px solid var(--line-soft); background: #F4F5F7;
-    transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+  .carousel .track::-webkit-scrollbar { display: none; }
+  .carousel .track:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .carousel .slide {
+    flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always;
+    position: relative; display: block; margin: 0; padding: 0; border: 0; background: #0E1012;
+    max-height: none; aspect-ratio: auto; overflow: hidden;
   }
-  .race-gallery .shot-open:hover img { box-shadow: var(--sh-2); transform: translateY(-2px); }
-  .race-gallery figcaption { color: var(--gray); font-size: var(--small); text-align: center; max-width: 70ch; }
+  .carousel .slide.media-cell { cursor: zoom-in; }
+  .carousel .slide::after { content: none; }
+  .carousel .slide-bg {
+    position: absolute; inset: -6%; background-size: cover; background-position: center;
+    filter: blur(26px) brightness(0.5) saturate(1.15); transform: scale(1.06); pointer-events: none;
+  }
+  .carousel .slide img, .carousel .slide video {
+    position: relative; width: 100%; height: 100%; object-fit: contain; display: block; transition: none;
+  }
+  .carousel .slide:hover img { transform: none; }
+  .carousel .slide-cap {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 10px; color: #EDEFF2;
+    font-size: var(--small); text-align: left; line-height: 1.45;
+    background: linear-gradient(to top, rgba(8,9,11,0.72), transparent);
+  }
+  .carousel[data-count] .c-nav {
+    position: absolute; top: 50%; margin-top: -17px; width: 34px; height: 34px; border-radius: 50%;
+    appearance: none; border: 0; cursor: pointer; color: #fff; font-size: 17px; line-height: 1;
+    background: rgba(12, 14, 17, 0.55); backdrop-filter: blur(5px);
+    display: grid; place-items: center; opacity: 0; transition: opacity 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .carousel:hover .c-nav, .carousel .track:focus-visible ~ .c-nav { opacity: 1; }
+  .carousel .c-nav:hover { background: rgba(12, 14, 17, 0.8); }
+  .carousel .c-nav:focus-visible { opacity: 1; outline: 2px solid var(--primary); outline-offset: 2px; }
+  .carousel .c-nav[disabled] { opacity: 0 !important; pointer-events: none; }
+  .carousel .c-nav.prev { left: 10px; }
+  .carousel .c-nav.next { right: 10px; }
+  .carousel .c-count {
+    position: absolute; top: 10px; right: 10px; color: #fff; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em; background: rgba(12, 14, 17, 0.6); backdrop-filter: blur(5px);
+    border-radius: 999px; padding: 3px 9px;
+  }
+  .carousel .c-dots { position: absolute; left: 0; right: 0; bottom: 9px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
+  .carousel .c-dots span {
+    width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.42);
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .carousel .c-dots span.on { background: #fff; transform: scale(1.25); }
+  @media (hover: none) { .carousel .c-nav { display: none; } }
+
   .race-note { padding: 11px 14px; color: var(--slate); border-top: 1px solid var(--line-soft); }
   .race-note p + p { margin-top: 7px; }
   .race-map { border-top: 1px solid var(--bolder); }
@@ -799,19 +841,37 @@
 
   // Race photos read like a blog post: every shot in full, stacked, nothing
   // cropped and nothing hidden behind a "+3" badge.
-  function mediaStack(list, offset) {
-    return '<div class="race-gallery">' + list.map(function (m, i) {
-      var inner = isVideo(m)
+  // Strava-style: one photo at a time in a swipeable, snapping track, with dots
+  // and a counter. Every shot stays visible without opening anything.
+  function mediaCarousel(list, offset) {
+    var many = list.length > 1;
+    var slides = list.map(function (m, i) {
+      // A blurred copy of the shot fills the frame behind a portrait photo, so the
+      // letterboxing reads as intentional rather than as empty space.
+      var backdrop = isVideo(m) ? ''
+        : '<span class="slide-bg" style="background-image:url(&quot;' + esc(m.src) + '&quot;)"></span>';
+      var inner = backdrop + (isVideo(m)
         ? '<video src="' + esc(m.src) + '" controls preload="metadata" playsinline></video>'
-        : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">';
-      return '<figure class="shot">' +
-        (isVideo(m)
-          ? inner
-          : '<button type="button" class="shot-open media-cell" data-index="' + (offset + i) + '" ' +
-            'aria-label="Open photo ' + (i + 1) + ' full size">' + inner + '</button>') +
-        (m.alt ? '<figcaption>' + esc(m.alt) + '</figcaption>' : '') +
-        '</figure>';
-    }).join('') + '</div>';
+        : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">');
+      var tag = isVideo(m) ? 'div' : 'button';
+      return '<' + tag + ' class="slide' + (isVideo(m) ? '' : ' media-cell') + '"' +
+        (isVideo(m) ? '' : ' type="button" data-index="' + (offset + i) + '"' +
+          ' aria-label="Open photo ' + (i + 1) + ' full size"') + '>' +
+        inner + (m.alt ? '<span class="slide-cap">' + esc(m.alt) + '</span>' : '') +
+        '</' + tag + '>';
+    }).join('');
+
+    return '<div class="carousel" data-count="' + list.length + '">' +
+      '<div class="track" tabindex="0">' + slides + '</div>' +
+      (many
+        ? '<button type="button" class="c-nav prev" data-step="-1" aria-label="Previous photo">\u2039</button>' +
+          '<button type="button" class="c-nav next" data-step="1" aria-label="Next photo">\u203A</button>' +
+          '<span class="c-count num">1 / ' + list.length + '</span>' +
+          '<div class="c-dots">' + list.map(function (_, i) {
+            return '<span' + (i === 0 ? ' class="on"' : '') + '></span>';
+          }).join('') + '</div>'
+        : '') +
+      '</div>';
   }
 
   function renderPost(p) {
@@ -1114,7 +1174,7 @@
     var extras =
       (r.note ? '<div class="race-note">' + richBody(r.note) + '</div>' : '') +
       (r.map ? '<div class="race-map">' + mediaCell(gallery[0], 0, 0, '<span class="map-tag">Route</span>') + '</div>' : '') +
-      (photos.length ? mediaStack(photos, r.map ? 1 : 0) : '');
+      (photos.length ? mediaCarousel(photos, r.map ? 1 : 0) : '');
 
     var row =
       '<span class="race-badge' + (upcoming ? ' upcoming' : '') + '">' + esc(badgeText(r, kind)) + '</span>' +
@@ -1194,6 +1254,7 @@
     el('main').innerHTML = opened || tab.blocks.map(renderBlock).join('');
     // Reading an article gets the full width; the CV sidebar steps aside.
     document.body.classList.toggle('reading', !!opened);
+    initCarousels();
 
     var want = '#' + tab.id + (opened ? '/' + slug : '');
     if (push && location.hash !== want) history.replaceState(null, '', want);
@@ -1298,6 +1359,61 @@
     else if (e.key === 'ArrowLeft') lbStep(-1);
   });
 
+  /* ---------- photo carousels ---------- */
+  function slideIndex(track) {
+    return Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+  }
+  function syncCarousel(box) {
+    var track = box.querySelector('.track');
+    if (!track) return;
+    var n = parseInt(box.dataset.count, 10) || 1;
+    var i = Math.min(n - 1, Math.max(0, slideIndex(track)));
+    var count = box.querySelector('.c-count');
+    if (count) count.textContent = (i + 1) + ' / ' + n;
+    Array.prototype.forEach.call(box.querySelectorAll('.c-dots span'), function (d, j) {
+      d.classList.toggle('on', j === i);
+    });
+    var prev = box.querySelector('.c-nav.prev'), next = box.querySelector('.c-nav.next');
+    if (prev) prev.disabled = i <= 0;
+    if (next) next.disabled = i >= n - 1;
+  }
+
+  // scroll does not bubble, so listen in the capture phase.
+  el('main').addEventListener('scroll', function (e) {
+    var track = e.target;
+    if (track && track.classList && track.classList.contains('track')) syncCarousel(track.parentElement);
+  }, true);
+
+  el('main').addEventListener('click', function (e) {
+    var nav = e.target.closest('.c-nav');
+    if (!nav) return;
+    e.preventDefault();
+    var box = nav.closest('.carousel');
+    var track = box.querySelector('.track');
+    var n = parseInt(box.dataset.count, 10) || 1;
+    // Aim at an absolute slide, so clicking quickly does not compound part-finished
+    // smooth scrolls into the wrong place.
+    var target = Math.min(n - 1, Math.max(0, slideIndex(track) + parseInt(nav.dataset.step, 10)));
+    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' });
+  });
+
+  el('main').addEventListener('keydown', function (e) {
+    var track = e.target;
+    if (!track.classList || !track.classList.contains('track')) return;
+    var step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    var box = track.parentElement;
+    var n = parseInt(box.dataset.count, 10) || 1;
+    var target = Math.min(n - 1, Math.max(0, slideIndex(track) + step));
+    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' });
+  });
+
+  // Fresh markup starts with the arrows in the right state.
+  function initCarousels() {
+    Array.prototype.forEach.call(el('main').querySelectorAll('.carousel[data-count]'), syncCarousel);
+  }
+
   // Expand all / collapse all for the race list.
   el('main').addEventListener('click', function (e) {
     var toggle = e.target.closest('.race-toggle-all');
@@ -1305,6 +1421,7 @@
     var opening = toggle.dataset.open !== '1';
     var scope = toggle.closest('.section') || document;
     Array.prototype.forEach.call(scope.querySelectorAll('details.race-x'), function (d) { d.open = opening; });
+    initCarousels();
     toggle.dataset.open = opening ? '1' : '0';
     toggle.textContent = opening ? 'Collapse all' : 'Expand all';
   });
