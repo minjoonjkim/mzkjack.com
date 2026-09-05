@@ -204,10 +204,13 @@
             (v ? '<img src="' + esc(v) + '" alt="" onerror="this.remove()">' : '') +
           '</div>' +
           '<div class="photo-controls">' +
-            '<button type="button" class="btn secondary small" data-act="pick-photo">Upload photo\u2026</button>' +
+            '<div class="photo-buttons">' +
+              '<button type="button" class="btn secondary small" data-act="pick-photo">Upload photo\u2026</button>' +
+              (v ? '<button type="button" class="btn secondary small" data-act="recrop-photo">Recrop current</button>' : '') +
+            '</div>' +
             '<input type="file" id="photo-file" accept="image/jpeg,image/png,image/webp" hidden>' +
             '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">' +
-            '<span class="hint">JPEG, PNG or WebP. Resized to 800px and saved as images/profile.jpg.</span>' +
+            '<span class="hint">JPEG, PNG or WebP. You choose the square crop; it saves as images/profile.jpg.</span>' +
           '</div>' +
         '</div></div>';
     }
@@ -304,6 +307,11 @@
     if (!btn) return;
     e.preventDefault();
     if (btn.dataset.act === 'pick-photo') { var picker = $('photo-file'); if (picker) picker.click(); return; }
+    if (btn.dataset.act === 'recrop-photo') {
+      var cur = (model.profile && model.profile.photo) || PHOTO_PATH;
+      cropThenUpload(cur + (cur.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now(), false);
+      return;
+    }
     var path = decPath(btn.dataset.path);
     var list = getAt(path);
     var i = parseInt(btn.dataset.index, 10);
@@ -349,64 +357,156 @@
   }
 
   /* ================= dirty state ================= */
-  /* ================= profile photo upload ================= */
+  /* ================= profile photo: upload + crop ================= */
   var PHOTO_PATH = 'images/profile.jpg';
+  var CROP_STAGE = 320;   // on-screen crop square, in CSS pixels
+  var CROP_OUT = 800;     // exported square, in pixels
 
-  // Decodes, downscales and re-encodes as JPEG so the repo stays small and the
-  // format is one every browser can render.
-  function imageToJpeg(file, maxDim, quality) {
+  function loadImage(src) {
     return new Promise(function (resolve, reject) {
-      var url = URL.createObjectURL(file);
       var img = new Image();
       img.onload = function () {
-        var w = img.naturalWidth, h = img.naturalHeight;
-        URL.revokeObjectURL(url);
-        if (!w || !h) { reject(new Error('That image could not be read.')); return; }
-        var scale = Math.min(1, maxDim / Math.max(w, h));
-        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
-        var canvas = document.createElement('canvas');
-        canvas.width = cw; canvas.height = ch;
-        var ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, cw, ch);
-        ctx.drawImage(img, 0, 0, cw, ch);
-        var dataUrl;
-        try { dataUrl = canvas.toDataURL('image/jpeg', quality); }
-        catch (err) { reject(new Error('That image could not be processed.')); return; }
-        resolve({ dataUrl: dataUrl, b64: dataUrl.slice(dataUrl.indexOf(',') + 1) });
+        if (!img.naturalWidth || !img.naturalHeight) { reject(new Error('That image could not be read.')); return; }
+        resolve(img);
       };
       img.onerror = function () {
-        URL.revokeObjectURL(url);
         reject(new Error('Your browser cannot read that file. iPhone HEIC photos are not supported: export it as JPEG first.'));
       };
-      img.src = url;
+      img.src = src;
     });
   }
 
-  function uploadProfilePhoto(file) {
+  // Square cropper: drag to pan, slider or wheel to zoom.
+  // Resolves to {dataUrl, b64}, or null when cancelled.
+  function cropSquare(img) {
+    return new Promise(function (resolve) {
+      var overlay = $('crop-overlay'), canvas = $('crop-canvas'), zoom = $('crop-zoom');
+      var ctx = canvas.getContext('2d');
+      var minScale = Math.max(CROP_STAGE / img.naturalWidth, CROP_STAGE / img.naturalHeight);
+      var scale = minScale, ox = 0, oy = 0, dragging = false, lastX = 0, lastY = 0;
+
+      function clamp() {
+        var w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+        ox = Math.min(0, Math.max(CROP_STAGE - w, ox));
+        oy = Math.min(0, Math.max(CROP_STAGE - h, oy));
+      }
+      function draw() {
+        ctx.fillStyle = '#ededed';
+        ctx.fillRect(0, 0, CROP_STAGE, CROP_STAGE);
+        ctx.drawImage(img, ox, oy, img.naturalWidth * scale, img.naturalHeight * scale);
+      }
+      function setZoom(mult, cx, cy) {
+        var next = minScale * mult;
+        if (cx == null) { cx = CROP_STAGE / 2; cy = CROP_STAGE / 2; }
+        ox = cx - (cx - ox) * (next / scale);
+        oy = cy - (cy - oy) * (next / scale);
+        scale = next; clamp(); draw();
+      }
+
+      ox = (CROP_STAGE - img.naturalWidth * scale) / 2;
+      oy = (CROP_STAGE - img.naturalHeight * scale) / 2;
+      clamp(); draw();
+      zoom.value = '1';
+
+      function onZoom() { setZoom(parseFloat(zoom.value)); }
+      function onDown(e) {
+        dragging = true; lastX = e.clientX; lastY = e.clientY;
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        ox += e.clientX - lastX; oy += e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        clamp(); draw();
+      }
+      function onUp(e) {
+        dragging = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      function onWheel(e) {
+        e.preventDefault();
+        var rect = canvas.getBoundingClientRect();
+        var mult = Math.min(4, Math.max(1, parseFloat(zoom.value) * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+        zoom.value = String(mult);
+        setZoom(mult, e.clientX - rect.left, e.clientY - rect.top);
+      }
+      function onKey(e) { if (e.key === 'Escape') finish(null); }
+
+      function cleanup() {
+        zoom.removeEventListener('input', onZoom);
+        canvas.removeEventListener('pointerdown', onDown);
+        canvas.removeEventListener('pointermove', onMove);
+        canvas.removeEventListener('pointerup', onUp);
+        canvas.removeEventListener('pointercancel', onUp);
+        canvas.removeEventListener('wheel', onWheel);
+        document.removeEventListener('keydown', onKey);
+        $('crop-save').removeEventListener('click', onSave);
+        $('crop-cancel').removeEventListener('click', onCancel);
+        overlay.hidden = true;
+      }
+      function finish(v) { cleanup(); resolve(v); }
+      function onCancel() { finish(null); }
+      function onSave() {
+        var out = document.createElement('canvas');
+        out.width = CROP_OUT; out.height = CROP_OUT;
+        var octx = out.getContext('2d');
+        var r = CROP_OUT / CROP_STAGE;
+        octx.fillStyle = '#ffffff';
+        octx.fillRect(0, 0, CROP_OUT, CROP_OUT);
+        octx.drawImage(img, ox * r, oy * r, img.naturalWidth * scale * r, img.naturalHeight * scale * r);
+        var dataUrl;
+        try { dataUrl = out.toDataURL('image/jpeg', 0.88); }
+        catch (err) { finish(null); setStatus('That image could not be processed.', 'error'); return; }
+        finish({ dataUrl: dataUrl, b64: dataUrl.slice(dataUrl.indexOf(',') + 1) });
+      }
+
+      zoom.addEventListener('input', onZoom);
+      canvas.addEventListener('pointerdown', onDown);
+      canvas.addEventListener('pointermove', onMove);
+      canvas.addEventListener('pointerup', onUp);
+      canvas.addEventListener('pointercancel', onUp);
+      canvas.addEventListener('wheel', onWheel, { passive: false });
+      document.addEventListener('keydown', onKey);
+      $('crop-save').addEventListener('click', onSave);
+      $('crop-cancel').addEventListener('click', onCancel);
+      overlay.hidden = false;
+      $('crop-save').focus();
+    });
+  }
+
+  function commitPhoto(out) {
+    setStatus('Uploading photo\u2026');
+    return github().putBase64(PHOTO_PATH, out.b64, 'Update profile photo').then(function () {
+      var thumb = $('photo-thumb');
+      if (thumb) thumb.innerHTML = '<img src="' + out.dataUrl + '" alt="">';
+      var field = document.querySelector('[data-path="' + encPath(['profile', 'photo']) + '"]');
+      if (field) field.value = PHOTO_PATH;
+      if (model.profile) model.profile.photo = PHOTO_PATH;
+      setStatus('Photo updated. The live site shows it once GitHub rebuilds, about a minute.', 'ok');
+    });
+  }
+
+  function cropThenUpload(src, revoke) {
     if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
-    if (!/^image\//.test(file.type)) { setStatus('Choose an image file (JPEG, PNG or WebP).', 'error'); return; }
-    setStatus('Preparing photo\u2026');
-    imageToJpeg(file, 800, 0.85).then(function (out) {
-      setStatus('Uploading photo\u2026');
-      return github().putBase64(PHOTO_PATH, out.b64, 'Update profile photo').then(function () {
-        var thumb = $('photo-thumb');
-        if (thumb) thumb.innerHTML = '<img src="' + out.dataUrl + '" alt="">';
-        var field = document.querySelector('[data-path="' + encPath(['profile', 'photo']) + '"]');
-        if (field) field.value = PHOTO_PATH;
-        if (model.profile) model.profile.photo = PHOTO_PATH;
-        setStatus('Photo uploaded. The live site shows it once GitHub rebuilds, about a minute.', 'ok');
-      });
+    setStatus('Opening the photo\u2026');
+    loadImage(src).then(function (img) {
+      if (revoke) URL.revokeObjectURL(src);
+      return cropSquare(img);
+    }).then(function (out) {
+      if (!out) { setStatus('Photo unchanged.'); return; }
+      return commitPhoto(out);
     }).catch(function (err) {
-      setStatus(err.message || 'Could not upload the photo.', 'error');
+      if (revoke) URL.revokeObjectURL(src);
+      setStatus(err.message || 'Could not use that photo.', 'error');
     });
   }
 
   $('form').addEventListener('change', function (e) {
-    if (e.target && e.target.id === 'photo-file' && e.target.files && e.target.files[0]) {
-      uploadProfilePhoto(e.target.files[0]);
-      e.target.value = '';
-    }
+    if (!e.target || e.target.id !== 'photo-file' || !e.target.files || !e.target.files[0]) return;
+    var file = e.target.files[0];
+    e.target.value = '';
+    if (!/^image\//.test(file.type)) { setStatus('Choose an image file (JPEG, PNG or WebP).', 'error'); return; }
+    cropThenUpload(URL.createObjectURL(file), true);
   });
 
   function markDirty() {
