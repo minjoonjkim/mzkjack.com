@@ -219,7 +219,8 @@
     races: 'Races', km: 'Distance in km', time: 'Finish time', pace: 'Average pace per km',
     note: 'Notes', map: 'Route map (file path)', distance: 'Distance',
     lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo',
-    cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper'
+    cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper',
+    accent: 'Accent colour (hex)', accent2: 'Second colour for a gradient (optional)'
   };
   var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
   var MULTILINE = { text: 1, value: 1, body: 1, note: 1 };
@@ -239,6 +240,12 @@
     return k.replace(/([A-Z])/g, ' $1').replace(/^./, function (c) { return c.toUpperCase(); });
   }
   function isStringArray(a) { return Array.isArray(a) && a.every(function (x) { return typeof x === 'string'; }); }
+  // The key whose text names an item, so the header can be edited in place.
+  function titleKey(item) {
+    var keys = ['title', 'heading', 'label', 'name'];
+    for (var k = 0; k < keys.length; k++) if (item && typeof item[keys[k]] === 'string') return keys[k];
+    return null;
+  }
   function itemTitle(item, i) {
     var keys = ['title', 'heading', 'label', 'name', 'value', 'id'];
     if (item && item.src && !item.title) return String(item.src).split('/').pop();
@@ -370,9 +377,14 @@
     var items = list.map(function (item, i) {
       var ip = path.concat([i]);
       var title = itemTitle(item, i);
+      var tk = titleKey(item);
       var badge = item && item.type ? item.type : (key === 'tabs' ? (item.blocks || []).length + ' sections' : '');
-      return '<details class="group item level-' + level + '"><summary>' +
-        '<span class="title">' + esc(title) + '</span>' +
+      // The header name is a live field: type here or in the form below, both update.
+      var head = tk
+        ? '<input type="text" class="title title-edit" data-path="' + encPath(ip.concat([tk])) + '" data-kind="str" value="' + esc(item[tk]) + '"' +
+          ' placeholder="' + esc(title) + '" aria-label="' + esc(humanize(tk)) + '" title="Click to rename">'
+        : '<span class="title">' + esc(title) + '</span>';
+      return '<details class="group item level-' + level + '"><summary>' + head +
         (badge ? '<span class="badge">' + esc(badge) + '</span>' : '<span class="badge"></span>') +
         '<span class="item-actions">' +
           '<button type="button" class="btn secondary small" data-act="up" data-path="' + p + '" data-index="' + i + '" title="Move up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
@@ -484,8 +496,28 @@
     else v = t.value;
     if (path[path.length - 1] === 'date' && t.type !== 'date') v = isoDate(v) || v;
     setAt(path, v);
+    // The same value can be shown twice (section header and its Title field).
+    if (t.dataset.kind === 'str' && t.type !== 'date') {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-path="' + t.dataset.path + '"][data-kind="str"]'), function (o) {
+        if (o !== t && o.value !== t.value) o.value = t.value;
+      });
+    }
     markDirty();
     schedulePreview(path);
+  });
+
+  // Typing in a header name must not fold or unfold its section.
+  $('form').addEventListener('click', function (e) {
+    if (e.target.classList && e.target.classList.contains('title-edit')) e.preventDefault();
+  });
+  $('form').addEventListener('keydown', function (e) {
+    if (!e.target.classList || !e.target.classList.contains('title-edit')) return;
+    if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+    if (e.key === ' ') e.stopPropagation();
+  });
+  // Chrome toggles a <summary> on the space key's release, so that is cancelled too.
+  $('form').addEventListener('keyup', function (e) {
+    if (e.key === ' ' && e.target.classList && e.target.classList.contains('title-edit')) { e.preventDefault(); e.stopPropagation(); }
   });
 
   $('form').addEventListener('click', function (e) {
@@ -1679,6 +1711,114 @@
     publishContent(act === 'del' ? 'Delete entry' : 'Reorder entries')
       .then(function (payload) { return confirmLive(payload); })
       .catch(function (err) { setStatus(err.message, 'error'); markDirty(); });
+  });
+
+  /* ================= site colour theme =================
+     Stored as site.theme = { accent, accent2? } on both language models, so
+     whichever file is published next carries it. The site derives everything
+     else (text-safe shade, tint, text-on-accent) from these two values. */
+  var DEFAULT_THEME = { accent: '#57EBDE', accent2: '#AEFB2A' };
+  var THEME_PRESETS = [
+    ['Mint → Lime', '#57EBDE', '#AEFB2A'], ['Mint', '#50EACE', ''], ['Teal', '#0B7F69', ''],
+    ['Ink', '#0B0C0E', ''], ['Coral', '#FF6B57', ''], ['Sky → Violet', '#5AC8FA', '#AF52DE'],
+    ['Amber → Rose', '#FFB347', '#FF5E7E'], ['Slate', '#55606F', '']
+  ];
+  var colorProbe = document.createElement('span');
+  colorProbe.hidden = true;
+  document.body.appendChild(colorProbe);
+  // Any CSS colour the browser understands -> '#RRGGBB'; null if it does not parse.
+  function toHex(v) {
+    v = String(v || '').trim();
+    if (!v) return null;
+    if (/^[0-9a-f]{6}$/i.test(v)) v = '#' + v;                       // forgive a missing '#'
+    if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + v.slice(1).split('').map(function (c) { return c + c; }).join('');
+    colorProbe.style.color = '';
+    colorProbe.style.color = v;
+    if (!colorProbe.style.color) return null;
+    var m = /(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(getComputedStyle(colorProbe).color);
+    return m ? '#' + [m[1], m[2], m[3]].map(function (n) { return ('0' + (+n).toString(16)).slice(-2); }).join('').toUpperCase() : null;
+  }
+  function currentTheme() {
+    var site = models.en.site || {};
+    return site.theme && site.theme.accent ? site.theme : null;
+  }
+  function writeTheme(theme) {
+    ['en', 'ko'].forEach(function (k) {
+      var m = models[k];
+      m.site = m.site || {};
+      if (theme) m.site.theme = clone(theme); else delete m.site.theme;
+    });
+    markDirty();
+    schedulePreview(['site']);
+  }
+
+  var pop = $('theme-pop');
+  function themeOpen() { return !pop.hidden; }
+  function fillThemeUI(theme) {
+    var t = theme || DEFAULT_THEME;
+    $('theme-a').value = t.accent || '';
+    $('theme-a-pick').value = toHex(t.accent) || '#57EBDE';
+    var grad = !!t.accent2;
+    $('theme-grad').checked = grad;
+    $('theme-b-row').hidden = !grad;
+    $('theme-b').value = t.accent2 || '';
+    $('theme-b-pick').value = toHex(t.accent2) || '#AEFB2A';
+    paintSwatch(t);
+    $('theme-err').hidden = true;
+  }
+  function paintSwatch(t) {
+    var a = toHex(t.accent), b = t.accent2 ? toHex(t.accent2) : null;
+    $('theme-swatch').style.background = a ? (b ? 'linear-gradient(90deg, ' + a + ', ' + b + ')' : a) : 'var(--bg)';
+  }
+  // Read the fields, validate, and apply live. Bad input shows a message and leaves the site alone.
+  function applyThemeFromUI() {
+    var aRaw = $('theme-a').value, bRaw = $('theme-grad').checked ? $('theme-b').value : '';
+    var a = toHex(aRaw), b = bRaw ? toHex(bRaw) : null;
+    var err = $('theme-err');
+    if (!a) { err.textContent = '“' + aRaw + '” is not a colour. Try a hex code like #57EBDE.'; err.hidden = !aRaw.trim(); return; }
+    if (bRaw && !b) { err.textContent = '“' + bRaw + '” is not a colour. Try a hex code like #AEFB2A.'; err.hidden = false; return; }
+    err.hidden = true;
+    var theme = { accent: a };
+    if (b) theme.accent2 = b;
+    $('theme-a-pick').value = a;
+    if (b) $('theme-b-pick').value = b;
+    paintSwatch(theme);
+    writeTheme(theme);
+  }
+
+  $('theme-presets').innerHTML = THEME_PRESETS.map(function (p, i) {
+    var bg = p[2] ? 'linear-gradient(90deg, ' + p[1] + ', ' + p[2] + ')' : p[1];
+    return '<button type="button" data-preset="' + i + '"><i style="background:' + bg + '"></i>' + esc(p[0]) + '</button>';
+  }).join('');
+
+  $('btn-theme').addEventListener('click', function () {
+    var open = !themeOpen();
+    pop.hidden = !open;
+    $('btn-theme').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) { fillThemeUI(currentTheme()); $('theme-a').focus(); }
+  });
+  $('theme-close').addEventListener('click', function () { pop.hidden = true; $('btn-theme').setAttribute('aria-expanded', 'false'); $('btn-theme').focus(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && themeOpen()) { pop.hidden = true; $('btn-theme').setAttribute('aria-expanded', 'false'); } });
+  $('theme-a').addEventListener('input', applyThemeFromUI);
+  $('theme-b').addEventListener('input', applyThemeFromUI);
+  $('theme-a-pick').addEventListener('input', function () { $('theme-a').value = this.value.toUpperCase(); applyThemeFromUI(); });
+  $('theme-b-pick').addEventListener('input', function () { $('theme-b').value = this.value.toUpperCase(); applyThemeFromUI(); });
+  $('theme-grad').addEventListener('change', function () {
+    $('theme-b-row').hidden = !this.checked;
+    if (this.checked && !$('theme-b').value) { $('theme-b').value = $('theme-b-pick').value.toUpperCase(); }
+    applyThemeFromUI();
+  });
+  $('theme-presets').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-preset]');
+    if (!btn) return;
+    var p = THEME_PRESETS[+btn.dataset.preset];
+    fillThemeUI({ accent: p[1], accent2: p[2] || undefined });
+    applyThemeFromUI();
+  });
+  $('theme-reset').addEventListener('click', function () {
+    writeTheme(null);            // the site falls back to its built-in theme
+    fillThemeUI(null);
+    setStatus('Theme reset to the site default. Click Publish to make it live.');
   });
 
   /* ================= boot ================= */

@@ -102,6 +102,12 @@
   details.level-0 > summary { background: var(--bg); }
   details.item > summary { font-weight: 400; color: var(--slate); }
   details.item > summary .title { font-weight: 700; color: var(--black); }
+  details.item > summary .title-edit {
+    font: inherit; font-weight: 700; color: var(--black); background: none; border: 0; border-bottom: 1px dashed transparent;
+    border-radius: 0; padding: 0 2px; margin: 0; width: auto; min-width: 60px; flex: 0 1 320px; cursor: text;
+  }
+  details.item > summary .title-edit:hover { border-bottom-color: var(--gray); }
+  details.item > summary .title-edit:focus { border-bottom-color: var(--primary); outline: none; box-shadow: none; }
   .field { display: grid; gap: 4px; }
   .field.check { grid-template-columns: auto 1fr; align-items: center; gap: 8px; }
   .field.check label { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--slate); font-size: 14px; }
@@ -264,6 +270,34 @@
   .md-btn.wide { padding: 0 10px; font-weight: 700; }
   .md-sep { width: 1px; height: 16px; background: var(--bolder); margin: 0 4px; }
   .md-hint { margin-left: auto; color: var(--gray); font-size: 11px; padding-right: 6px; }
+  /* ---- colour theme popover ---- */
+  .app { position: relative; }
+  .theme-pop {
+    position: absolute; right: 18px; top: 60px; z-index: 30; width: min(360px, calc(100vw - 24px));
+    background: var(--white); border: 1px solid var(--bolder); border-radius: var(--radius); box-shadow: var(--sh-2);
+    padding: 14px; display: grid; gap: 10px;
+  }
+  .theme-head { display: grid; gap: 2px; }
+  .theme-head b { color: var(--black); }
+  .theme-row { display: grid; grid-template-columns: 56px 40px 1fr; gap: 8px; align-items: center; }
+  .theme-row label { margin: 0; }
+  .theme-row input[type=color] {
+    width: 40px; height: 34px; padding: 2px; border: 1px solid var(--bolder); border-radius: 8px; background: var(--white); cursor: pointer;
+  }
+  .theme-row input[type=text] { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; text-transform: uppercase; }
+  .theme-check { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--slate); font-size: 13px; cursor: pointer; }
+  .theme-swatch { height: 28px; border-radius: 8px; border: 1px solid var(--bolder); background: var(--grad); }
+  .theme-err { color: var(--danger); font-size: 12px; }
+  .theme-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+  .theme-presets button {
+    appearance: none; border: 1px solid var(--bolder); background: var(--white); cursor: pointer; border-radius: 999px;
+    padding: 3px 9px 3px 4px; font-size: 12px; color: var(--slate); display: inline-flex; align-items: center; gap: 6px;
+    transition: border-color 0.16s var(--ease), box-shadow 0.16s var(--ease);
+  }
+  .theme-presets button:hover { border-color: var(--black); box-shadow: var(--sh-1); }
+  .theme-presets i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.08); display: inline-block; }
+  .theme-actions { display: flex; align-items: center; gap: 8px; }
+  .theme-actions .spacer { flex: 1; }
   .btn.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--white); font-weight: 700; }
   .btn.danger.armed:hover { background: #A93226; border-color: #A93226; color: var(--white); }
   .btn.primary.pending { position: relative; }
@@ -392,12 +426,36 @@
       <span class="status" id="status"></span>
     </div>
     <div class="right">
+      <button class="btn secondary small" id="btn-theme" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-pop" title="Site colour theme">Theme</button>
       <button class="btn secondary small" id="btn-refresh" title="Reload the preview and check the live site">Refresh</button>
       <button class="btn secondary small" id="btn-download" title="Save the content file to your computer">Download</button>
       <button class="btn secondary small" id="btn-password">Change password</button>
       <button class="btn secondary small" id="btn-lock">Lock</button>
       <button class="btn primary" id="btn-publish">Publish</button>
     </div>
+  </div>
+  <div class="theme-pop" id="theme-pop" role="dialog" aria-label="Site colour theme" hidden>
+    <div class="theme-head"><b>Colour theme</b><span class="hint">Used everywhere the site shows its accent colour.</span></div>
+    <div class="theme-row">
+      <label for="theme-a">Accent</label>
+      <input type="color" id="theme-a-pick" aria-label="Pick accent colour">
+      <input type="text" id="theme-a" placeholder="#57EBDE" spellcheck="false" autocomplete="off">
+    </div>
+    <label class="theme-check"><input type="checkbox" id="theme-grad"> Blend into a second colour</label>
+    <div class="theme-row" id="theme-b-row" hidden>
+      <label for="theme-b">Second</label>
+      <input type="color" id="theme-b-pick" aria-label="Pick second colour">
+      <input type="text" id="theme-b" placeholder="#AEFB2A" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="theme-swatch" id="theme-swatch" aria-hidden="true"></div>
+    <div class="theme-err" id="theme-err" role="alert" hidden></div>
+    <div class="theme-presets" id="theme-presets" aria-label="Presets"></div>
+    <div class="theme-actions">
+      <button type="button" class="btn secondary small" id="theme-reset">Reset to default</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn secondary small" id="theme-close">Done</button>
+    </div>
+    <p class="hint">Changes show in the preview straight away. Click Publish to make them live.</p>
   </div>
   <div class="compose-pane" id="compose-pane">
     <div class="compose-col">

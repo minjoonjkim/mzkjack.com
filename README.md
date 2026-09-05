@@ -56,6 +56,12 @@ Race counts come from the entries themselves — a race dated in the future is l
 
 Post bodies accept `**bold**`, a blank line starts a new paragraph, and bare URLs become links. Photos and videos open in a full-screen viewer when clicked.
 
+## Colour theme
+
+Click **Theme** in the editor's top bar. Enter any CSS colour — a hex code like `#57EBDE`, `57EBDE`, or `#5EC`, an `rgb(...)`, or a named colour — pick it from the swatch, or choose a preset. Tick **Blend into a second colour** for a gradient. The preview updates as you type; **Publish** makes it live.
+
+It is stored as `site.theme = { "accent": "#57EBDE", "accent2": "#AEFB2A" }` in `content.js` (and mirrored into `content.ko.js` when you publish Korean). The site derives everything else from it: a darkened text-safe shade for links and small text (always ≥ 4.5:1 on white), a light tint for chips, and black or white for text placed on the accent itself, whichever reads better. **Reset to default** removes `site.theme` and the built-in mint → lime theme returns.
+
 ## First-time editor setup
 
 1. Create a GitHub fine-grained token at https://github.com/settings/personal-access-tokens/new
