@@ -16,7 +16,7 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 
 ## Editing content
 
-**Option A: the editor.** Open `https://mzkjack.com/admin.html`, enter your password, edit in the form on the left, watch the preview on the right, click **Publish**. The site updates within about a minute.
+**Option A: the editor.** Click **Edit** in the site footer (or open `https://mzkjack.com/admin.html`), enter your password, edit in the form on the left, watch the preview on the right, click **Publish**. The site updates within about a minute.
 
 **Option B: by hand.** Edit `content.js` in any text editor and push. Text fields accept `**bold**` and line breaks.
 
@@ -35,7 +35,7 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
    - Repository access: **Only select repositories** → this repo
    - Permissions → Repository → **Contents: Read and write**
 2. Open `admin.html` on the live site (or on `localhost`, see below). It shows **First-time setup**.
-3. Paste the token, choose a password of 12+ characters, submit.
+3. Paste the token, choose a password (8+ characters, longer is safer), submit.
 
 The editor encrypts the token with your password (PBKDF2, 600k iterations, AES-256-GCM) and commits the encrypted blob to `admin-config.js`. The password is never stored. To rotate the token or reset the password, click **Reset access…** on the lock screen and repeat setup with a new token.
 

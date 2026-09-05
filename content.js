@@ -3,7 +3,7 @@
 window.SITE_CONTENT = {
   "site": {
     "title": "Minjoon Jack Kim",
-    "brand": "Minjoon Jack Kim",
+    "brand": "JAↃK.KIM",
     "footer": "© 2026 Minjoon Jack Kim",
     "footerNote": "Seoul · State College"
   },

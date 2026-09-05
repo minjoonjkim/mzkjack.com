@@ -63,7 +63,7 @@
     var pw = $('setup-pw').value, pw2 = $('setup-pw2').value;
     if (!CONFIG.repo) return Promise.reject(new Error('admin-config.js has no repo set.'));
     if (!t) return Promise.reject(new Error('Paste a GitHub token.'));
-    if (pw.length < 12) return Promise.reject(new Error('Use a password of at least 12 characters.'));
+    if (pw.length < 8) return Promise.reject(new Error('Use a password of at least 8 characters.'));
     if (pw !== pw2) return Promise.reject(new Error('Passwords do not match.'));
 
     var gh = Core.GitHub(t, CONFIG.repo, CONFIG.branch || 'main');
@@ -354,9 +354,9 @@
 
   $('btn-password').addEventListener('click', function () {
     if (!token) return;
-    var pw = prompt('New password (at least 12 characters):');
+    var pw = prompt('New password (at least 8 characters; longer is safer):');
     if (pw == null) return;
-    if (pw.length < 12) { setStatus('Password must be at least 12 characters.', 'error'); return; }
+    if (pw.length < 8) { setStatus('Password must be at least 8 characters.', 'error'); return; }
     var pw2 = prompt('Repeat the new password:');
     if (pw2 !== pw) { setStatus('Passwords did not match. Nothing changed.', 'error'); return; }
     setStatus('Updating password…');

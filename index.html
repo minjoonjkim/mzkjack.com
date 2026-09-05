@@ -63,7 +63,7 @@
     border-bottom: 1px solid var(--bolder);
   }
   .site-header .shell { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-  .brand { font-weight: 700; color: var(--black); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+  .brand { font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "DejaVu Sans", "Segoe UI Symbol", sans-serif; font-weight: 700; color: var(--black); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
   .brand::before { content: ""; width: 10px; height: 10px; background: var(--primary); border-radius: 2px; flex: 0 0 auto; }
   .tabs { display: flex; gap: 2px; }
   .tab {
@@ -163,6 +163,9 @@
 
   /* ---------- Footer ---------- */
   .site-footer { padding: 0 0 32px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 24px; color: var(--gray); font-size: var(--small); }
+  .footer-right { display: inline-flex; gap: 14px; align-items: center; }
+  .edit-link { border: 1px solid var(--bolder); border-radius: 3px; padding: 1px 8px; color: var(--gray); transition: color 0.15s, border-color 0.15s; }
+  .edit-link:hover { color: var(--primary-text); border-color: var(--primary-text); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
@@ -189,7 +192,7 @@
 
 <header class="site-header">
   <div class="shell">
-    <a class="brand" href="#about" id="brand">Minjoon Jack Kim</a>
+    <a class="brand" href="#about" id="brand" aria-label="Home">JAↃK.KIM</a>
     <nav class="tabs" role="tablist" aria-label="Site sections" id="tabs"></nav>
   </div>
 </header>
@@ -346,11 +349,22 @@
     el('brand').textContent = c.site.brand || c.site.title || '';
     renderProfile(c.profile);
     renderTabs();
-    el('footer').innerHTML = '<span>' + esc(c.site.footer) + '</span>' + (c.site.footerNote ? '<span>' + esc(c.site.footerNote) + '</span>' : '');
+    el('footer').innerHTML = '<span>' + esc(c.site.footer) + '</span>' +
+      '<span class="footer-right">' + (c.site.footerNote ? '<span>' + esc(c.site.footerNote) + '</span>' : '') +
+      '<a class="edit-link" href="admin.html" rel="nofollow">Edit</a></span>';
     show(activeTab || location.hash.slice(1) || c.tabs[0].id, false);
   }
 
   window.addEventListener('hashchange', function () { show(location.hash.slice(1), false); });
+
+  // Brand click -> home (first tab), scrolled to top.
+  el('brand').addEventListener('click', function (e) {
+    e.preventDefault();
+    var home = content && content.tabs && content.tabs[0] ? content.tabs[0].id : 'about';
+    show(home, true);
+    if (location.hash !== '#' + home) history.replaceState(null, '', '#' + home);
+    window.scrollTo({ top: 0 });
+  });
 
   // Live preview: admin.html posts draft content into this frame.
   var isPreview = /[?&]preview=1/.test(location.search);
