@@ -26,9 +26,9 @@ window.SITE_CONTENT = {
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "RLWRLD (Intern)",
+            "value": "Robotics Transformation @RLWRLD",
             "href": "https://rlwrld.ai/",
-            "icon": "images/logos/rlwrld.png"
+            "icon": "images/logos/favi.webp"
           }
         ]
       },
@@ -54,7 +54,11 @@ window.SITE_CONTENT = {
       "Robotics Deployment",
       "Reinforcement Learning",
       "M&A"
-    ]
+    ],
+    "cover": {
+      "theme": "mint",
+      "image": "images/covers/40522-61113-826.jpg"
+    }
   },
   "tabs": [
     {
