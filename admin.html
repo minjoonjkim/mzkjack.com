@@ -233,6 +233,13 @@
   .dropnote { border-radius: var(--radius-sm); border-color: #D5D9DE; }
   .apost { border-radius: var(--radius); }
   .empty-note { border-radius: var(--radius); border-color: #D5D9DE; }
+  .btn.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--white); font-weight: 700; }
+  .btn.danger.armed:hover { background: #A93226; border-color: #A93226; color: var(--white); }
+  .btn.primary.pending { position: relative; }
+  .btn.primary.pending::after {
+    content: ""; position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--danger); box-shadow: 0 0 0 2px var(--white);
+  }
 
   /* ---- what am I posting: note vs race ---- */
   .kindswitch { display: inline-flex; gap: 3px; padding: 3px; background: var(--bg); border-radius: 10px; align-self: start; }

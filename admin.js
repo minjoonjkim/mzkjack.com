@@ -346,6 +346,19 @@
   }
 
   /* ================= events (delegated) ================= */
+  // Deleting arms the button instead of opening a native confirm(): browsers that
+  // suppress repeated dialogs would otherwise swallow the click silently.
+  var armedBtn = null, armTimer = null;
+  function disarmDelete() {
+    clearTimeout(armTimer);
+    if (armedBtn && armedBtn.isConnected) {
+      armedBtn.textContent = '\u00D7';
+      armedBtn.classList.remove('armed');
+      armedBtn.removeAttribute('data-armed');
+    }
+    armedBtn = null;
+  }
+
   $('form').addEventListener('input', function (e) {
     var t = e.target;
     if (!t.dataset || !t.dataset.path || !t.dataset.kind) return;
@@ -361,6 +374,7 @@
 
   $('form').addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-act]');
+    if (btn !== armedBtn) disarmDelete();
     if (!btn) return;
     e.preventDefault();
     if (btn.dataset.act === 'pick-photo') { var picker = $('photo-file'); if (picker) picker.click(); return; }
@@ -382,8 +396,19 @@
       case 'up':   if (i > 0) { list.splice(i - 1, 0, list.splice(i, 1)[0]); } break;
       case 'down': if (i < list.length - 1) { list.splice(i + 1, 0, list.splice(i, 1)[0]); } break;
       case 'remove':
-        if (!confirm('Remove "' + itemTitle(list[i], i) + '"?')) return;
-        list.splice(i, 1); break;
+        if (btn.dataset.armed !== '1') {
+          btn.dataset.armed = '1';
+          btn.textContent = 'Delete?';
+          btn.classList.add('armed');
+          armedBtn = btn;
+          armTimer = setTimeout(disarmDelete, 5000);
+          setStatus('Click Delete? again to remove \u201C' + itemTitle(list[i], i) + '\u201D.');
+          return;
+        }
+        disarmDelete();
+        setStatus('');
+        list.splice(i, 1);
+        break;
       case 'add':  list.push(templateFor(path, list)); break;
       case 'add-block':
         var sel = btn.parentElement.querySelector('[data-role="block-type"]');
@@ -610,8 +635,19 @@
     cropThenUpload(URL.createObjectURL(file), true);
   });
 
+  // Compose publishes in one step; Structure edits sit in the browser until Publish,
+  // so the button has to say so.
+  function setDirty(v) {
+    dirty = v;
+    var btn = $('btn-publish');
+    btn.classList.toggle('pending', v);
+    btn.textContent = v ? 'Publish changes' : 'Publish';
+  }
   function markDirty() {
-    if (!dirty) { dirty = true; setStatus('Unpublished changes.'); }
+    if (!dirty) setDirty(true);
+    if (!/^Click Delete/.test($('status').textContent)) {
+      setStatus('Unpublished changes \u2014 click Publish to put them on the live site.');
+    }
   }
   window.addEventListener('beforeunload', function (e) {
     if (dirty) { e.preventDefault(); e.returnValue = ''; }
@@ -624,7 +660,7 @@
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
     return github()
       .putFile(CONFIG.contentPath || 'content.js', Core.serializeContent(model), message || 'Update site content')
-      .then(function (r) { dirty = false; return r; });
+      .then(function (r) { setDirty(false); return r; });
   }
 
   $('btn-publish').addEventListener('click', function () {
@@ -649,7 +685,7 @@
 
   $('btn-lock').addEventListener('click', function () {
     if (dirty && !confirm('You have unpublished changes. Lock anyway?')) return;
-    dirty = false;
+    setDirty(false);
     lock();
   });
 

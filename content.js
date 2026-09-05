@@ -339,13 +339,6 @@ window.SITE_CONTENT = {
       "label": "Hobbies",
       "blocks": [
         {
-          "type": "text",
-          "title": "Long distances, and the occasional hand of poker",
-          "paragraphs": [
-            "Endurance sport is the other half of my week. Most of it is running and triathlon; the rest is Hyrox, which is what happens when a race puts a gym in the middle of a run."
-          ]
-        },
-        {
           "type": "races",
           "title": "Racing",
           "races": []
