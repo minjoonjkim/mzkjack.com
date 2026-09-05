@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minjoon Jack Kim</title>
+<meta name="description" content="Minjoon Jack Kim — computer science and statistics student at Penn State, robotics transformation consultant intern at RLWRLD, CFA Level II candidate, endurance athlete.">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<style>
+  /* ---------- Brand tokens (RLWRLD guidelines) ---------- */
+  :root {
+    color-scheme: light;
+    --white: #FFFFFF;
+    --black: #000000;
+    --primary: #50EACE;        /* mint */
+    --primary-text: #23B399;   /* mint, text-safe */
+    --primary-tint: #E6FBF6;
+    --bg: #EDEDED;             /* background */
+    --bolder: #DBDBDB;         /* dividers */
+    --slate: #333333;          /* body text */
+    --dim: #666666;            /* secondary */
+    --gray: #999999;           /* tertiary */
+
+    /* Hierarchy: H1 32/130%, H2 20/160%, P 14/160% */
+    --h1: 32px; --h1-lh: 1.3;
+    --h2: 20px; --h2-lh: 1.6;
+    --p: 14px;  --p-lh: 1.6;
+    --small: 12px;
+
+    --max: 1120px;
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { min-width: 320px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  body {
+    background: var(--bg);
+    color: var(--slate);
+    font-family: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    font-size: var(--p);
+    line-height: var(--p-lh);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--primary-text); outline-offset: 2px; }
+  h1 { font-size: var(--h1); line-height: var(--h1-lh); font-weight: 700; color: var(--black); letter-spacing: -0.01em; text-wrap: balance; }
+  h2 { font-size: var(--h2); line-height: var(--h2-lh); font-weight: 700; color: var(--black); }
+  h3 { font-size: 15px; line-height: 1.5; font-weight: 700; color: var(--black); }
+  .num { font-variant-numeric: tabular-nums; }
+  b { font-weight: 700; color: var(--black); }
+
+  .shell { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--bolder);
+  }
+  .site-header .shell { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .brand { font-weight: 700; color: var(--black); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+  .brand::before { content: ""; width: 10px; height: 10px; background: var(--primary); border-radius: 2px; flex: 0 0 auto; }
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    appearance: none; background: none; border: 0; cursor: pointer;
+    font: inherit; color: var(--dim); font-size: 14px;
+    padding: 22px 12px 20px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .tab:hover { color: var(--black); }
+  .tab[aria-selected="true"] { color: var(--black); border-bottom-color: var(--primary); font-weight: 700; }
+
+  /* ---------- Layout ---------- */
+  main.shell { flex: 1; padding: 28px 0 40px; }
+  .cv-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 330px) 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--bolder);
+    border-radius: var(--radius);
+  }
+
+  /* ---------- Profile panel ---------- */
+  .profile { padding: 26px; display: flex; flex-direction: column; gap: 18px; position: sticky; top: 88px; }
+  .portrait {
+    width: 132px; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--bolder); background: var(--bg);
+    display: grid; place-items: center; position: relative;
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .portrait img[data-missing] { display: none; }
+  .portrait .placeholder {
+    display: none; text-align: center; color: var(--gray); font-size: var(--small); line-height: 1.4; padding: 10px;
+  }
+  .portrait .placeholder b { display: block; font-size: 28px; color: var(--dim); font-weight: 700; margin-bottom: 4px; }
+  .portrait.is-empty .placeholder { display: block; }
+  .identity h1 { font-size: 26px; line-height: 1.2; }
+  .identity p { color: var(--dim); font-size: 15px; margin-top: 2px; }
+  .roles { display: grid; gap: 2px; color: var(--dim); }
+  .separator { height: 1px; background: var(--bolder); margin: 4px 0; }
+  .contact { display: grid; gap: 14px; }
+  .contact dt { font-size: var(--small); font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .contact dd { color: var(--slate); word-break: break-word; white-space: pre-line; }
+  .contact dd a { border-bottom: 1px solid var(--bolder); transition: color 0.15s, border-color 0.15s; }
+  .contact dd a:hover { color: var(--primary-text); border-color: var(--primary-text); }
+  .focus-head { font-size: var(--small); font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 16px; border-top: 1px solid var(--bolder); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; }
+  .chips li { padding: 4px 9px; border-radius: 999px; background: var(--primary-tint); color: var(--slate); font-size: var(--small); line-height: 1.4; }
+
+  /* ---------- Main column ---------- */
+  .cv-main { display: grid; gap: 14px; min-width: 0; }
+  .section { padding: 22px 24px; }
+  .section > h2 { margin-bottom: 14px; }
+  .section-lead { color: var(--slate); max-width: 72ch; }
+  .section-lead p + p { margin-top: 8px; }
+
+  .entries { display: grid; gap: 22px; }
+  .entry { display: grid; gap: 4px; }
+  .entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 20px; }
+  .entry .when { color: var(--gray); white-space: nowrap; font-size: 13px; }
+  .entry .when.current { color: var(--primary-text); font-weight: 700; }
+  .entry .when.current::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); margin-right: 7px; vertical-align: 1px; }
+  .entry .org { color: var(--dim); }
+  .entry .org .sep { color: var(--gray); margin: 0 7px; }
+  .entry ul { margin-top: 4px; padding-left: 18px; display: grid; gap: 5px; color: var(--slate); }
+  .entry ul li::marker { color: var(--gray); }
+
+  .table { width: 100%; border-collapse: collapse; }
+  .table tr { border-bottom: 1px solid var(--bolder); }
+  .table tr:last-child { border-bottom: 0; }
+  .table th, .table td { text-align: left; vertical-align: top; padding: 11px 0; }
+  .table th { font-weight: 700; color: var(--black); width: 170px; padding-right: 20px; }
+  .table td { color: var(--slate); }
+  .table .tag { display: block; margin-top: 2px; color: var(--primary-text); font-size: var(--small); }
+
+  .skills { display: grid; gap: 12px; }
+  .skill-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: baseline; }
+  .skill-row dt { color: var(--gray); }
+  .skill-row .chips li { background: var(--bg); border-radius: 3px; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .stat { border-top: 2px solid var(--primary); padding-top: 8px; }
+  .stat .value { font-size: var(--h2); line-height: var(--h2-lh); font-weight: 700; color: var(--black); }
+  .stat .label { color: var(--dim); font-size: var(--small); }
+
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .mini { border: 1px solid var(--bolder); border-radius: var(--radius); padding: 16px; display: grid; gap: 6px; align-content: start; transition: border-color 0.15s ease; }
+  .mini:hover { border-color: var(--primary); }
+  .mini .meta { color: var(--primary-text); font-size: var(--small); font-weight: 700; }
+  .mini .facts { display: grid; gap: 3px; margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--bolder); color: var(--dim); font-size: var(--small); }
+  .mini .facts div { display: flex; justify-content: space-between; gap: 12px; }
+  .mini .facts b { color: var(--slate); }
+
+  /* ---------- Footer ---------- */
+  .site-footer { padding: 0 0 32px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 24px; color: var(--gray); font-size: var(--small); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .shell { width: min(100% - 32px, var(--max)); }
+    .site-header .shell { flex-direction: column; align-items: flex-start; gap: 0; padding-top: 12px; min-height: 0; }
+    .tabs { width: 100%; overflow-x: auto; }
+    .tab { padding: 8px 12px 10px; }
+    .tab:first-child { padding-left: 0; }
+    .cv-grid { grid-template-columns: 1fr; }
+    .profile { position: static; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .profile, .section { padding: 18px; }
+    .cards, .stats { grid-template-columns: 1fr; }
+    .skill-row { grid-template-columns: 1fr; gap: 4px; }
+    .table th { display: block; width: auto; padding-bottom: 0; }
+    .table td { display: block; padding-top: 2px; }
+    .entry .when { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="shell">
+    <a class="brand" href="#about" id="brand">Minjoon Jack Kim</a>
+    <nav class="tabs" role="tablist" aria-label="Site sections" id="tabs"></nav>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="cv-grid">
+    <aside class="card profile" id="profile" aria-label="Profile"></aside>
+    <div class="cv-main" id="main" role="tabpanel"></div>
+  </div>
+</main>
+
+<footer class="site-footer shell" id="footer"></footer>
+
+<script src="content.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- helpers ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  // Escapes HTML, then allows **bold** and line breaks.
+  function rich(s) {
+    return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+  }
+  function el(id) { return document.getElementById(id); }
+
+  /* ---------- profile panel ---------- */
+  function renderProfile(p) {
+    var initials = (p.name || '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 3);
+    var html = '';
+    html += '<div class="portrait" id="portrait">' +
+              '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" id="portrait-img">' +
+              '<div class="placeholder"><b>' + esc(initials) + '</b>Add photo at<br>' + esc(p.photo || 'images/profile.jpg') + '</div>' +
+            '</div>';
+    html += '<div class="identity"><h1>' + esc(p.name) + '</h1>' + (p.nameKo ? '<p>' + esc(p.nameKo) + '</p>' : '') + '</div>';
+    if (p.roles && p.roles.length) {
+      html += '<div class="roles">' + p.roles.map(function (r) { return '<span>' + esc(r) + '</span>'; }).join('') + '</div>';
+    }
+    html += '<div class="separator"></div>';
+    if (p.contact && p.contact.length) {
+      html += '<dl class="contact">' + p.contact.map(function (c) {
+        var v = c.href ? '<a href="' + esc(c.href) + '"' + (/^https?:/.test(c.href) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(c.value) + '</a>' : esc(c.value);
+        return '<div><dt>' + esc(c.label) + '</dt><dd>' + v + '</dd></div>';
+      }).join('') + '</dl>';
+    }
+    if (p.focus && p.focus.length) {
+      html += '<div class="focus-head">Focus Areas</div><ul class="chips">' +
+        p.focus.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
+    }
+    el('profile').innerHTML = html;
+
+    var img = el('portrait-img');
+    var box = el('portrait');
+    function missing() { img.setAttribute('data-missing', ''); box.classList.add('is-empty'); }
+    img.addEventListener('error', missing);
+    img.addEventListener('load', function () { img.removeAttribute('data-missing'); box.classList.remove('is-empty'); });
+    if (!p.photo) missing();
+  }
+
+  /* ---------- blocks ---------- */
+  var BLOCKS = {
+    text: function (b) {
+      return '<div class="section-lead">' + (b.paragraphs || []).map(function (t) { return '<p>' + rich(t) + '</p>'; }).join('') + '</div>';
+    },
+    entries: function (b) {
+      return '<div class="entries">' + (b.entries || []).map(function (e) {
+        var orgParts = [e.org, e.location].filter(Boolean).map(esc).join('<span class="sep">·</span>');
+        return '<article class="entry">' +
+          '<div class="entry-head"><h3>' + esc(e.heading) + '</h3>' +
+          (e.when ? '<span class="when num' + (e.current ? ' current' : '') + '">' + esc(e.when) + '</span>' : '') + '</div>' +
+          (orgParts ? '<p class="org">' + orgParts + '</p>' : '') +
+          (e.bullets && e.bullets.length ? '<ul>' + e.bullets.map(function (t) { return '<li>' + rich(t) + '</li>'; }).join('') + '</ul>' : '') +
+          '</article>';
+      }).join('') + '</div>';
+    },
+    table: function (b) {
+      return '<table class="table"><tbody>' + (b.rows || []).map(function (r) {
+        return '<tr><th scope="row">' + esc(r.name) + '</th><td>' + rich(r.text) +
+          (r.tag ? '<span class="tag">' + esc(r.tag) + '</span>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table>';
+    },
+    skills: function (b) {
+      return '<dl class="skills">' + (b.rows || []).map(function (r) {
+        var body = (r.items && r.items.length)
+          ? '<ul class="chips">' + r.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>'
+          : rich(r.text);
+        return '<div class="skill-row"><dt>' + esc(r.label) + '</dt><dd>' + body + '</dd></div>';
+      }).join('') + '</dl>';
+    },
+    stats: function (b) {
+      return '<div class="stats">' + (b.stats || []).map(function (s) {
+        return '<div class="stat"><div class="value num">' + esc(s.value) + '</div><div class="label">' + esc(s.label) + '</div></div>';
+      }).join('') + '</div>';
+    },
+    cards: function (b) {
+      return '<div class="cards">' + (b.cards || []).map(function (c) {
+        return '<article class="mini">' +
+          (c.meta ? '<div class="meta">' + esc(c.meta) + '</div>' : '') +
+          '<h3>' + esc(c.title) + '</h3>' +
+          (c.text ? '<p>' + rich(c.text) + '</p>' : '') +
+          (c.facts && c.facts.length ? '<div class="facts num">' + c.facts.map(function (f) {
+            return '<div><span>' + esc(f.label) + '</span><b>' + esc(f.value) + '</b></div>';
+          }).join('') + '</div>' : '') +
+          '</article>';
+      }).join('') + '</div>';
+    }
+  };
+
+  function renderBlock(b) {
+    var fn = BLOCKS[b.type];
+    if (!fn) return '';
+    return '<section class="card section">' + (b.title ? '<h2>' + esc(b.title) + '</h2>' : '') + fn(b) + '</section>';
+  }
+
+  /* ---------- tabs ---------- */
+  var content, activeTab;
+
+  function renderTabs() {
+    el('tabs').innerHTML = content.tabs.map(function (t) {
+      return '<button class="tab" role="tab" id="tab-' + esc(t.id) + '" data-tab="' + esc(t.id) + '" aria-selected="false">' + esc(t.label) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(el('tabs').children, function (btn, i, all) {
+      btn.addEventListener('click', function () { show(btn.dataset.tab, true); });
+      btn.addEventListener('keydown', function (e) {
+        var j = i;
+        if (e.key === 'ArrowRight') j = (i + 1) % all.length;
+        else if (e.key === 'ArrowLeft') j = (i - 1 + all.length) % all.length;
+        else return;
+        e.preventDefault(); all[j].focus(); show(all[j].dataset.tab, true);
+      });
+    });
+  }
+
+  function show(id, push) {
+    var tab = content.tabs.filter(function (t) { return t.id === id; })[0] || content.tabs[0];
+    activeTab = tab.id;
+    Array.prototype.forEach.call(el('tabs').children, function (btn) {
+      var on = btn.dataset.tab === tab.id;
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      btn.tabIndex = on ? 0 : -1;
+    });
+    el('main').setAttribute('aria-labelledby', 'tab-' + tab.id);
+    el('main').innerHTML = tab.blocks.map(renderBlock).join('');
+    if (push && location.hash !== '#' + tab.id) history.replaceState(null, '', '#' + tab.id);
+    if (push) window.scrollTo({ top: 0 });
+  }
+
+  function renderAll(c) {
+    content = c;
+    document.title = c.site.title || document.title;
+    el('brand').textContent = c.site.brand || c.site.title || '';
+    renderProfile(c.profile);
+    renderTabs();
+    el('footer').innerHTML = '<span>' + esc(c.site.footer) + '</span>' + (c.site.footerNote ? '<span>' + esc(c.site.footerNote) + '</span>' : '');
+    show(activeTab || location.hash.slice(1) || c.tabs[0].id, false);
+  }
+
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1), false); });
+
+  // Live preview: admin.html posts draft content into this frame.
+  var isPreview = /[?&]preview=1/.test(location.search);
+  if (isPreview) {
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'site-content' && e.data.content) {
+        if (e.data.tab) activeTab = e.data.tab;
+        renderAll(e.data.content);
+      }
+    });
+  }
+
+  renderAll(window.SITE_CONTENT);
+})();
+</script>
+
+</body>
+</html>
