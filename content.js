@@ -3,7 +3,7 @@
 window.SITE_CONTENT = {
   "site": {
     "title": "Minjoon Jack Kim",
-    "brand": "JAↃK.KIM",
+    "brand": "JAↃK KIM",
     "footer": "© 2026 Minjoon Jack Kim",
     "footerNote": "Seoul, Cape Town, State College"
   },
@@ -26,9 +26,9 @@ window.SITE_CONTENT = {
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "Robotics Transformation @RLWRLD\n",
+            "value": "RLWRLD (Intern)",
             "href": "https://rlwrld.ai/",
-            "icon": "images/logos/favi.webp"
+            "icon": "images/logos/rlwrld.png"
           }
         ]
       },
@@ -45,7 +45,7 @@ window.SITE_CONTENT = {
       {
         "label": "LinkedIn",
         "value": "linkedin.com/in/…",
-        "href": "https://www.linkedin.com/in/minjoonjkim/"
+        "href": "https://www.linkedin.com/"
       }
     ],
     "focus": [
@@ -53,9 +53,7 @@ window.SITE_CONTENT = {
       "VLMOps",
       "Robotics Deployment",
       "Reinforcement Learning",
-      "M&A",
-      "Investment Banking",
-      "Venture Capital"
+      "M&A"
     ]
   },
   "tabs": [
