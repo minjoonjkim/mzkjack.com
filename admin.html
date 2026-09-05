@@ -235,6 +235,16 @@
   .dropnote { border-radius: var(--radius-sm); border-color: #D5D9DE; }
   .apost { border-radius: var(--radius); }
   .empty-note { border-radius: var(--radius); border-color: #D5D9DE; }
+  .upload-row { display: flex; gap: 11px; align-items: flex-start; }
+  .upload-thumb {
+    width: 78px; height: 58px; flex: 0 0 auto; border-radius: var(--radius-sm); overflow: hidden;
+    border: 1px dashed #D5D9DE; background: var(--bg); display: grid; place-items: center;
+    color: var(--gray); font-size: 10px;
+  }
+  .upload-thumb.has { border-style: solid; border-color: var(--bolder); }
+  .upload-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .upload-controls { display: grid; gap: 6px; flex: 1 1 auto; min-width: 0; }
+  .upload-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
   .btn.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--white); font-weight: 700; }
   .btn.danger.armed:hover { background: #A93226; border-color: #A93226; color: var(--white); }
   .btn.primary.pending { position: relative; }
@@ -424,7 +434,7 @@
           <div class="map-row">
             <div class="map-preview" id="map-preview">Route map</div>
             <div class="map-actions">
-              <label class="btn secondary small fake-file" for="race-map-file">＋ Route map</label>
+              <button type="button" class="btn secondary small fake-file" id="pick-map">＋ Route map</button>
               <input type="file" id="race-map-file" accept="image/*" hidden>
               <button type="button" class="btn secondary small" id="map-remove" hidden>Remove map</button>
             </div>
@@ -435,7 +445,7 @@
         <div class="media-strip" id="media-strip"></div>
 
         <div class="composer-foot">
-          <label class="btn secondary small fake-file" for="post-files">＋ Photo / video</label>
+          <button type="button" class="btn secondary small fake-file" id="pick-media">＋ Photo / video</button>
           <input type="file" id="post-files" multiple accept="image/*,video/*" hidden>
           <input type="date" id="post-date" aria-label="Post date">
           <span class="spacer"></span>

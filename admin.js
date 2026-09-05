@@ -169,6 +169,14 @@
     ['full', 'Full marathon'], ['half', 'Half marathon'], ['10k', '10 km'], ['5k', '5 km'],
     ['ultra', 'Ultramarathon'], ['tri', 'Triathlon'], ['hyrox', 'Hyrox'], ['other', 'Other']
   ];
+  // Accepts 2026-10-25, 2026.10.25, 2026/10/25 -> 'YYYY-MM-DD'; '' if unparseable.
+  function isoDate(v) {
+    var m = /^\s*(\d{4})[-./](\d{1,2})[-./](\d{1,2})/.exec(v || '');
+    if (!m) return '';
+    var mo = +m[2], d = +m[3];
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return '';
+    return m[1] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2);
+  }
   var RACE_KM = { full: '42.195', half: '21.0975', '10k': '10', '5k': '5' };
   var RACE_SHORT = { full: 'Full', half: 'Half', '10k': '10 km', '5k': '5 km', ultra: 'Ultra', tri: 'Tri', hyrox: 'Hyrox', other: 'Race' };
   var PRESET_KM = Object.keys(RACE_KM).map(function (k) { return RACE_KM[k]; });
@@ -295,6 +303,30 @@
       return '<div class="field check"><input type="checkbox" id="f' + p + '" data-path="' + p + '" data-kind="bool"' + (v ? ' checked' : '') + '>' +
              '<label for="f' + p + '">' + esc(humanize(key)) + '</label></div>';
     }
+    // Date fields open the browser's calendar. A value we cannot parse stays in a
+    // text box so nothing is silently thrown away.
+    if (key === 'date' && (v === '' || isoDate(v))) {
+      return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<input type="date" id="f' + p + '" data-path="' + p + '" data-kind="str" data-picker="1" value="' + esc(isoDate(v)) + '"></div>';
+    }
+    // Anywhere a file path is stored, offer to upload the file instead of typing one.
+    if ((key === 'src' && path[path.length - 3] === 'media') || (key === 'map' && path[path.length - 3] === 'races')) {
+      var isMap = key === 'map';
+      return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
+        '<div class="upload-row">' +
+          '<div class="upload-thumb' + (v ? ' has' : '') + '">' +
+            (v ? '<img src="' + esc(previewSrc(v)) + '" alt="" onerror="this.remove()">' : (isMap ? 'Map' : 'File')) +
+          '</div>' +
+          '<div class="upload-controls">' +
+            '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '" placeholder="media/…">' +
+            '<div class="upload-buttons">' +
+              '<button type="button" class="btn secondary small" data-act="upload-file" data-path="' + p + '"' +
+                ' data-accept="' + (isMap ? 'image/*' : 'image/*,video/*') + '">Upload file…</button>' +
+              (v ? '<button type="button" class="btn secondary small" data-act="clear-file" data-path="' + p + '">Clear</button>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div></div>';
+    }
     if (typeof v === 'string') {
       var multi = MULTILINE[key] || v.length > 70 || v.indexOf('\n') !== -1;
       return '<div class="field"><label for="f' + p + '">' + esc(humanize(key)) + '</label>' +
@@ -379,6 +411,56 @@
     armedBtn = null;
   }
 
+  // Writes a file path back into the model and refreshes just that row, so the
+  // open/closed state of the rest of the form survives.
+  function putFilePath(path, value) {
+    setAt(path, value);
+    var field = document.querySelector('[data-path="' + encPath(path) + '"]');
+    if (field) field.value = value;
+    var row = field && field.closest('.upload-row');
+    if (row) {
+      var thumb = row.querySelector('.upload-thumb');
+      thumb.className = 'upload-thumb' + (value ? ' has' : '');
+      thumb.innerHTML = value
+        ? '<img src="' + esc(previewSrc(value)) + '" alt="" onerror="this.remove()">'
+        : (path[path.length - 1] === 'map' ? 'Map' : 'File');
+    }
+    markDirty();
+    schedulePreview(path);
+  }
+
+  // Pick a file, push it to the repo, drop the path in the field.
+  function pickAndUpload(path, accept) {
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    var picker = document.createElement('input');
+    picker.type = 'file';
+    picker.accept = accept || 'image/*,video/*';
+    picker.addEventListener('change', function () {
+      var file = picker.files && picker.files[0];
+      if (!file) return;
+      if (file.size > MAX_BYTES) { setStatus('That file is over 40 MB.', 'error'); return; }
+      var dest = 'media/' + todayISO().slice(0, 7) + '/' + Date.now() + '-' + slugify(file.name);
+      var url = URL.createObjectURL(file);
+      setStatus('Uploading ' + file.name + '\u2026');
+      fileToB64(file)
+        .then(function (b64) { return github().putBase64(dest, b64, 'Add media ' + dest); })
+        .then(function () {
+          localUrls[dest] = url;
+          putFilePath(path, dest);
+          setStatus('Uploaded ' + file.name + '. Click Publish to put it on the live site.', 'ok');
+        })
+        .catch(function (err) { setStatus(err.message || String(err), 'error'); });
+    });
+    picker.click();
+  }
+
+  // Clicking anywhere in a date field opens the calendar, not just the tiny icon.
+  document.addEventListener('click', function (e) {
+    var d = e.target.closest && e.target.closest('input[type="date"]');
+    if (!d || d.disabled || d.readOnly || !d.showPicker) return;
+    try { d.showPicker(); } catch (err) { /* already open, or no user gesture */ }
+  });
+
   $('form').addEventListener('input', function (e) {
     var t = e.target;
     if (!t.dataset || !t.dataset.path || !t.dataset.kind) return;
@@ -387,6 +469,7 @@
     if (t.dataset.kind === 'bool') v = t.checked;
     else if (t.dataset.kind === 'lines') v = t.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
     else v = t.value;
+    if (path[path.length - 1] === 'date' && t.type !== 'date') v = isoDate(v) || v;
     setAt(path, v);
     markDirty();
     schedulePreview(path);
@@ -404,6 +487,8 @@
       return;
     }
     if (btn.dataset.act === 'clear-icon') { setIcon(decPath(btn.dataset.path), '', ''); return; }
+    if (btn.dataset.act === 'upload-file') { pickAndUpload(decPath(btn.dataset.path), btn.dataset.accept); return; }
+    if (btn.dataset.act === 'clear-file') { putFilePath(decPath(btn.dataset.path), ''); return; }
     if (btn.dataset.act === 'recrop-photo') {
       var cur = (model.profile && model.profile.photo) || PHOTO_PATH;
       cropThenUpload(cur + (cur.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now(), false);
@@ -461,7 +546,8 @@
   }
   function pushPreview(tab) {
     if (!previewReady || !iframe.contentWindow) return;
-    iframe.contentWindow.postMessage({ type: 'site-content', content: model, tab: tab || null }, '*');
+    // localUrls lets the preview show a file that GitHub has not rebuilt yet.
+    iframe.contentWindow.postMessage({ type: 'site-content', content: model, tab: tab || null, assets: localUrls }, '*');
   }
 
   /* ================= dirty state ================= */
@@ -611,6 +697,8 @@
 
   /* ================= contact icons: logo upload ================= */
   var LOGO_DIR = 'images/logos/';
+  // Freshly uploaded files 404 until GitHub Pages rebuilds, so preview them from memory.
+  var localUrls = {};
 
   // Writes the icon path into the model, the text field and the thumbnail.
   function setIcon(path, value, previewUrl) {
@@ -831,8 +919,6 @@
   var editingIndex = -1;      // index in the tab's list, -1 while writing something new
   var MAX_BYTES = 40 * 1024 * 1024;
   var nextDraftId = 1;
-  // Freshly uploaded files 404 until GitHub Pages rebuilds, so preview them from memory.
-  var localUrls = {};
   function previewSrc(src) { return localUrls[src] || src; }
 
   function todayISO() {
@@ -980,6 +1066,9 @@
   ['race-name', 'race-note', 'race-time'].forEach(function (id) {
     $(id).addEventListener('input', renderComposerHead);
   });
+  $('pick-media').addEventListener('click', function () { $('post-files').click(); });
+  $('pick-map').addEventListener('click', function () { $('race-map-file').click(); });
+
   $('race-map-file').addEventListener('change', function (e) {
     var file = e.target.files && e.target.files[0];
     e.target.value = '';

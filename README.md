@@ -41,6 +41,8 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
 - `posts` — a feed of dated posts with a title, body and any number of photos or videos. Every tab starts with one; Compose → Update writes into it.
 - `races` — a race log. Shows a tally across the top (**full marathons**, **half marathons**, **10 km races**, plus any other category you have raced) and the **next upcoming** race with a countdown, then one card per race with distance, finish time, average pace, notes, route map and photos. Compose → Race result writes into it; the Hobbies tab starts with one.
 
+Dates are accepted as `2026-10-25`, `2026.10.25` or `2026/10/25` and normalised. A race with a finish time counts as run whatever its date says, so a typo in the year cannot push a finished race into the future. Average pace is derived from finish time and distance when you leave it blank.
+
 Race counts come from the entries themselves — a race dated in the future is listed as *Upcoming* and left out of the tally until the day passes. Cards are ordered by date, newest first, so there is nothing to reorder by hand. Distances: `full`, `half`, `10k`, `5k`, `ultra`, `tri`, `hyrox`, `other`; set `km` for anything without a fixed distance.
 
 Post bodies accept `**bold**`, a blank line starts a new paragraph, and bare URLs become links. Photos and videos open in a full-screen viewer when clicked.

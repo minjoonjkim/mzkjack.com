@@ -283,6 +283,13 @@
     border: 1px solid var(--bolder); border-radius: var(--radius); padding: 15px 17px; margin-bottom: 13px;
     background: linear-gradient(135deg, #FFFFFF 0%, #F7FEFC 100%);
   }
+  .race-summary.solo { grid-template-columns: 1fr; }
+  .race-record { display: grid; gap: 9px; min-width: 0; }
+  .tally-head {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--gray);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tally-head::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--line-soft); }
   .race-tally { display: flex; flex-wrap: wrap; gap: 10px 28px; }
   .tally { display: grid; gap: 1px; }
   .tally-n { font-size: 25px; line-height: 1.1; font-weight: 700; color: var(--black); letter-spacing: -0.02em; }
@@ -474,15 +481,24 @@
 
   var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   // Accepts an ISO date/datetime; anything else is shown as typed.
+  // Accepts 2026-10-25, 2026.10.25, 2026/10/25 and the same with single digits.
+  // Returns 'YYYY-MM-DD', or '' when there is no date in there at all.
+  function isoDate(v) {
+    var m = /^\s*(\d{4})[-./](\d{1,2})[-./](\d{1,2})/.exec(v || '');
+    if (!m) return '';
+    var mo = +m[2], d = +m[3];
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return '';
+    return m[1] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2);
+  }
   function niceDate(v) {
-    if (!v) return '';
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v);
-    if (!m) return v;
+    var iso = isoDate(v);
+    if (!iso) return v || '';
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
     return MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
   }
   // "Today" / "3 days ago" for anything recent, a plain date beyond that.
   function relDate(v) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v || '');
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(isoDate(v));
     if (!m) return v || '';
     var then = new Date(+m[1], +m[2] - 1, +m[3]);
     var now = new Date(); now.setHours(0, 0, 0, 0);
@@ -509,6 +525,11 @@
   /* ---------- profile panel ---------- */
   var COVER_THEMES = ['mint', 'midnight', 'sand', 'slate', 'plum', 'sunrise', 'ink'];
 
+  // In the editor's preview, a just-uploaded file is read from memory until
+  // GitHub Pages rebuilds and can serve it by path.
+  var PREVIEW_ASSETS = {};
+  function assetSrc(v) { return (v && PREVIEW_ASSETS[v]) || v; }
+
   // Only a plain path or URL belongs inside url(); quotes and parens are dropped.
   function cssUrl(v) {
     return String(v == null ? '' : v).replace(/["'()\\\s]/g, '');
@@ -523,12 +544,12 @@
     var initials = (p.name || '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 3);
     var cover = p.cover || {};
     var theme = COVER_THEMES.indexOf(cover.theme) === -1 ? 'mint' : cover.theme;
-    var wall = cssUrl(cover.image);
+    var wall = cssUrl(assetSrc(cover.image));
     var html = '<div class="profile-cover cover-' + theme + (wall ? ' has-image' : '') + '"' +
                (wall ? ' style="background-image:url(\'' + wall + '\')"' : '') + '></div>' +
                '<div class="profile-body">';
     html += '<div class="portrait" id="portrait">' +
-              '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" id="portrait-img">' +
+              '<img src="' + esc(assetSrc(p.photo)) + '" alt="' + esc(p.name) + '" id="portrait-img">' +
               '<div class="placeholder"><b>' + esc(initials) + '</b>Add photo at<br>' + esc(p.photo || 'images/profile.jpg') + '</div>' +
             '</div>';
     html += '<div class="identity"><h1>' + esc(p.name) + '</h1>' + (p.nameKo ? '<p>' + esc(p.nameKo) + '</p>' : '') + '</div>';
@@ -542,7 +563,7 @@
         if (c.lines && c.lines.length) {
           // One box per line, each with its own optional icon.
           body = '<div class="lines">' + c.lines.map(function (ln) {
-            var icon = ln.icon ? '<img class="ico" src="' + esc(ln.icon) + '" alt="" loading="lazy" onerror="this.setAttribute(\'data-missing\',\'\')">' : '';
+            var icon = ln.icon ? '<img class="ico" src="' + esc(assetSrc(ln.icon)) + '" alt="" loading="lazy" onerror="this.setAttribute(\'data-missing\',\'\')">' : '';
             return '<span class="line">' + icon + '<span class="txt">' + linkOr(ln.value, ln.href) + '</span></span>';
           }).join('') + '</div>';
         } else {
@@ -601,7 +622,7 @@
       }).join('') + '</div>';
     },
     races: function (b) {
-      var races = (b.races || []).slice().sort(function (a, c) { return (c.date || '') < (a.date || '') ? -1 : 1; });
+      var races = (b.races || []).slice().sort(function (a, c) { return raceDate(c) < raceDate(a) ? -1 : 1; });
       return renderRaceSummary(races) +
         (races.length ? '<div class="race-list">' + races.map(renderRace).join('') + '</div>' : '');
     },
@@ -666,18 +687,18 @@
 
   /* ---------- races ---------- */
   var RACE_KINDS = {
-    full:  { short: 'Full',  label: 'Full marathons', name: 'Full marathon', km: 42.195 },
-    half:  { short: 'Half',  label: 'Half marathons', name: 'Half marathon', km: 21.0975 },
-    '10k': { short: '10 km', label: '10 km races',    name: '10 km race',    km: 10 },
-    '5k':  { short: '5 km',  label: '5 km races',     name: '5 km race',     km: 5 },
-    ultra: { short: 'Ultra', label: 'Ultramarathons', name: 'Ultramarathon', km: 0 },
-    tri:   { short: 'Tri',   label: 'Triathlons',     name: 'Triathlon',     km: 0 },
-    hyrox: { short: 'Hyrox', label: 'Hyrox races',    name: 'Hyrox',         km: 0 }
+    full:  { short: 'Full',  one: 'Full marathon',  label: 'Full marathons', name: 'Full marathon', km: 42.195 },
+    half:  { short: 'Half',  one: 'Half marathon',  label: 'Half marathons', name: 'Half marathon', km: 21.0975 },
+    '10k': { short: '10 km', one: '10 km race',     label: '10 km races',    name: '10 km race',    km: 10 },
+    '5k':  { short: '5 km',  one: '5 km race',      label: '5 km races',     name: '5 km race',     km: 5 },
+    ultra: { short: 'Ultra', one: 'Ultramarathon',  label: 'Ultramarathons', name: 'Ultramarathon', km: 0 },
+    tri:   { short: 'Tri',   one: 'Triathlon',      label: 'Triathlons',     name: 'Triathlon',     km: 0 },
+    hyrox: { short: 'Hyrox', one: 'Hyrox race',     label: 'Hyrox races',    name: 'Hyrox',         km: 0 }
   };
   // Full / half / 10 km are always on the board, even at zero.
   var TALLY_ORDER = ['full', 'half', '10k', '5k', 'ultra', 'tri', 'hyrox', 'other'];
   var TALLY_ALWAYS = { full: 1, half: 1, '10k': 1 };
-  var OTHER_KIND = { short: 'Race', label: 'Other races', name: 'Race', km: 0 };
+  var OTHER_KIND = { short: 'Race', one: 'Other race', label: 'Other races', name: 'Race', km: 0 };
 
   function raceKind(r) { return RACE_KINDS[r.distance] ? r.distance : 'other'; }
   function kindInfo(k) { return RACE_KINDS[k] || OTHER_KIND; }
@@ -690,9 +711,31 @@
     var km = raceKm(r);
     return km ? (Math.round(km * 1000) / 1000) + ' km' : kindInfo(raceKind(r)).name;
   }
-  function isUpcoming(r) { return !!r.date && r.date > todayStamp(); }
-  function daysUntil(iso) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+  // A finish time means you ran it, so it counts as history no matter what the
+  // date says. Only a dated, un-run race is still ahead of you.
+  // "3:47:18" or "42:10" -> seconds.
+  function durationSeconds(txt) {
+    var m = /^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2})\s*$/.exec(txt || '');
+    if (!m) return null;
+    return (m[1] ? +m[1] : 0) * 3600 + (+m[2]) * 60 + (+m[3]);
+  }
+  // Pace is derivable from time and distance, so a blank one is filled in rather
+  // than left off the card.
+  function racePace(r) {
+    if (r.pace) return r.pace;
+    var secs = durationSeconds(r.time), km = raceKm(r);
+    if (!secs || !(km > 0)) return '';
+    var per = Math.round(secs / km);
+    return Math.floor(per / 60) + ':' + ('0' + (per % 60)).slice(-2);
+  }
+  function isUpcoming(r) {
+    if (r.time || r.pace) return false;
+    var iso = isoDate(r.date);
+    return !!iso && iso > todayStamp();
+  }
+  function raceDate(r) { return isoDate(r.date) || ''; }
+  function daysUntil(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(isoDate(v));
     if (!m) return null;
     var now = new Date(); now.setHours(0, 0, 0, 0);
     return Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - now) / 86400000);
@@ -707,12 +750,18 @@
     });
     var tally = TALLY_ORDER.filter(function (k) { return counts[k] || TALLY_ALWAYS[k]; })
       .map(function (k) {
-        return '<div class="tally"><span class="tally-n num">' + (counts[k] || 0) + '</span>' +
-               '<span class="tally-l">' + esc(kindInfo(k).label) + '</span></div>';
+        var n = counts[k] || 0;
+        var info = kindInfo(k);
+        return '<div class="tally"><span class="tally-n num">' + n + '</span>' +
+               '<span class="tally-l">' + esc(n === 1 ? info.one : info.label) + '</span></div>';
       }).join('');
 
-    var next = races.filter(isUpcoming).sort(function (a, b) { return a.date < b.date ? -1 : 1; })[0];
-    var box;
+    var total = races.filter(function (r) { return !isUpcoming(r); }).length;
+    var next = races.filter(isUpcoming).sort(function (a, b) { return raceDate(a) < raceDate(b) ? -1 : 1; })[0];
+
+    // The board is a record of what has been run. An upcoming race only earns a
+    // slot when one is actually on the calendar.
+    var box = '';
     if (next) {
       var d = daysUntil(next.date);
       var away = d === 0 ? 'today' : d === 1 ? 'tomorrow' : 'in ' + d + ' days';
@@ -720,11 +769,11 @@
         '<span class="next-name">' + esc(next.name || 'Unnamed race') + '</span>' +
         '<span class="next-meta">' + esc(niceDate(next.date) + ' · ' + away +
           (next.location ? ' · ' + next.location : '')) + '</span></div>';
-    } else {
-      box = '<div class="race-next none"><span class="next-k">Next upcoming</span>' +
-        '<span class="next-name">Nothing on the calendar yet</span></div>';
     }
-    return '<div class="race-summary"><div class="race-tally">' + tally + '</div>' + box + '</div>';
+    return '<div class="race-summary' + (box ? '' : ' solo') + '">' +
+      '<div class="race-record"><div class="tally-head">' +
+        (total ? total + (total === 1 ? ' race finished' : ' races finished') : 'Races finished') +
+      '</div><div class="race-tally">' + tally + '</div></div>' + box + '</div>';
   }
 
   function renderRace(r) {
@@ -737,7 +786,8 @@
 
     var figures = [['Distance', raceDistance(r), '']];
     if (r.time) figures.push(['Finish time', r.time, '']);
-    if (r.pace) figures.push(['Avg pace', r.pace, '/km']);
+    var pace = racePace(r);
+    if (pace) figures.push(['Avg pace', pace, '/km']);
     var figHtml = '<dl class="race-figures">' + figures.map(function (f) {
       return '<div><dt>' + esc(f[0]) + '</dt><dd class="num">' + esc(f[1]) +
         (f[2] ? '<small>' + esc(f[2]) + '</small>' : '') + '</dd></div>';
@@ -846,6 +896,7 @@
     window.addEventListener('message', function (e) {
       if (e.data && e.data.type === 'site-content' && e.data.content) {
         if (e.data.tab) activeTab = e.data.tab;
+        PREVIEW_ASSETS = e.data.assets || {};
         renderAll(e.data.content);
       }
     });
