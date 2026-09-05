@@ -26,9 +26,9 @@ window.SITE_CONTENT = {
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "RLWRLD (Intern)",
+            "value": "Robotics Transformation @RLWRLD\n",
             "href": "https://rlwrld.ai/",
-            "icon": "images/logos/rlwrld.png"
+            "icon": "images/logos/favi.webp"
           }
         ]
       },
@@ -45,7 +45,7 @@ window.SITE_CONTENT = {
       {
         "label": "LinkedIn",
         "value": "linkedin.com/in/…",
-        "href": "https://www.linkedin.com/"
+        "href": "https://www.linkedin.com/in/minjoonjkim/"
       }
     ],
     "focus": [
@@ -53,7 +53,9 @@ window.SITE_CONTENT = {
       "VLMOps",
       "Robotics Deployment",
       "Reinforcement Learning",
-      "M&A"
+      "M&A",
+      "Investment Banking",
+      "Venture Capital"
     ]
   },
   "tabs": [
@@ -341,26 +343,7 @@ window.SITE_CONTENT = {
         {
           "type": "races",
           "title": "Racing",
-          "races": [
-            {
-              "name": "2025 Chuncheon Marathon",
-              "date": "2028.10.25",
-              "distance": "full",
-              "km": "42.195",
-              "time": "3:47:18",
-              "pace": "",
-              "location": "Chuncheon, South Korea",
-              "note": "",
-              "map": "",
-              "media": [
-                {
-                  "type": "image",
-                  "src": "",
-                  "alt": ""
-                }
-              ]
-            }
-          ]
+          "races": []
         },
         {
           "type": "cards",
