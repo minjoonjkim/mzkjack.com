@@ -331,6 +331,20 @@
   .race-figures dt { color: var(--gray); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
   .race-figures dd { color: var(--black); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; margin-top: 1px; }
   .race-figures dd small { font-weight: 400; color: var(--dim); font-size: var(--small); margin-left: 2px; }
+  .race-gallery { display: grid; gap: 14px; padding: 14px 15px 16px; border-top: 1px solid var(--line-soft); justify-items: center; }
+  .race-gallery .shot { margin: 0; display: grid; gap: 5px; justify-items: center; max-width: 100%; }
+  .race-gallery .shot-open {
+    display: block; margin: 0; padding: 0; border: 0; background: none; cursor: zoom-in; max-width: 100%;
+    aspect-ratio: auto; max-height: none; overflow: visible; line-height: 0;
+  }
+  .race-gallery .shot-open::after { content: none; }
+  .race-gallery img, .race-gallery video {
+    display: block; width: auto; height: auto; max-width: 100%; max-height: 620px;
+    border-radius: var(--radius-sm); border: 1px solid var(--line-soft); background: #F4F5F7;
+    transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .race-gallery .shot-open:hover img { box-shadow: var(--sh-2); transform: translateY(-2px); }
+  .race-gallery figcaption { color: var(--gray); font-size: var(--small); text-align: center; max-width: 70ch; }
   .race-note { padding: 12px 15px; color: var(--slate); border-top: 1px solid var(--line-soft); }
   .race-note p + p { margin-top: 7px; }
   .race-map { border-top: 1px solid var(--bolder); }
@@ -622,7 +636,13 @@
       }).join('') + '</div>';
     },
     races: function (b) {
-      var races = (b.races || []).slice().sort(function (a, c) { return raceDate(c) < raceDate(a) ? -1 : 1; });
+      var races = (b.races || []).slice().sort(function (a, c) {
+        var da = raceDate(a), dc = raceDate(c);
+        if (da && dc) return da === dc ? 0 : (dc < da ? -1 : 1);
+        if (da) return -1;          // dated races first
+        if (dc) return 1;
+        return 0;                   // undated: keep the order they were entered
+      });
       return renderRaceSummary(races) +
         (races.length ? '<div class="race-list">' + races.map(renderRace).join('') + '</div>' : '');
     },
@@ -662,6 +682,23 @@
     }).join('') + '</div>';
   }
   function galleryAttr(media) { return ' data-media="' + esc(JSON.stringify(media)) + '"'; }
+
+  // Race photos read like a blog post: every shot in full, stacked, nothing
+  // cropped and nothing hidden behind a "+3" badge.
+  function mediaStack(list, offset) {
+    return '<div class="race-gallery">' + list.map(function (m, i) {
+      var inner = isVideo(m)
+        ? '<video src="' + esc(m.src) + '" controls preload="metadata" playsinline></video>'
+        : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">';
+      return '<figure class="shot">' +
+        (isVideo(m)
+          ? inner
+          : '<button type="button" class="shot-open media-cell" data-index="' + (offset + i) + '" ' +
+            'aria-label="Open photo ' + (i + 1) + ' full size">' + inner + '</button>') +
+        (m.alt ? '<figcaption>' + esc(m.alt) + '</figcaption>' : '') +
+        '</figure>';
+    }).join('') + '</div>';
+  }
 
   function renderPost(p) {
     var who = (content && content.profile) || {};
@@ -776,6 +813,12 @@
       '</div><div class="race-tally">' + tally + '</div></div>' + box + '</div>';
   }
 
+  // "Full", "Half", or the actual distance for anything without a preset.
+  function badgeText(r, kind) {
+    if (kind !== OTHER_KIND) return kind.short;
+    var km = raceKm(r);
+    return km ? (Math.round(km * 10) / 10) + ' km' : kind.short;
+  }
   function renderRace(r) {
     var kind = kindInfo(raceKind(r));
     var upcoming = isUpcoming(r);
@@ -797,7 +840,7 @@
 
     return '<article class="race"' + (gallery.length ? galleryAttr(gallery) : '') + '>' +
       '<div class="race-head">' +
-        '<span class="race-badge' + (upcoming ? ' upcoming' : '') + '">' + esc(kind.short) + '</span>' +
+        '<span class="race-badge' + (upcoming ? ' upcoming' : '') + '">' + esc(badgeText(r, kind)) + '</span>' +
         '<div class="race-id"><h3>' + esc(r.name || 'Unnamed race') + '</h3>' +
         (sub ? '<p class="race-sub">' + esc(sub) + '</p>' : '') + '</div>' +
         (upcoming ? '<span class="race-flag">Upcoming</span>' : '') +
@@ -805,7 +848,7 @@
       figHtml +
       (r.note ? '<div class="race-note">' + richBody(r.note) + '</div>' : '') +
       (r.map ? '<div class="race-map">' + mediaCell(gallery[0], 0, 0, '<span class="map-tag">Route</span>') + '</div>' : '') +
-      (photos.length ? mediaGrid(photos, r.map ? 1 : 0) : '') +
+      (photos.length ? mediaStack(photos, r.map ? 1 : 0) : '') +
       '</article>';
   }
 
