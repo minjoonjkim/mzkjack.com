@@ -26,9 +26,9 @@ window.SITE_CONTENT = {
             "icon": "images/logos/university-seal.jpg"
           },
           {
-            "value": "Robotics Transformation @RLWRLD",
+            "value": "RLWRLD (Intern)",
             "href": "https://rlwrld.ai/",
-            "icon": "images/logos/favi.webp"
+            "icon": "images/logos/rlwrld.png"
           }
         ]
       },
@@ -57,7 +57,7 @@ window.SITE_CONTENT = {
     ],
     "cover": {
       "theme": "mint",
-      "image": "images/covers/40522-61113-826.jpg"
+      "image": ""
     }
   },
   "tabs": [
@@ -345,7 +345,20 @@ window.SITE_CONTENT = {
         {
           "type": "races",
           "title": "Racing",
-          "races": []
+          "races": [
+            {
+              "name": "Chuncheon Marathon",
+              "date": "",
+              "distance": "full",
+              "km": "",
+              "time": "3:47:18",
+              "pace": "",
+              "location": "",
+              "note": "",
+              "map": "media/2026-09/1788584577705-course-img.png",
+              "media": []
+            }
+          ]
         },
         {
           "type": "cards",
