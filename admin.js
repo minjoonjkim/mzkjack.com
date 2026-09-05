@@ -28,11 +28,17 @@
     setupMode = setup;
     $('mode-login').hidden = setup;
     $('mode-setup').hidden = !setup;
+    // Hidden-but-required fields would otherwise block the form from submitting.
+    disableInputs('mode-login', setup);
+    disableInputs('mode-setup', !setup);
     $('gate-submit').textContent = setup ? 'Set up and unlock' : 'Unlock';
     $('toggle-setup').textContent = setup ? 'Back to login' : 'Reset access…';
     $('toggle-setup').hidden = setup ? !currentVault() : false;
     $('setup-repo').textContent = CONFIG.repo || '(repo not set)';
     showGateError('');
+  }
+  function disableInputs(id, off) {
+    Array.prototype.forEach.call($(id).querySelectorAll('input'), function (i) { i.disabled = off; });
   }
   function showGateError(msg) { $('gate-error').textContent = msg; $('gate-error').hidden = !msg; }
 
@@ -87,7 +93,9 @@
     $('gate').hidden = true;
     $('app').hidden = false;
     renderForm();
-    setStatus('Unlocked. Changes appear in the preview; click Publish to make them live.');
+    renderCompose();
+    setEditorMode('compose');
+    setStatus('Unlocked. Write a post, or switch to Structure to edit the rest of the page.');
   }
 
   function lock() {
@@ -126,7 +134,8 @@
     table:   { type: 'table', title: 'New section', rows: [{ name: 'Name', text: 'Description', tag: '' }] },
     skills:  { type: 'skills', title: 'Skills', rows: [{ label: 'Category', items: ['One', 'Two'], text: '' }] },
     stats:   { type: 'stats', title: 'At a glance', stats: [{ value: '1', label: 'Label' }] },
-    cards:   { type: 'cards', title: 'New section', cards: [{ meta: 'Category', title: 'Card', text: 'Description', facts: [{ label: 'Fact', value: 'Value' }] }] }
+    cards:   { type: 'cards', title: 'New section', cards: [{ meta: 'Category', title: 'Card', text: 'Description', facts: [{ label: 'Fact', value: 'Value' }] }] },
+    posts:   { type: 'posts', title: 'Updates', posts: [] }
   };
   var KEY_TEMPLATES = {
     tabs:    { id: 'new', label: 'New tab', blocks: [] },
@@ -135,7 +144,9 @@
     stats:   { value: '', label: '' },
     cards:   { meta: '', title: '', text: '', facts: [] },
     facts:   { label: '', value: '' },
-    contact: { label: '', value: '', href: '' }
+    contact: { label: '', value: '', href: '' },
+    posts:   { title: '', date: '', body: '', media: [] },
+    media:   { type: 'image', src: '', alt: '' }
   };
   function templateFor(path, list) {
     var key = path[path.length - 1];
@@ -153,10 +164,12 @@
     when: 'Dates', current: 'Currently active (shows a mint dot)', org: 'Organization', meta: 'Category label',
     tag: 'Small tag (language, license…)', items: 'Items as chips', text: 'Text', paragraphs: 'Paragraphs',
     bullets: 'Bullet points', photo: 'Photo path', brand: 'Header name', roles: 'Roles / titles',
-    focus: 'Focus areas', id: 'Tab id (used in the URL)', label: 'Label'
+    focus: 'Focus areas', id: 'Tab id (used in the URL)', label: 'Label',
+    body: 'Body', media: 'Photos and videos', src: 'File path or URL', alt: 'Caption / alt text',
+    date: 'Date (YYYY-MM-DD)', posts: 'Posts', author: 'Author (defaults to your name)'
   };
   var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
-  var MULTILINE = { text: 1, value: 1 };
+  var MULTILINE = { text: 1, value: 1, body: 1 };
 
   function humanize(k) {
     if (LABELS[k]) return LABELS[k];
@@ -165,6 +178,7 @@
   function isStringArray(a) { return Array.isArray(a) && a.every(function (x) { return typeof x === 'string'; }); }
   function itemTitle(item, i) {
     var keys = ['title', 'heading', 'label', 'name', 'value', 'id'];
+    if (item && item.src && !item.title) return String(item.src).split('/').pop();
     for (var k = 0; k < keys.length; k++) {
       if (item && typeof item[keys[k]] === 'string' && item[keys[k]].trim()) return item[keys[k]];
     }
@@ -174,7 +188,28 @@
   function renderValue(v, path, key, level) {
     var p = encPath(path);
     if (key === 'type') {
-      return '<div class="readonly">Section type: <b>' + esc(v) + '</b></div>';
+      // Section types are fixed; a media item's type is image or video.
+      if (path[path.length - 3] === 'blocks') return '<div class="readonly">Section type: <b>' + esc(v) + '</b></div>';
+      return '<div class="field"><label for="f' + p + '">Kind</label>' +
+        '<select id="f' + p + '" data-path="' + p + '" data-kind="str">' +
+        ['image', 'video'].map(function (o) {
+          return '<option value="' + o + '"' + (o === v ? ' selected' : '') + '>' + o + '</option>';
+        }).join('') + '</select></div>';
+    }
+    if (key === 'photo' && path.length === 2 && path[0] === 'profile') {
+      return '<div class="field">' +
+        '<label for="f' + p + '">Profile photo</label>' +
+        '<div class="photo-row">' +
+          '<div class="photo-thumb" id="photo-thumb">' +
+            (v ? '<img src="' + esc(v) + '" alt="" onerror="this.remove()">' : '') +
+          '</div>' +
+          '<div class="photo-controls">' +
+            '<button type="button" class="btn secondary small" data-act="pick-photo">Upload photo\u2026</button>' +
+            '<input type="file" id="photo-file" accept="image/jpeg,image/png,image/webp" hidden>' +
+            '<input type="text" id="f' + p + '" data-path="' + p + '" data-kind="str" value="' + esc(v) + '">' +
+            '<span class="hint">JPEG, PNG or WebP. Resized to 800px and saved as images/profile.jpg.</span>' +
+          '</div>' +
+        '</div></div>';
     }
     if (typeof v === 'boolean') {
       return '<div class="field check"><input type="checkbox" id="f' + p + '" data-path="' + p + '" data-kind="bool"' + (v ? ' checked' : '') + '>' +
@@ -268,6 +303,7 @@
     var btn = e.target.closest('button[data-act]');
     if (!btn) return;
     e.preventDefault();
+    if (btn.dataset.act === 'pick-photo') { var picker = $('photo-file'); if (picker) picker.click(); return; }
     var path = decPath(btn.dataset.path);
     var list = getAt(path);
     var i = parseInt(btn.dataset.index, 10);
@@ -313,6 +349,66 @@
   }
 
   /* ================= dirty state ================= */
+  /* ================= profile photo upload ================= */
+  var PHOTO_PATH = 'images/profile.jpg';
+
+  // Decodes, downscales and re-encodes as JPEG so the repo stays small and the
+  // format is one every browser can render.
+  function imageToJpeg(file, maxDim, quality) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        URL.revokeObjectURL(url);
+        if (!w || !h) { reject(new Error('That image could not be read.')); return; }
+        var scale = Math.min(1, maxDim / Math.max(w, h));
+        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(img, 0, 0, cw, ch);
+        var dataUrl;
+        try { dataUrl = canvas.toDataURL('image/jpeg', quality); }
+        catch (err) { reject(new Error('That image could not be processed.')); return; }
+        resolve({ dataUrl: dataUrl, b64: dataUrl.slice(dataUrl.indexOf(',') + 1) });
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error('Your browser cannot read that file. iPhone HEIC photos are not supported: export it as JPEG first.'));
+      };
+      img.src = url;
+    });
+  }
+
+  function uploadProfilePhoto(file) {
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    if (!/^image\//.test(file.type)) { setStatus('Choose an image file (JPEG, PNG or WebP).', 'error'); return; }
+    setStatus('Preparing photo\u2026');
+    imageToJpeg(file, 800, 0.85).then(function (out) {
+      setStatus('Uploading photo\u2026');
+      return github().putBase64(PHOTO_PATH, out.b64, 'Update profile photo').then(function () {
+        var thumb = $('photo-thumb');
+        if (thumb) thumb.innerHTML = '<img src="' + out.dataUrl + '" alt="">';
+        var field = document.querySelector('[data-path="' + encPath(['profile', 'photo']) + '"]');
+        if (field) field.value = PHOTO_PATH;
+        if (model.profile) model.profile.photo = PHOTO_PATH;
+        setStatus('Photo uploaded. The live site shows it once GitHub rebuilds, about a minute.', 'ok');
+      });
+    }).catch(function (err) {
+      setStatus(err.message || 'Could not upload the photo.', 'error');
+    });
+  }
+
+  $('form').addEventListener('change', function (e) {
+    if (e.target && e.target.id === 'photo-file' && e.target.files && e.target.files[0]) {
+      uploadProfilePhoto(e.target.files[0]);
+      e.target.value = '';
+    }
+  });
+
   function markDirty() {
     if (!dirty) { dirty = true; setStatus('Unpublished changes.'); }
   }
@@ -321,17 +417,21 @@
   });
 
   /* ================= publish / download / lock / password ================= */
+  function github() { return Core.GitHub(token, CONFIG.repo, CONFIG.branch || 'main'); }
+
+  function publishContent(message) {
+    if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
+    return github()
+      .putFile(CONFIG.contentPath || 'content.js', Core.serializeContent(model), message || 'Update site content')
+      .then(function (r) { dirty = false; return r; });
+  }
+
   $('btn-publish').addEventListener('click', function () {
-    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
     var btn = $('btn-publish');
     btn.disabled = true;
     setStatus('Publishing…');
-    var gh = Core.GitHub(token, CONFIG.repo, CONFIG.branch || 'main');
-    gh.putFile(CONFIG.contentPath || 'content.js', Core.serializeContent(model), 'Update site content')
-      .then(function () {
-        dirty = false;
-        setStatus('Published. The live site updates within about a minute.', 'ok');
-      })
+    publishContent('Update site content')
+      .then(function () { setStatus('Published. The live site updates within about a minute.', 'ok'); })
       .catch(function (err) { setStatus(err.message, 'error'); })
       .then(function () { btn.disabled = false; });
   });
@@ -371,8 +471,363 @@
     }).catch(function (err) { setStatus(err.message, 'error'); });
   });
 
+  /* ================= editor mode ================= */
+  var editorMode = 'compose';
+  function setEditorMode(mode) {
+    editorMode = mode;
+    $('mode-compose').setAttribute('aria-pressed', mode === 'compose' ? 'true' : 'false');
+    $('mode-structure').setAttribute('aria-pressed', mode === 'structure' ? 'true' : 'false');
+    $('compose-pane').hidden = mode !== 'compose';
+    $('panes').hidden = mode !== 'structure';
+    if (mode === 'compose') renderCompose();
+    else { renderForm(); pushPreview(model.tabs[composeTab] && model.tabs[composeTab].id); }
+  }
+  $('mode-compose').addEventListener('click', function () { setEditorMode('compose'); });
+  $('mode-structure').addEventListener('click', function () { setEditorMode('structure'); });
+
+  /* ================= compose: social-style posts ================= */
+  var composeTab = 0;
+  var draft = [];          // { kind: 'new' | 'existing', mtype, src, alt, file, url, name }
+  var editingIndex = -1;   // index in the tab's post list, -1 while writing a new post
+  var MAX_BYTES = 40 * 1024 * 1024;
+  var nextDraftId = 1;
+  // Freshly uploaded files 404 until GitHub Pages rebuilds, so preview them from memory.
+  var localUrls = {};
+  function previewSrc(src) { return localUrls[src] || src; }
+
+  function todayISO() {
+    var d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  }
+  function niceDate(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v || '');
+    if (!m) return v || '';
+    return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+  }
+  function initialsOf(name) {
+    return String(name || '').split(/\s+/).map(function (w) { return w[0] || ''; }).join('').slice(0, 2).toUpperCase();
+  }
+  function isVideoSrc(item) {
+    return item.mtype === 'video' || item.type === 'video' || /\.(mp4|webm|mov|m4v|ogg)$/i.test(item.src || '');
+  }
+
+  // Every tab keeps one "posts" section; it is created the first time you post there.
+  function postsBlock(tabIndex, create) {
+    var tab = model.tabs[tabIndex];
+    if (!tab) return null;
+    tab.blocks = tab.blocks || [];
+    for (var i = 0; i < tab.blocks.length; i++) {
+      if (tab.blocks[i].type === 'posts') return tab.blocks[i];
+    }
+    if (!create) return null;
+    var block = { type: 'posts', title: 'Updates', posts: [] };
+    tab.blocks.push(block);
+    return block;
+  }
+  function postsOf(tabIndex) {
+    var b = postsBlock(tabIndex, false);
+    return (b && b.posts) || [];
+  }
+
+  function renderCompose() {
+    renderComposeTabs();
+    renderComposerHead();
+    renderDraftMedia();
+    renderComposeFeed();
+  }
+
+  function renderComposeTabs() {
+    var host = $('compose-tabs');
+    host.innerHTML = '<span class="pill-label">Post in</span>' + (model.tabs || []).map(function (t, i) {
+      var n = postsOf(i).length;
+      return '<button type="button" class="pill" data-tab="' + i + '" aria-pressed="' + (i === composeTab) + '">' +
+        esc(t.label || t.id) + '<span class="count">' + n + '</span></button>';
+    }).join('');
+  }
+
+  function renderComposerHead() {
+    var pro = model.profile || {};
+    $('composer-avatar').innerHTML = pro.photo
+      ? '<img src="' + esc(pro.photo) + '" alt="" onerror="this.remove()">'
+      : esc(initialsOf(pro.name));
+    $('composer-author').textContent = pro.name || 'You';
+    var tab = model.tabs[composeTab];
+    $('composer-target').textContent = editingIndex >= 0
+      ? 'Editing a post in ' + (tab ? tab.label : '')
+      : 'Posting to ' + (tab ? tab.label : '');
+    $('composer-badge').hidden = editingIndex < 0;
+    $('post-cancel').hidden = editingIndex < 0 && !draft.length && !$('post-title').value && !$('post-body').value;
+    $('post-submit').textContent = editingIndex >= 0 ? 'Save changes' : 'Post';
+  }
+
+  function renderDraftMedia() {
+    $('media-strip').innerHTML = draft.map(function (m, i) {
+      var src = m.kind === 'new' ? m.url : previewSrc(m.src);
+      var inner = isVideoSrc(m)
+        ? '<video src="' + esc(src) + '" preload="metadata" muted playsinline></video>'
+        : '<img src="' + esc(src) + '" alt="">';
+      return '<div class="media-tile">' + inner +
+        '<span class="kind">' + (isVideoSrc(m) ? 'video' : 'photo') + '</span>' +
+        '<span class="tools">' +
+          '<button type="button" data-mact="left" data-i="' + i + '" title="Move left"' + (i === 0 ? ' disabled' : '') + '>‹</button>' +
+          '<button type="button" data-mact="right" data-i="' + i + '" title="Move right"' + (i === draft.length - 1 ? ' disabled' : '') + '>›</button>' +
+          '<button type="button" data-mact="del" data-i="' + i + '" title="Remove">✕</button>' +
+        '</span></div>';
+    }).join('');
+    $('dropnote').hidden = draft.length > 0;
+  }
+
+  function renderComposeFeed() {
+    var posts = postsOf(composeTab);
+    $('feed-count').textContent = posts.length
+      ? posts.length + (posts.length === 1 ? ' post' : ' posts') + ' in this tab'
+      : '';
+    if (!posts.length) {
+      $('compose-feed').innerHTML = '<div class="empty-note">Nothing posted in this tab yet.</div>';
+      return;
+    }
+    $('compose-feed').innerHTML = posts.map(function (post, i) {
+      var media = (post.media || []).filter(function (m) { return m && m.src; });
+      var thumbs = media.slice(0, 6).map(function (m) {
+        var src = previewSrc(m.src);
+        var inner = isVideoSrc(m)
+          ? '<video src="' + esc(src) + '" preload="metadata" muted playsinline></video><span>video</span>'
+          : '<img src="' + esc(src) + '" alt="" loading="lazy">';
+        return '<div class="thumb">' + inner + '</div>';
+      }).join('');
+      var body = String(post.body || '');
+      if (body.length > 260) body = body.slice(0, 260) + '…';
+      return '<article class="card apost">' +
+        '<div class="apost-top">' +
+          '<span class="apost-title">' + esc(post.title || '(no title)') + '</span>' +
+          '<span class="apost-when">' + esc(niceDate(post.date)) + '</span>' +
+          '<span class="apost-tools">' +
+            '<button type="button" class="btn secondary small" data-pact="up" data-i="' + i + '" title="Move up"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+            '<button type="button" class="btn secondary small" data-pact="down" data-i="' + i + '" title="Move down"' + (i === posts.length - 1 ? ' disabled' : '') + '>↓</button>' +
+            '<button type="button" class="btn secondary small" data-pact="edit" data-i="' + i + '">Edit</button>' +
+            '<button type="button" class="btn danger small" data-pact="del" data-i="' + i + '">Delete</button>' +
+          '</span>' +
+        '</div>' +
+        (body ? '<div class="apost-body">' + esc(body) + '</div>' : '') +
+        (thumbs ? '<div class="apost-media">' + thumbs + (media.length > 6 ? '<div class="thumb"><span>+' + (media.length - 6) + '</span></div>' : '') + '</div>' : '') +
+        '</article>';
+    }).join('');
+  }
+
+  /* ---- draft media ---- */
+  function addFiles(files) {
+    var rejected = [];
+    Array.prototype.forEach.call(files, function (file) {
+      var video = /^video\//.test(file.type);
+      if (!video && !/^image\//.test(file.type)) { rejected.push(file.name + ' (not a photo or video)'); return; }
+      if (file.size > MAX_BYTES) { rejected.push(file.name + ' (over 40 MB)'); return; }
+      draft.push({
+        id: nextDraftId++, kind: 'new', file: file, url: URL.createObjectURL(file),
+        mtype: video ? 'video' : 'image', name: file.name, alt: ''
+      });
+    });
+    renderDraftMedia();
+    renderComposerHead();
+    if (rejected.length) setStatus('Skipped: ' + rejected.join(', ') + '.', 'error');
+    else if (files.length) setStatus(draft.length + (draft.length === 1 ? ' file' : ' files') + ' attached. They upload when you post.');
+  }
+
+  function clearDraft() {
+    draft.forEach(function (m) { if (m.kind === 'new' && m.url && !m.keepUrl) URL.revokeObjectURL(m.url); });
+    draft = [];
+  }
+
+  function resetComposer() {
+    clearDraft();
+    editingIndex = -1;
+    $('post-title').value = '';
+    $('post-body').value = '';
+    $('post-date').value = todayISO();
+    renderDraftMedia();
+    renderComposerHead();
+  }
+
+  function slugify(name) {
+    var dot = name.lastIndexOf('.');
+    var base = (dot > 0 ? name.slice(0, dot) : name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'file';
+    var ext = (dot > 0 ? name.slice(dot + 1) : '').toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+    return base + '.' + ext;
+  }
+  function fileToB64(file) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { resolve(String(fr.result).split(',')[1]); };
+      fr.onerror = function () { reject(new Error('Could not read ' + file.name + '.')); };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  // Uploads each new file to media/YYYY-MM/ and resolves to the finished media list.
+  function uploadDraft() {
+    var gh = github();
+    var stamp = Date.now();
+    var folder = 'media/' + todayISO().slice(0, 7);
+    var todo = draft.filter(function (m) { return m.kind === 'new'; });
+    var done = 0;
+
+    return draft.reduce(function (chain, m, i) {
+      return chain.then(function (out) {
+        if (m.kind !== 'new') { out.push({ type: isVideoSrc(m) ? 'video' : 'image', src: m.src, alt: m.alt || '' }); return out; }
+        var path = folder + '/' + stamp + '-' + i + '-' + slugify(m.name);
+        setStatus('Uploading ' + (done + 1) + ' of ' + todo.length + '…');
+        return fileToB64(m.file)
+          .then(function (b64) { return gh.putBase64(path, b64, 'Add media ' + path); })
+          .then(function () {
+            done++;
+            localUrls[path] = m.url;
+            m.keepUrl = true;
+            out.push({ type: m.mtype, src: path, alt: m.alt || '' });
+            return out;
+          });
+      });
+    }, Promise.resolve([]));
+  }
+
+  /* ---- events ---- */
+  $('compose-tabs').addEventListener('click', function (e) {
+    var pill = e.target.closest('.pill');
+    if (!pill) return;
+    var i = parseInt(pill.dataset.tab, 10);
+    if (i === composeTab) return;
+    if (editingIndex >= 0 && !confirm('Discard the post you are editing?')) return;
+    composeTab = i;
+    resetComposer();
+    renderCompose();
+    pushPreview(model.tabs[composeTab].id);
+  });
+
+  $('media-strip').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-mact]');
+    if (!btn) return;
+    var i = parseInt(btn.dataset.i, 10);
+    if (btn.dataset.mact === 'del') {
+      var gone = draft.splice(i, 1)[0];
+      if (gone && gone.kind === 'new' && gone.url && !gone.keepUrl) URL.revokeObjectURL(gone.url);
+    } else if (btn.dataset.mact === 'left' && i > 0) {
+      draft.splice(i - 1, 0, draft.splice(i, 1)[0]);
+    } else if (btn.dataset.mact === 'right' && i < draft.length - 1) {
+      draft.splice(i + 1, 0, draft.splice(i, 1)[0]);
+    }
+    renderDraftMedia();
+    renderComposerHead();
+  });
+
+  $('post-files').addEventListener('change', function (e) {
+    addFiles(e.target.files);
+    e.target.value = '';
+  });
+
+  var composer = $('composer');
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    composer.addEventListener(evt, function (e) { e.preventDefault(); composer.classList.add('dragging'); });
+  });
+  ['dragleave', 'drop'].forEach(function (evt) {
+    composer.addEventListener(evt, function (e) {
+      if (evt === 'drop') { e.preventDefault(); addFiles(e.dataTransfer.files); }
+      composer.classList.remove('dragging');
+    });
+  });
+  $('post-body').addEventListener('paste', function (e) {
+    var files = e.clipboardData && e.clipboardData.files;
+    if (files && files.length) { e.preventDefault(); addFiles(files); }
+  });
+  $('post-title').addEventListener('input', renderComposerHead);
+  $('post-body').addEventListener('input', renderComposerHead);
+
+  $('post-cancel').addEventListener('click', function () {
+    resetComposer();
+    renderCompose();
+    setStatus('Draft cleared.');
+  });
+
+  composer.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!token) { setStatus('Locked. Reload and unlock first.', 'error'); return; }
+    var title = $('post-title').value.trim();
+    var body = $('post-body').value.trim();
+    if (!title && !body && !draft.length) { setStatus('Add a title, some text, or a file first.', 'error'); return; }
+
+    var submit = $('post-submit');
+    submit.disabled = true;
+    $('post-cancel').disabled = true;
+    setStatus(draft.some(function (m) { return m.kind === 'new'; }) ? 'Uploading…' : 'Publishing…');
+
+    uploadDraft().then(function (media) {
+      var post = { title: title, date: $('post-date').value || todayISO(), body: body, media: media };
+      var block = postsBlock(composeTab, true);
+      if (editingIndex >= 0) block.posts[editingIndex] = post;
+      else block.posts.unshift(post);
+      setStatus('Publishing…');
+      return publishContent(editingIndex >= 0 ? 'Edit post' : 'Add post');
+    }).then(function () {
+      resetComposer();
+      renderCompose();
+      renderForm();
+      pushPreview(model.tabs[composeTab].id);
+      setStatus('Posted. The live site updates within about a minute; new files appear once it rebuilds.', 'ok');
+    }).catch(function (err) {
+      setStatus(err.message || String(err), 'error');
+    }).then(function () {
+      submit.disabled = false;
+      $('post-cancel').disabled = false;
+    });
+  });
+
+  $('compose-feed').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-pact]');
+    if (!btn) return;
+    var posts = postsOf(composeTab);
+    var i = parseInt(btn.dataset.i, 10);
+    var act = btn.dataset.pact;
+
+    if (act === 'edit') {
+      var post = posts[i];
+      clearDraft();
+      editingIndex = i;
+      $('post-title').value = post.title || '';
+      $('post-body').value = post.body || '';
+      $('post-date').value = /^\d{4}-\d{2}-\d{2}$/.test(post.date || '') ? post.date : todayISO();
+      draft = (post.media || []).filter(function (m) { return m && m.src; }).map(function (m) {
+        return { id: nextDraftId++, kind: 'existing', src: m.src, mtype: m.type || 'image', alt: m.alt || '' };
+      });
+      renderDraftMedia();
+      renderComposerHead();
+      $('compose-pane').scrollTo({ top: 0, behavior: 'smooth' });
+      $('post-body').focus();
+      setStatus('Editing a post. Save changes to publish, or Cancel to leave it as it is.');
+      return;
+    }
+
+    if (act === 'del') {
+      if (!confirm('Delete "' + (posts[i].title || 'this post') + '"? The uploaded files stay in the repository.')) return;
+      posts.splice(i, 1);
+      if (editingIndex === i) resetComposer();
+      else if (editingIndex > i) editingIndex--;
+    } else if (act === 'up' && i > 0) {
+      posts.splice(i - 1, 0, posts.splice(i, 1)[0]);
+    } else if (act === 'down' && i < posts.length - 1) {
+      posts.splice(i + 1, 0, posts.splice(i, 1)[0]);
+    } else {
+      return;
+    }
+
+    renderCompose();
+    renderForm();
+    pushPreview(model.tabs[composeTab].id);
+    setStatus('Publishing…');
+    publishContent(act === 'del' ? 'Delete post' : 'Reorder posts')
+      .then(function () { setStatus('Published. The live site updates within about a minute.', 'ok'); })
+      .catch(function (err) { setStatus(err.message, 'error'); markDirty(); });
+  });
+
   /* ================= boot ================= */
   (function boot() {
+    $('post-date').value = todayISO();
     if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
       showGateError('This editor needs a secure context (https:// or localhost). Run a local server, e.g. `python3 -m http.server`, or use the live site.');
     }

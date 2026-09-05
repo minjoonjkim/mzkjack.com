@@ -95,18 +95,21 @@
         });
       },
       getFileSha: function (path) {
-        return call('/repos/' + repo + '/contents/' + path + '?ref=' + encodeURIComponent(branch)).then(function (r) {
+        return call('/repos/' + repo + '/contents/' + encodeURI(path) + '?ref=' + encodeURIComponent(branch)).then(function (r) {
           if (r.status === 404) return null;
           if (!r.ok) throw new Error('GitHub read failed (' + r.status + ')');
           return r.json().then(function (j) { return j.sha; });
         });
       },
       putFile: function (path, text, message) {
-        var self = this;
-        return self.getFileSha(path).then(function (sha) {
-          var body = { message: message, content: utf8ToB64(text), branch: branch };
+        return this.putBase64(path, utf8ToB64(text), message);
+      },
+      // Writes any file from base64 content (used for photo and video uploads).
+      putBase64: function (path, b64, message) {
+        return this.getFileSha(path).then(function (sha) {
+          var body = { message: message, content: b64, branch: branch };
           if (sha) body.sha = sha;
-          return call('/repos/' + repo + '/contents/' + path, { method: 'PUT', body: JSON.stringify(body) });
+          return call('/repos/' + repo + '/contents/' + encodeURI(path), { method: 'PUT', body: JSON.stringify(body) });
         }).then(function (r) {
           if (!r.ok) {
             return r.json().catch(function () { return {}; }).then(function (j) {
@@ -120,7 +123,7 @@
   }
 
   root.AdminCore = {
-    utf8ToB64: utf8ToB64, b64ToUtf8: b64ToUtf8,
+    utf8ToB64: utf8ToB64, b64ToUtf8: b64ToUtf8, bytesToB64: bytesToB64,
     sealVault: sealVault, openVault: openVault,
     serializeContent: serializeContent, serializeConfig: serializeConfig,
     GitHub: GitHub
