@@ -60,6 +60,8 @@
   h3 { font-size: 14px; line-height: 1.45; font-weight: 700; color: var(--black); letter-spacing: -0.005em; }
   .num { font-variant-numeric: tabular-nums; }
   b { font-weight: 700; color: var(--black); }
+  /* Bullets and numbers are black everywhere; the accent is for chips and rules. */
+  li::marker { color: var(--black); }
 
   .shell { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
 
@@ -207,7 +209,6 @@
   .entry .org { color: var(--dim); }
   .entry .org .sep { color: var(--gray); margin: 0 7px; }
   .entry ul { margin-top: 5px; padding-left: 17px; display: grid; gap: 5px; color: var(--slate); }
-  .entry ul li::marker { color: var(--primary); }
 
   .table { width: 100%; border-collapse: collapse; }
   .table tr { border-bottom: 1px solid var(--line-soft); }
@@ -491,8 +492,6 @@
   .doc-body h4, .doc-body h5 { font-size: 16px; line-height: 1.45; margin: 24px 0 7px; color: var(--black); font-weight: 700; }
   .doc-body ul, .doc-body ol { margin: 0 0 18px; padding-left: 24px; display: grid; gap: 7px; }
   .doc-body li { padding-left: 3px; }
-  .doc-body li::marker { color: var(--gray); }
-  .doc-body ul li::marker { color: var(--primary); }
   .doc-body a { color: var(--primary-text); border-bottom: 1px solid rgba(11, 127, 105, 0.32); }
   .doc-body a:hover { border-color: var(--primary-text); }
   .doc-body b { font-weight: 700; color: var(--black); }
