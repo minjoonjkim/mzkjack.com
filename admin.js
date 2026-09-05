@@ -3,11 +3,23 @@
   'use strict';
   var Core = window.AdminCore;
   var CONFIG = window.ADMIN_CONFIG || {};
-  var model = JSON.parse(JSON.stringify(window.SITE_CONTENT || {}));
+  // One model per language. Korean starts from the English copy when content.ko.js is missing.
+  function clone(o) { return JSON.parse(JSON.stringify(o || {})); }
+  var models = { en: clone(window.SITE_CONTENT), ko: clone(window.SITE_CONTENT_KO || window.SITE_CONTENT) };
+  var lang = 'en';
+  var model = models.en;
   // Content written before the banner existed still gets the banner fields.
-  if (model.profile && !model.profile.cover) model.profile.cover = { theme: 'mint', image: '' };
+  Object.keys(models).forEach(function (k) {
+    var m = models[k];
+    if (m.profile && !m.profile.cover) m.profile.cover = { theme: 'mint', image: '' };
+  });
   var token = null;
   var dirty = false;
+  var dirtyBy = { en: false, ko: false };
+  function contentPathFor(l) {
+    return l === 'ko' ? (CONFIG.contentPathKo || 'content.ko.js') : (CONFIG.contentPath || 'content.js');
+  }
+  function anyDirty() { return dirty || Object.keys(dirtyBy).some(function (k) { return k !== lang && dirtyBy[k]; }); }
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -548,7 +560,7 @@
   function pushPreview(tab) {
     if (!previewReady || !iframe.contentWindow) return;
     // localUrls lets the preview show a file that GitHub has not rebuilt yet.
-    iframe.contentWindow.postMessage({ type: 'site-content', content: model, tab: tab || null, assets: localUrls }, '*');
+    iframe.contentWindow.postMessage({ type: 'site-content', content: model, tab: tab || null, assets: localUrls, lang: lang }, '*');
   }
 
   /* ================= dirty state ================= */
@@ -749,9 +761,10 @@
   // so the button has to say so.
   function setDirty(v) {
     dirty = v;
+    dirtyBy[lang] = v;
     var btn = $('btn-publish');
     btn.classList.toggle('pending', v);
-    btn.textContent = v ? 'Publish changes' : 'Publish';
+    btn.textContent = (v ? 'Publish changes' : 'Publish') + (lang === 'ko' ? ' (KO)' : '');
   }
   function markDirty() {
     if (!dirty) setDirty(true);
@@ -760,17 +773,20 @@
     }
   }
   window.addEventListener('beforeunload', function (e) {
-    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    if (anyDirty()) { e.preventDefault(); e.returnValue = ''; }
   });
 
   /* ================= publish / download / lock / password ================= */
   function github() { return Core.GitHub(token, CONFIG.repo, CONFIG.branch || 'main'); }
 
+  var lastPublishedPath = contentPathFor('en');
   function publishContent(message) {
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
-    var payload = Core.serializeContent(model);
+    var payload = Core.serializeContent(model, lang);
+    var path = contentPathFor(lang);
+    lastPublishedPath = path;
     return github()
-      .putFile(CONFIG.contentPath || 'content.js', payload, message || 'Update site content')
+      .putFile(path, payload, (message || 'Update site content') + (lang === 'ko' ? ' (Korean)' : ''))
       .then(function () { setDirty(false); return payload; });
   }
 
@@ -784,7 +800,7 @@
 
   // Polls the published file until it matches what was just written.
   function waitForLive(expected, onTick) {
-    var url = CONFIG.contentPath || 'content.js';
+    var url = lastPublishedPath;
     var started = Date.now();
     var LIMIT = 150000;
     function check() {
@@ -850,8 +866,8 @@
       return;
     }
     setStatus('Reloading the preview and checking the live site\u2026');
-    var mine = Core.serializeContent(model);
-    fetch((CONFIG.contentPath || 'content.js') + '?cb=' + Date.now(), { cache: 'no-store' })
+    var mine = Core.serializeContent(model, lang);
+    fetch(contentPathFor(lang) + '?cb=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : ''; })
       .then(function (t) {
         if (t.trim() === mine.trim()) setStatus('Preview reloaded. The live site matches this editor.', 'ok');
@@ -863,17 +879,18 @@
   });
 
   $('btn-download').addEventListener('click', function () {
-    var blob = new Blob([Core.serializeContent(model)], { type: 'text/javascript' });
+    var file = contentPathFor(lang);
+    var blob = new Blob([Core.serializeContent(model, lang)], { type: 'text/javascript' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'content.js';
+    a.download = file;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    setStatus('Downloaded content.js. Replace the file in your site folder to apply.', 'ok');
+    setStatus('Downloaded ' + file + '. Replace the file in your site folder to apply.', 'ok');
   });
 
   $('btn-lock').addEventListener('click', function () {
-    if (dirty && !confirm('You have unpublished changes. Lock anyway?')) return;
+    if (anyDirty() && !confirm('You have unpublished changes. Lock anyway?')) return;
     setDirty(false);
     lock();
   });
@@ -911,6 +928,28 @@
   $('mode-compose').addEventListener('click', function () { setEditorMode('compose'); });
   $('mode-structure').addEventListener('click', function () { setEditorMode('structure'); });
 
+  /* ================= language being edited ================= */
+  // Each language is its own file with its own draft; switching swaps the whole model.
+  function setEditLang(l) {
+    if (l === lang || !models[l]) return;
+    if (editingIndex >= 0 && !confirm('Discard the item you are editing?')) return;
+    dirtyBy[lang] = dirty;
+    lang = l;
+    model = models[l];
+    $('lang-en').setAttribute('aria-pressed', l === 'en' ? 'true' : 'false');
+    $('lang-ko').setAttribute('aria-pressed', l === 'ko' ? 'true' : 'false');
+    setDirty(!!dirtyBy[l]);
+    resetComposer();
+    renderForm();
+    renderCompose();
+    pushPreview(model.tabs && model.tabs[composeTab] ? model.tabs[composeTab].id : null);
+    setStatus(l === 'ko'
+      ? 'Editing the Korean site (content.ko.js). Publish writes only this language.'
+      : 'Editing the English site (content.js). Publish writes only this language.');
+  }
+  $('lang-en').addEventListener('click', function () { setEditLang('en'); });
+  $('lang-ko').addEventListener('click', function () { setEditLang('ko'); });
+
   /* ================= compose: social-style posts ================= */
   var composeTab = 0;
   var composeKind = 'post';   // 'post' writes an update, 'race' writes a race result
@@ -941,9 +980,9 @@
 
   // Each tab keeps at most one "posts" and one "races" section, created on first use.
   var BLOCK_FOR = {
-    post: { type: 'posts', key: 'posts', title: 'Updates' },
-    race: { type: 'races', key: 'races', title: 'Racing' },
-    blog: { type: 'blog',  key: 'posts', title: 'Writing' }
+    post: { type: 'posts', key: 'posts', title: 'Updates', titleKo: '\uC18C\uC2DD' },
+    race: { type: 'races', key: 'races', title: 'Racing',  titleKo: '\uB808\uC774\uC2A4' },
+    blog: { type: 'blog',  key: 'posts', title: 'Writing', titleKo: '\uAE00' }
   };
   function blockFor(tabIndex, kind, create) {
     var spec = BLOCK_FOR[kind];
@@ -954,7 +993,7 @@
       if (tab.blocks[i].type === spec.type) return tab.blocks[i];
     }
     if (!create) return null;
-    var block = { type: spec.type, title: spec.title };
+    var block = { type: spec.type, title: lang === 'ko' ? spec.titleKo : spec.title };
     block[spec.key] = [];
     tab.blocks.push(block);
     return block;

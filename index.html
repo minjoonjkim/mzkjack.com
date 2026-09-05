@@ -97,6 +97,19 @@
     background: var(--primary); border-radius: 2px 2px 0 0; pointer-events: none;
     transition: transform 0.34s var(--ease), width 0.34s var(--ease);
   }
+  .lang-switch {
+    display: inline-flex; flex: 0 0 auto; padding: 2px; border-radius: 999px;
+    border: 1px solid var(--bolder); background: var(--white);
+  }
+  .lang-switch button {
+    appearance: none; border: 0; background: none; cursor: pointer; font: inherit;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: var(--dim);
+    padding: 3px 10px; border-radius: 999px; line-height: 1.4;
+    transition: color 0.18s var(--ease), background 0.18s var(--ease);
+  }
+  .lang-switch button:hover { color: var(--black); }
+  .lang-switch[hidden] { display: none; }
+  .lang-switch button[aria-pressed="true"] { background: var(--black); color: var(--white); }
 
   /* ---------- Layout ---------- */
   main.shell { flex: 1; padding: 22px 0 40px; }
@@ -356,60 +369,54 @@
     color: var(--primary-text); background: var(--primary-tint); border: 1px solid rgba(80,234,206,0.55);
     border-radius: 999px; padding: 3px 9px; white-space: nowrap;
   }
-  .carousel { position: relative; background: #0E1012; border-top: 1px solid var(--line-soft); overflow: hidden; }
+  .carousel {
+    position: relative; border-top: 1px solid var(--line-soft); background: var(--white);
+    /* A definite height, shared by every photo. Percentages here would be circular:
+       the slide's width comes from the image, whose width comes from its height. */
+    --strip-h: clamp(210px, 30vw, 360px);
+  }
   .carousel .track {
-    display: flex; overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    display: flex; align-items: flex-start; gap: 7px;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x proximity; scroll-behavior: smooth;
     scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;
-    /* An explicit height, not aspect-ratio + max-height: with both, Chrome derives
-       the width back from the clamped height and the whole strip narrows. */
-    height: clamp(260px, 46vw, 480px);
+    padding: 12px 13px; scroll-padding-inline: 13px;
   }
   .carousel .track::-webkit-scrollbar { display: none; }
-  .carousel .track:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .carousel .track:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; border-radius: var(--radius-sm); }
   .carousel .slide {
-    flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always;
-    position: relative; display: block; margin: 0; padding: 0; border: 0; background: #0E1012;
-    max-height: none; aspect-ratio: auto; overflow: hidden;
+    flex: 0 0 auto; width: auto; height: var(--strip-h); scroll-snap-align: start;
+    position: relative; display: block; margin: 0; padding: 0; border: 0;
+    background: #F1F2F4; border-radius: var(--radius-sm); overflow: hidden;
+    max-height: none; aspect-ratio: auto;
+    transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
   }
   .carousel .slide.media-cell { cursor: zoom-in; }
   .carousel .slide::after { content: none; }
-  .carousel .slide-bg {
-    position: absolute; inset: -6%; background-size: cover; background-position: center;
-    filter: blur(26px) brightness(0.5) saturate(1.15); transform: scale(1.06); pointer-events: none;
-  }
+  .carousel .slide:hover { box-shadow: var(--sh-2); transform: translateY(-2px); }
   .carousel .slide img, .carousel .slide video {
-    position: relative; width: 100%; height: 100%; object-fit: contain; display: block; transition: none;
+    height: var(--strip-h); width: auto; max-width: none; display: block; object-fit: cover; transition: none;
   }
   .carousel .slide:hover img { transform: none; }
   .carousel .slide-cap {
-    position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 10px; color: #EDEFF2;
-    font-size: var(--small); text-align: left; line-height: 1.45;
-    background: linear-gradient(to top, rgba(8,9,11,0.72), transparent);
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 20px 11px 9px; color: #EDEFF2;
+    font-size: 10px; text-align: left; line-height: 1.4;
+    background: linear-gradient(to top, rgba(8,9,11,0.75), transparent);
   }
-  .carousel[data-count] .c-nav {
+  .carousel .c-nav {
     position: absolute; top: 50%; margin-top: -17px; width: 34px; height: 34px; border-radius: 50%;
-    appearance: none; border: 0; cursor: pointer; color: #fff; font-size: 17px; line-height: 1;
-    background: rgba(12, 14, 17, 0.55); backdrop-filter: blur(5px);
-    display: grid; place-items: center; opacity: 0; transition: opacity 0.2s var(--ease), background 0.2s var(--ease);
+    appearance: none; border: 0; cursor: pointer; color: var(--black); font-size: 17px; line-height: 1;
+    background: rgba(255, 255, 255, 0.94); box-shadow: 0 2px 10px rgba(16, 24, 40, 0.18);
+    display: grid; place-items: center; opacity: 0;
+    transition: opacity 0.2s var(--ease), background 0.2s var(--ease), transform 0.15s var(--ease);
   }
-  .carousel:hover .c-nav, .carousel .track:focus-visible ~ .c-nav { opacity: 1; }
-  .carousel .c-nav:hover { background: rgba(12, 14, 17, 0.8); }
-  .carousel .c-nav:focus-visible { opacity: 1; outline: 2px solid var(--primary); outline-offset: 2px; }
+  .carousel:hover .c-nav { opacity: 1; }
+  .carousel .c-nav:hover { transform: scale(1.07); }
+  .carousel .c-nav:focus-visible { opacity: 1; outline: 2px solid var(--primary-text); outline-offset: 2px; }
   .carousel .c-nav[disabled] { opacity: 0 !important; pointer-events: none; }
-  .carousel .c-nav.prev { left: 10px; }
-  .carousel .c-nav.next { right: 10px; }
-  .carousel .c-count {
-    position: absolute; top: 10px; right: 10px; color: #fff; font-size: 10px; font-weight: 700;
-    letter-spacing: 0.04em; background: rgba(12, 14, 17, 0.6); backdrop-filter: blur(5px);
-    border-radius: 999px; padding: 3px 9px;
-  }
-  .carousel .c-dots { position: absolute; left: 0; right: 0; bottom: 9px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
-  .carousel .c-dots span {
-    width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.42);
-    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
-  }
-  .carousel .c-dots span.on { background: #fff; transform: scale(1.25); }
+  .carousel.fits .c-nav { display: none; }
+  .carousel .c-nav.prev { left: 9px; }
+  .carousel .c-nav.next { right: 9px; }
   @media (hover: none) { .carousel .c-nav { display: none; } }
 
   .race-note { padding: 11px 14px; color: var(--slate); border-top: 1px solid var(--line-soft); }
@@ -550,8 +557,9 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
     .shell { width: min(100% - 28px, var(--max)); }
-    .site-header .shell { flex-direction: column; align-items: flex-start; gap: 0; padding-top: 12px; min-height: 0; }
-    .tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
+    .site-header .shell { flex-wrap: wrap; align-items: center; gap: 0 12px; padding-top: 12px; min-height: 0; }
+    .lang-switch { margin-left: auto; }
+    .tabs { order: 3; width: 100%; overflow-x: auto; scrollbar-width: none; }
     .tabs::-webkit-scrollbar { display: none; }
     .tab { padding: 8px 12px 10px; }
     .tab:first-child { padding-left: 0; }
@@ -595,6 +603,10 @@
   <div class="shell">
     <a class="brand" href="#about" id="brand" aria-label="Home">JAↃK.KIM</a>
     <nav class="tabs" role="tablist" aria-label="Site sections" id="tabs"></nav>
+    <div class="lang-switch" role="group" aria-label="Language" id="lang">
+      <button type="button" data-lang="en" aria-pressed="true" lang="en">ENG</button>
+      <button type="button" data-lang="ko" aria-pressed="false" lang="ko">한국어</button>
+    </div>
   </div>
 </header>
 
@@ -619,7 +631,9 @@
 <script>
   // Load the content with a short-lived cache key, so a fresh publish shows up
   // instead of a copy the browser or CDN held on to.
-  document.write('<script src="content.js?v=' + Math.floor(Date.now() / 30000) + '"><\/script>');
+  var contentKey = Math.floor(Date.now() / 30000);
+  document.write('<script src="content.js?v=' + contentKey + '"><\/script>');
+  document.write('<script src="content.ko.js?v=' + contentKey + '"><\/script>');
 </script>
 <script>
 (function () {
@@ -636,6 +650,102 @@
   }
   function el(id) { return document.getElementById(id); }
 
+  /* ---------- languages ----------
+     Content lives in content.js (English) and content.ko.js (Korean); everything
+     the page says on its own is here. */
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var UI = {
+    en: {
+      focus: 'Focus Areas', addPhoto: 'Add photo at', expandAll: 'Expand all', collapseAll: 'Collapse all',
+      noPosts: 'No posts yet.', noArticles: 'Nothing published here yet.', allPosts: '\u2190 All posts',
+      untitled: 'Untitled', edit: 'Edit', nextUp: 'Next upcoming', unnamedRace: 'Unnamed race',
+      routeMap: 'route map', route: 'Route', upcoming: 'Upcoming', perKm: '/km', routeMapAlt: 'Route map \u2014 ',
+      close: 'Close', prev: 'Previous', next: 'Next', prevPhoto: 'Previous photo', nextPhoto: 'Next photo',
+      openMedia: function (n) { return 'Open media ' + n; },
+      openPhoto: function (n) { return 'Open photo ' + n + ' full size'; },
+      showMedia: function (n) { return 'Show media ' + n; },
+      minRead: function (n) { return n + ' min read'; },
+      photos: function (n) { return n + (n === 1 ? ' photo' : ' photos'); },
+      finished: function (n) { return n ? n + (n === 1 ? ' race finished' : ' races finished') : 'Races finished'; },
+      away: function (d) { return d === 0 ? 'today' : d === 1 ? 'tomorrow' : 'in ' + d + ' days'; },
+      rel: { today: 'Today', yesterday: 'Yesterday', tomorrow: 'Tomorrow',
+             ago: function (d) { return d + ' days ago'; }, inDays: function (d) { return 'In ' + d + ' days'; } },
+      date: function (y, m, d) { return MONTHS[m - 1] + ' ' + d + ', ' + y; },
+      readMinutes: function (body) {
+        var words = String(body || '').trim().split(/\s+/).filter(Boolean).length;
+        return Math.max(1, Math.round(words / 200));
+      },
+      kinds: {
+        full:  { short: 'Full',  one: 'Full marathon',  label: 'Full marathons', name: 'Full marathon' },
+        half:  { short: 'Half',  one: 'Half marathon',  label: 'Half marathons', name: 'Half marathon' },
+        '10k': { short: '10 km', one: '10 km race',     label: '10 km races',    name: '10 km race' },
+        '5k':  { short: '5 km',  one: '5 km race',      label: '5 km races',     name: '5 km race' },
+        ultra: { short: 'Ultra', one: 'Ultramarathon',  label: 'Ultramarathons', name: 'Ultramarathon' },
+        tri:   { short: 'Tri',   one: 'Triathlon',      label: 'Triathlons',     name: 'Triathlon' },
+        hyrox: { short: 'Hyrox', one: 'Hyrox race',     label: 'Hyrox races',    name: 'Hyrox' },
+        other: { short: 'Race',  one: 'Other race',     label: 'Other races',    name: 'Race' }
+      }
+    },
+    ko: {
+      focus: '\uAD00\uC2EC \uBD84\uC57C', addPhoto: '\uC0AC\uC9C4 \uCD94\uAC00 \uC704\uCE58', expandAll: '\uBAA8\uB450 \uD3BC\uCE58\uAE30', collapseAll: '\uBAA8\uB450 \uC811\uAE30',
+      noPosts: '\uC544\uC9C1 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.', noArticles: '\uC544\uC9C1 \uBC1C\uD589\uB41C \uAE00\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.', allPosts: '\u2190 \uC804\uCCB4 \uAE00',
+      untitled: '\uC81C\uBAA9 \uC5C6\uC74C', edit: '\uD3B8\uC9D1', nextUp: '\uB2E4\uC74C \uB300\uD68C', unnamedRace: '\uC774\uB984 \uC5C6\uB294 \uB300\uD68C',
+      routeMap: '\uCF54\uC2A4 \uC9C0\uB3C4', route: '\uCF54\uC2A4', upcoming: '\uC608\uC815', perKm: '/km', routeMapAlt: '\uCF54\uC2A4 \uC9C0\uB3C4 \u2014 ',
+      close: '\uB2EB\uAE30', prev: '\uC774\uC804', next: '\uB2E4\uC74C', prevPhoto: '\uC774\uC804 \uC0AC\uC9C4', nextPhoto: '\uB2E4\uC74C \uC0AC\uC9C4',
+      openMedia: function (n) { return '\uBBF8\uB514\uC5B4 ' + n + ' \uC5F4\uAE30'; },
+      openPhoto: function (n) { return '\uC0AC\uC9C4 ' + n + ' \uD06C\uAC8C \uBCF4\uAE30'; },
+      showMedia: function (n) { return '\uBBF8\uB514\uC5B4 ' + n + ' \uBCF4\uAE30'; },
+      minRead: function (n) { return n + '\uBD84 \uC18C\uC694'; },
+      photos: function (n) { return '\uC0AC\uC9C4 ' + n + '\uC7A5'; },
+      finished: function (n) { return n ? n + '\uAC1C \uB300\uD68C \uC644\uC8FC' : '\uC644\uC8FC \uAE30\uB85D'; },
+      away: function (d) { return d === 0 ? '\uC624\uB298' : d === 1 ? '\uB0B4\uC77C' : d + '\uC77C \uD6C4'; },
+      rel: { today: '\uC624\uB298', yesterday: '\uC5B4\uC81C', tomorrow: '\uB0B4\uC77C',
+             ago: function (d) { return d + '\uC77C \uC804'; }, inDays: function (d) { return d + '\uC77C \uD6C4'; } },
+      date: function (y, m, d) { return y + '\uB144 ' + m + '\uC6D4 ' + d + '\uC77C'; },
+      // Korean has no reliable word boundary for this; ~500 characters a minute.
+      readMinutes: function (body) {
+        var chars = String(body || '').replace(/\s+/g, '').length;
+        return Math.max(1, Math.round(chars / 500));
+      },
+      kinds: {
+        full:  { short: '\uD480',    one: '\uD480 \uB9C8\uB77C\uD1A4',   label: '\uD480 \uB9C8\uB77C\uD1A4',   name: '\uD480 \uB9C8\uB77C\uD1A4' },
+        half:  { short: '\uD558\uD504',  one: '\uD558\uD504 \uB9C8\uB77C\uD1A4', label: '\uD558\uD504 \uB9C8\uB77C\uD1A4', name: '\uD558\uD504 \uB9C8\uB77C\uD1A4' },
+        '10k': { short: '10 km',  one: '10 km',      label: '10 km',      name: '10 km \uB808\uC774\uC2A4' },
+        '5k':  { short: '5 km',   one: '5 km',       label: '5 km',       name: '5 km \uB808\uC774\uC2A4' },
+        ultra: { short: '\uC6B8\uD2B8\uB77C', one: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4', label: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4', name: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4' },
+        tri:   { short: '\uD2B8\uB77C\uC774', one: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', label: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', name: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860' },
+        hyrox: { short: '\uD558\uC774\uB85D\uC2A4', one: '\uD558\uC774\uB85D\uC2A4', label: '\uD558\uC774\uB85D\uC2A4', name: '\uD558\uC774\uB85D\uC2A4' },
+        other: { short: '\uB808\uC774\uC2A4', one: '\uAE30\uD0C0 \uB300\uD68C', label: '\uAE30\uD0C0 \uB300\uD68C', name: '\uB808\uC774\uC2A4' }
+      }
+    }
+  };
+  var LANG_KEY = 'site-lang';
+  var lang = 'en';
+  var T = UI.en;
+
+  function contentFor(l) {
+    if (l === 'ko' && window.SITE_CONTENT_KO) return window.SITE_CONTENT_KO;
+    return window.SITE_CONTENT;
+  }
+  // ?lang= wins, then the remembered choice, then the browser's own language.
+  function initialLang() {
+    var q = /[?&]lang=(en|ko)\b/.exec(location.search);
+    if (q) return q[1];
+    try { var saved = localStorage.getItem(LANG_KEY); if (saved === 'en' || saved === 'ko') return saved; } catch (e) { /* ignore */ }
+    return /^ko\b/i.test(navigator.language || '') && window.SITE_CONTENT_KO ? 'ko' : 'en';
+  }
+  function applyLang(l) {
+    lang = UI[l] ? l : 'en';
+    T = UI[lang];
+    document.documentElement.lang = lang;
+    Array.prototype.forEach.call(el('lang').querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+    });
+    el('lb-close').setAttribute('aria-label', T.close);
+    el('lb-prev').setAttribute('aria-label', T.prev);
+    el('lb-next').setAttribute('aria-label', T.next);
+  }
+
   // Post body: escape, then **bold**, autolink, blank line -> new paragraph.
   function richBody(s) {
     var safe = esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
@@ -645,7 +755,6 @@
     }).join('');
   }
 
-  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   // Accepts an ISO date/datetime; anything else is shown as typed.
   // Accepts 2026-10-25, 2026.10.25, 2026/10/25 and the same with single digits.
   // Returns 'YYYY-MM-DD', or '' when there is no date in there at all.
@@ -660,7 +769,7 @@
     var iso = isoDate(v);
     if (!iso) return v || '';
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-    return MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+    return T.date(m[1], +m[2], +m[3]);
   }
   // "Today" / "3 days ago" for anything recent, a plain date beyond that.
   function relDate(v) {
@@ -669,11 +778,11 @@
     var then = new Date(+m[1], +m[2] - 1, +m[3]);
     var now = new Date(); now.setHours(0, 0, 0, 0);
     var days = Math.round((now - then) / 86400000);
-    if (days === 0) return 'Today';
-    if (days === 1) return 'Yesterday';
-    if (days > 1 && days < 7) return days + ' days ago';
-    if (days === -1) return 'Tomorrow';
-    if (days < -1 && days > -30) return 'In ' + (-days) + ' days';
+    if (days === 0) return T.rel.today;
+    if (days === 1) return T.rel.yesterday;
+    if (days > 1 && days < 7) return T.rel.ago(days);
+    if (days === -1) return T.rel.tomorrow;
+    if (days < -1 && days > -30) return T.rel.inDays(-days);
     return niceDate(v);
   }
   function todayStamp() {
@@ -716,7 +825,7 @@
                '<div class="profile-body">';
     html += '<div class="portrait" id="portrait">' +
               '<img src="' + esc(assetSrc(p.photo)) + '" alt="' + esc(p.name) + '" id="portrait-img">' +
-              '<div class="placeholder"><b>' + esc(initials) + '</b>Add photo at<br>' + esc(p.photo || 'images/profile.jpg') + '</div>' +
+              '<div class="placeholder"><b>' + esc(initials) + '</b>' + esc(T.addPhoto) + '<br>' + esc(p.photo || 'images/profile.jpg') + '</div>' +
             '</div>';
     html += '<div class="identity"><h1>' + esc(p.name) + '</h1>' + (p.nameKo ? '<p>' + esc(p.nameKo) + '</p>' : '') + '</div>';
     if (p.roles && p.roles.length) {
@@ -739,7 +848,7 @@
       }).join('') + '</dl>';
     }
     if (p.focus && p.focus.length) {
-      html += '<div class="focus-head">Focus Areas</div><ul class="chips">' +
+      html += '<div class="focus-head">' + esc(T.focus) + '</div><ul class="chips">' +
         p.focus.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
     }
     el('profile').innerHTML = html + '</div>';
@@ -799,12 +908,12 @@
       var list = races.length ? '<div class="race-list">' + races.map(renderRace).join('') + '</div>' : '';
       var expandable = /class="race-x"/.test(list);
       return renderRaceSummary(races) +
-        (expandable ? '<div class="race-tools"><button type="button" class="race-toggle-all" data-open="0">Expand all</button></div>' : '') +
+        (expandable ? '<div class="race-tools"><button type="button" class="race-toggle-all" data-open="0">' + esc(T.expandAll) + '</button></div>' : '') +
         list;
     },
     posts: function (b) {
       var list = b.posts || [];
-      if (!list.length) return '<p class="feed-empty">No posts yet.</p>';
+      if (!list.length) return '<p class="feed-empty">' + esc(T.noPosts) + '</p>';
       return '<div class="feed">' + list.map(renderPost).join('') + '</div>';
     },
     cards: function (b) {
@@ -826,7 +935,7 @@
     var inner = isVideo(m)
       ? '<video src="' + esc(m.src) + '" preload="metadata" playsinline muted></video><span class="play">&#9654;</span>'
       : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">';
-    return '<button type="button" class="media-cell" data-index="' + index + '" aria-label="Open media ' + (index + 1) + '">' +
+    return '<button type="button" class="media-cell" data-index="' + index + '" aria-label="' + esc(T.openMedia(index + 1)) + '">' +
       inner + (extra || '') + (more ? '<span class="media-more">+' + more + '</span>' : '') + '</button>';
   }
   // Up to four tiles; anything beyond that folds into a +N badge on the last one.
@@ -841,18 +950,13 @@
 
   // Race photos read like a blog post: every shot in full, stacked, nothing
   // cropped and nothing hidden behind a "+3" badge.
-  // Strava-style: one photo at a time in a swipeable, snapping track, with dots
-  // and a counter. Every shot stays visible without opening anything.
+  // Strava's photo strip: a horizontal row of photos at one shared height, each
+  // keeping its own shape, several visible at once and the rest a scroll away.
   function mediaCarousel(list, offset) {
-    var many = list.length > 1;
     var slides = list.map(function (m, i) {
-      // A blurred copy of the shot fills the frame behind a portrait photo, so the
-      // letterboxing reads as intentional rather than as empty space.
-      var backdrop = isVideo(m) ? ''
-        : '<span class="slide-bg" style="background-image:url(&quot;' + esc(m.src) + '&quot;)"></span>';
-      var inner = backdrop + (isVideo(m)
+      var inner = isVideo(m)
         ? '<video src="' + esc(m.src) + '" controls preload="metadata" playsinline></video>'
-        : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">');
+        : '<img src="' + esc(m.src) + '" alt="' + esc(m.alt || '') + '" loading="lazy">';
       var tag = isVideo(m) ? 'div' : 'button';
       return '<' + tag + ' class="slide' + (isVideo(m) ? '' : ' media-cell') + '"' +
         (isVideo(m) ? '' : ' type="button" data-index="' + (offset + i) + '"' +
@@ -863,13 +967,9 @@
 
     return '<div class="carousel" data-count="' + list.length + '">' +
       '<div class="track" tabindex="0">' + slides + '</div>' +
-      (many
-        ? '<button type="button" class="c-nav prev" data-step="-1" aria-label="Previous photo">\u2039</button>' +
-          '<button type="button" class="c-nav next" data-step="1" aria-label="Next photo">\u203A</button>' +
-          '<span class="c-count num">1 / ' + list.length + '</span>' +
-          '<div class="c-dots">' + list.map(function (_, i) {
-            return '<span' + (i === 0 ? ' class="on"' : '') + '></span>';
-          }).join('') + '</div>'
+      (list.length > 1
+        ? '<button type="button" class="c-nav prev" data-step="-1" aria-label="Scroll photos left">\u2039</button>' +
+          '<button type="button" class="c-nav next" data-step="1" aria-label="Scroll photos right">\u203A</button>'
         : '') +
       '</div>';
   }
@@ -994,10 +1094,7 @@
   }
 
   function postSlug(p, i) { return p.slug || slugify(p.title) || ('post-' + (i + 1)); }
-  function readMinutes(body) {
-    var words = String(body || '').trim().split(/\s+/).filter(Boolean).length;
-    return Math.max(1, Math.round(words / 200));
-  }
+  function readMinutes(body) { return T.readMinutes(body); }
   function excerptOf(p) {
     if (p.excerpt) return p.excerpt;
     var first = String(p.body || '').split(/\n{2,}/).map(function (b) { return b.trim(); })
@@ -1019,16 +1116,16 @@
 
   function renderBlogIndex(b, tabId) {
     var posts = blogPosts(b);
-    if (!posts.length) return '<p class="feed-empty">Nothing published here yet.</p>';
+    if (!posts.length) return '<p class="feed-empty">' + esc(T.noArticles) + '</p>';
     return '<div class="blog-index">' + posts.map(function (p, i) {
       var slug = postSlug(p, i);
-      var meta = [niceDate(p.date), readMinutes(p.body) + ' min read'].filter(Boolean).join(' · ');
+      var meta = [niceDate(p.date), T.minRead(readMinutes(p.body))].filter(Boolean).join(' · ');
       var ex = excerptOf(p);
       return '<a class="bi" href="#' + esc(tabId) + '/' + esc(slug) + '">' +
         (p.cover ? '<span class="bi-cover"><img src="' + esc(p.cover) + '" alt="" loading="lazy"></span>' : '') +
         '<span class="bi-text">' +
           '<span class="bi-meta num">' + esc(meta) + '</span>' +
-          '<span class="bi-title">' + esc(p.title || 'Untitled') + '</span>' +
+          '<span class="bi-title">' + esc(p.title || T.untitled) + '</span>' +
           (ex ? '<span class="bi-ex">' + esc(ex) + '</span>' : '') +
           ((p.tags || []).length ? '<span class="bi-tags">' + p.tags.map(function (t) {
             return '<span class="bi-tag">' + esc(t) + '</span>';
@@ -1038,14 +1135,14 @@
   }
 
   function renderArticle(p, i, tabId) {
-    var meta = [niceDate(p.date), readMinutes(p.body) + ' min read'].filter(Boolean).join(' · ');
+    var meta = [niceDate(p.date), T.minRead(readMinutes(p.body))].filter(Boolean).join(' · ');
     return '<article class="card doc">' +
-      '<a class="doc-back" href="#' + esc(tabId) + '">← All posts</a>' +
+      '<a class="doc-back" href="#' + esc(tabId) + '">' + esc(T.allPosts) + '</a>' +
       (p.cover ? '<div class="doc-cover"><img src="' + esc(p.cover) + '" alt=""></div>' : '') +
       '<div class="doc-inner">' +
         '<header class="doc-head">' +
           '<div class="doc-meta num">' + esc(meta) + '</div>' +
-          '<h1>' + esc(p.title || 'Untitled') + '</h1>' +
+          '<h1>' + esc(p.title || T.untitled) + '</h1>' +
           ((p.tags || []).length ? '<div class="doc-tags">' + p.tags.map(function (t) {
             return '<span class="bi-tag">' + esc(t) + '</span>';
           }).join('') + '</div>' : '') +
@@ -1055,22 +1152,16 @@
   }
 
   /* ---------- races ---------- */
-  var RACE_KINDS = {
-    full:  { short: 'Full',  one: 'Full marathon',  label: 'Full marathons', name: 'Full marathon', km: 42.195 },
-    half:  { short: 'Half',  one: 'Half marathon',  label: 'Half marathons', name: 'Half marathon', km: 21.0975 },
-    '10k': { short: '10 km', one: '10 km race',     label: '10 km races',    name: '10 km race',    km: 10 },
-    '5k':  { short: '5 km',  one: '5 km race',      label: '5 km races',     name: '5 km race',     km: 5 },
-    ultra: { short: 'Ultra', one: 'Ultramarathon',  label: 'Ultramarathons', name: 'Ultramarathon', km: 0 },
-    tri:   { short: 'Tri',   one: 'Triathlon',      label: 'Triathlons',     name: 'Triathlon',     km: 0 },
-    hyrox: { short: 'Hyrox', one: 'Hyrox race',     label: 'Hyrox races',    name: 'Hyrox',         km: 0 }
-  };
+  var RACE_KM = { full: 42.195, half: 21.0975, '10k': 10, '5k': 5, ultra: 0, tri: 0, hyrox: 0 };
   // Full / half / 10 km are always on the board, even at zero.
   var TALLY_ORDER = ['full', 'half', '10k', '5k', 'ultra', 'tri', 'hyrox', 'other'];
   var TALLY_ALWAYS = { full: 1, half: 1, '10k': 1 };
-  var OTHER_KIND = { short: 'Race', one: 'Other race', label: 'Other races', name: 'Race', km: 0 };
 
-  function raceKind(r) { return RACE_KINDS[r.distance] ? r.distance : 'other'; }
-  function kindInfo(k) { return RACE_KINDS[k] || OTHER_KIND; }
+  function raceKind(r) { return RACE_KM.hasOwnProperty(r.distance) ? r.distance : 'other'; }
+  function kindInfo(k) {
+    var words = T.kinds[k] || T.kinds.other;
+    return { key: k, short: words.short, one: words.one, label: words.label, name: words.name, km: RACE_KM[k] || 0 };
+  }
   function raceKm(r) {
     var typed = parseFloat(r.km);
     if (typed > 0) return typed;
@@ -1133,21 +1224,21 @@
     var box = '';
     if (next) {
       var d = daysUntil(next.date);
-      var away = d === 0 ? 'today' : d === 1 ? 'tomorrow' : 'in ' + d + ' days';
-      box = '<div class="race-next"><span class="next-k">Next upcoming</span>' +
-        '<span class="next-name">' + esc(next.name || 'Unnamed race') + '</span>' +
+      var away = T.away(d);
+      box = '<div class="race-next"><span class="next-k">' + esc(T.nextUp) + '</span>' +
+        '<span class="next-name">' + esc(next.name || T.unnamedRace) + '</span>' +
         '<span class="next-meta">' + esc(niceDate(next.date) + ' · ' + away +
           (next.location ? ' · ' + next.location : '')) + '</span></div>';
     }
     return '<div class="race-summary' + (box ? '' : ' solo') + '">' +
       '<div class="race-record"><div class="tally-head">' +
-        (total ? total + (total === 1 ? ' race finished' : ' races finished') : 'Races finished') +
+        esc(T.finished(total)) +
       '</div><div class="race-tally">' + tally + '</div></div>' + box + '</div>';
   }
 
   // "Full", "Half", or the actual distance for anything without a preset.
   function badgeText(r, kind) {
-    if (kind !== OTHER_KIND) return kind.short;
+    if (kind.key !== 'other') return kind.short;
     var km = raceKm(r);
     return km ? (Math.round(km * 10) / 10) + ' km' : kind.short;
   }
@@ -1155,7 +1246,7 @@
     var kind = kindInfo(raceKind(r));
     var upcoming = isUpcoming(r);
     var gallery = [];
-    if (r.map) gallery.push({ type: 'image', src: r.map, alt: 'Route map — ' + (r.name || 'race') });
+    if (r.map) gallery.push({ type: 'image', src: r.map, alt: T.routeMapAlt + (r.name || T.unnamedRace) });
     var photos = (r.media || []).filter(function (m) { return m && m.src; });
     gallery = gallery.concat(photos);
 
@@ -1163,24 +1254,24 @@
     var stats = '<span class="race-stats num">' +
       '<span class="s-dist"><b>' + esc(raceDistance(r)) + '</b></span>' +
       (r.time ? '<span><b>' + esc(r.time) + '</b></span>' : '') +
-      (racePace(r) ? '<span><b>' + esc(racePace(r)) + '</b><i>/km</i></span>' : '') +
+      (racePace(r) ? '<span><b>' + esc(racePace(r)) + '</b><i>' + esc(T.perKm) + '</i></span>' : '') +
       '</span>';
 
     // Say what is inside, so a collapsed row does not hide its photos silently.
     var inside = [];
-    if (r.map) inside.push('route map');
-    if (photos.length) inside.push(photos.length + (photos.length === 1 ? ' photo' : ' photos'));
+    if (r.map) inside.push(T.routeMap);
+    if (photos.length) inside.push(T.photos(photos.length));
     var sub = [niceDate(r.date), r.location].filter(Boolean).concat(inside).join(' · ');
     var extras =
       (r.note ? '<div class="race-note">' + richBody(r.note) + '</div>' : '') +
-      (r.map ? '<div class="race-map">' + mediaCell(gallery[0], 0, 0, '<span class="map-tag">Route</span>') + '</div>' : '') +
+      (r.map ? '<div class="race-map">' + mediaCell(gallery[0], 0, 0, '<span class="map-tag">' + esc(T.route) + '</span>') + '</div>' : '') +
       (photos.length ? mediaCarousel(photos, r.map ? 1 : 0) : '');
 
     var row =
       '<span class="race-badge' + (upcoming ? ' upcoming' : '') + '">' + esc(badgeText(r, kind)) + '</span>' +
-      '<span class="race-id"><span class="race-name">' + esc(r.name || 'Unnamed race') + '</span>' +
+      '<span class="race-id"><span class="race-name">' + esc(r.name || T.unnamedRace) + '</span>' +
       (sub ? '<span class="race-sub">' + esc(sub) + '</span>' : '') + '</span>' +
-      (upcoming ? '<span class="race-flag">Upcoming</span>' : '') +
+      (upcoming ? '<span class="race-flag">' + esc(T.upcoming) + '</span>' : '') +
       stats +
       (extras ? '<span class="race-chev" aria-hidden="true">\u203A</span>' : '');
 
@@ -1261,17 +1352,34 @@
     if (push || opened) window.scrollTo({ top: 0 });
   }
 
-  function renderAll(c) {
+  function renderAll(c, l) {
+    applyLang(l || lang);
     content = c;
     document.title = c.site.title || document.title;
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc && c.site.description) desc.setAttribute('content', c.site.description);
     el('brand').textContent = c.site.brand || c.site.title || '';
     renderProfile(c.profile);
     renderTabs();
     el('footer').innerHTML = '<span>' + esc(c.site.footer) + '</span>' +
       '<span class="footer-right">' + (c.site.footerNote ? '<span>' + esc(c.site.footerNote) + '</span>' : '') +
-      '<a class="edit-link" href="admin.html" rel="nofollow">Edit</a></span>';
+      '<a class="edit-link" href="admin.html" rel="nofollow">' + esc(T.edit) + '</a></span>';
     show(activeTab || location.hash.slice(1) || c.tabs[0].id, false);
   }
+
+  // ENG / 한국어: remember the choice and redraw the page in place.
+  function setLang(l) {
+    if (l === lang && content === contentFor(l)) return;
+    try { localStorage.setItem(LANG_KEY, l); } catch (e) { /* ignore */ }
+    var wasReading = document.body.classList.contains('reading');
+    // Article slugs are per language, so a switch mid-article goes back to that tab.
+    if (wasReading) history.replaceState(null, '', '#' + activeTab);
+    renderAll(contentFor(l), l);
+  }
+  el('lang').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-lang]');
+    if (btn) setLang(btn.dataset.lang);
+  });
 
   window.addEventListener('hashchange', function () { show(location.hash.slice(1), false); });
   window.addEventListener('resize', moveInk);
@@ -1294,11 +1402,12 @@
   // Live preview: admin.html posts draft content into this frame.
   var isPreview = /[?&]preview=1/.test(location.search);
   if (isPreview) {
+    el('lang').hidden = true;
     window.addEventListener('message', function (e) {
       if (e.data && e.data.type === 'site-content' && e.data.content) {
         if (e.data.tab) activeTab = e.data.tab;
         PREVIEW_ASSETS = e.data.assets || {};
-        renderAll(e.data.content);
+        renderAll(e.data.content, e.data.lang || lang);
       }
     });
   }
@@ -1322,7 +1431,7 @@
         ? '<video src="' + esc(g.src) + '" preload="metadata" muted playsinline></video>'
         : '<img src="' + esc(g.src) + '" alt="" loading="lazy">';
       return '<button type="button" data-jump="' + i + '" aria-current="' + (i === lbIndex) + '" ' +
-        'aria-label="Show media ' + (i + 1) + '">' + thumb + '</button>';
+        'aria-label="' + esc(T.showMedia(i + 1)) + '">' + thumb + '</button>';
     }).join('') : '';
   }
   function lbOpen(gallery, i) {
@@ -1360,23 +1469,21 @@
   });
 
   /* ---------- photo carousels ---------- */
-  function slideIndex(track) {
-    return Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
-  }
+  // The strip scrolls freely, so the arrows just report whether there is more
+  // to either side, and hide altogether when everything already fits.
   function syncCarousel(box) {
     var track = box.querySelector('.track');
     if (!track) return;
-    var n = parseInt(box.dataset.count, 10) || 1;
-    var i = Math.min(n - 1, Math.max(0, slideIndex(track)));
-    var count = box.querySelector('.c-count');
-    if (count) count.textContent = (i + 1) + ' / ' + n;
-    Array.prototype.forEach.call(box.querySelectorAll('.c-dots span'), function (d, j) {
-      d.classList.toggle('on', j === i);
-    });
+    var max = track.scrollWidth - track.clientWidth;
+    // Snapping rests the first photo against the track's padding, not at 0, so the
+    // "already at the start" test has to allow for it.
+    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     var prev = box.querySelector('.c-nav.prev'), next = box.querySelector('.c-nav.next');
-    if (prev) prev.disabled = i <= 0;
-    if (next) next.disabled = i >= n - 1;
+    if (prev) prev.disabled = track.scrollLeft <= pad + 2;
+    if (next) next.disabled = track.scrollLeft >= max - 2;
+    box.classList.toggle('fits', max <= pad + 2);
   }
+  function scrollStep(track) { return Math.max(160, Math.round(track.clientWidth * 0.8)); }
 
   // scroll does not bubble, so listen in the capture phase.
   el('main').addEventListener('scroll', function (e) {
@@ -1388,13 +1495,8 @@
     var nav = e.target.closest('.c-nav');
     if (!nav) return;
     e.preventDefault();
-    var box = nav.closest('.carousel');
-    var track = box.querySelector('.track');
-    var n = parseInt(box.dataset.count, 10) || 1;
-    // Aim at an absolute slide, so clicking quickly does not compound part-finished
-    // smooth scrolls into the wrong place.
-    var target = Math.min(n - 1, Math.max(0, slideIndex(track) + parseInt(nav.dataset.step, 10)));
-    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' });
+    var track = nav.closest('.carousel').querySelector('.track');
+    track.scrollBy({ left: parseInt(nav.dataset.step, 10) * scrollStep(track), behavior: 'smooth' });
   });
 
   el('main').addEventListener('keydown', function (e) {
@@ -1403,16 +1505,21 @@
     var step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!step) return;
     e.preventDefault();
-    var box = track.parentElement;
-    var n = parseInt(box.dataset.count, 10) || 1;
-    var target = Math.min(n - 1, Math.max(0, slideIndex(track) + step));
-    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' });
+    track.scrollBy({ left: step * scrollStep(track), behavior: 'smooth' });
   });
 
   // Fresh markup starts with the arrows in the right state.
   function initCarousels() {
-    Array.prototype.forEach.call(el('main').querySelectorAll('.carousel[data-count]'), syncCarousel);
+    Array.prototype.forEach.call(el('main').querySelectorAll('.carousel[data-count]'), function (box) {
+      syncCarousel(box);
+      // Widths only exist once each photo knows its own shape.
+      Array.prototype.forEach.call(box.querySelectorAll('img'), function (img) {
+        if (img.complete) return;
+        img.addEventListener('load', function () { syncCarousel(box); }, { once: true });
+      });
+    });
   }
+  window.addEventListener('resize', initCarousels);
 
   // Expand all / collapse all for the race list.
   el('main').addEventListener('click', function (e) {
@@ -1423,7 +1530,7 @@
     Array.prototype.forEach.call(scope.querySelectorAll('details.race-x'), function (d) { d.open = opening; });
     initCarousels();
     toggle.dataset.open = opening ? '1' : '0';
-    toggle.textContent = opening ? 'Collapse all' : 'Expand all';
+    toggle.textContent = opening ? T.collapseAll : T.expandAll;
   });
 
   el('main').addEventListener('click', function (e) {
@@ -1435,7 +1542,8 @@
     lbOpen(gallery, parseInt(cell.dataset.index, 10) || 0);
   });
 
-  renderAll(window.SITE_CONTENT);
+  var startLang = initialLang();
+  renderAll(contentFor(startLang), startLang);
 })();
 </script>
 

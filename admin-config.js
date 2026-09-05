@@ -5,6 +5,7 @@ window.ADMIN_CONFIG = {
   "repo": "minjoonjkim/mzkjack.com",
   "branch": "main",
   "contentPath": "content.js",
+  "contentPathKo": "content.ko.js",
   "configPath": "admin-config.js",
   "vault": {
     "v": 1,

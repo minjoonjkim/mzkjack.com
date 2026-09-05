@@ -60,7 +60,14 @@
   }
 
   /* ---------- serialization ---------- */
-  function serializeContent(content) {
+  // English writes content.js (SITE_CONTENT); Korean writes content.ko.js (SITE_CONTENT_KO).
+  function serializeContent(content, lang) {
+    if (lang === 'ko') {
+      return '/* Korean site content. Edit this file directly, or use admin.html (password protected)\n' +
+             '   with the language switch set to \uD55C\uAD6D\uC5B4. Text fields support **bold** and line breaks.\n' +
+             '   This file is managed separately from content.js (English). */\n' +
+             'window.SITE_CONTENT_KO = ' + JSON.stringify(content, null, 2) + ';\n';
+    }
     return '/* Site content. Edit this file directly, or use admin.html (password protected).\n' +
            '   Text fields support **bold** and line breaks. */\n' +
            'window.SITE_CONTENT = ' + JSON.stringify(content, null, 2) + ';\n';

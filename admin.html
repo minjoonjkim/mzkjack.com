@@ -384,11 +384,15 @@
         <button class="mode" type="button" id="mode-compose" aria-pressed="true">Compose</button>
         <button class="mode" type="button" id="mode-structure" aria-pressed="false">Structure</button>
       </div>
+      <div class="modeswitch" role="group" aria-label="Language being edited" title="Which language's content you are editing">
+        <button class="mode" type="button" id="lang-en" aria-pressed="true" lang="en">ENG</button>
+        <button class="mode" type="button" id="lang-ko" aria-pressed="false" lang="ko">한국어</button>
+      </div>
       <span class="status" id="status"></span>
     </div>
     <div class="right">
       <button class="btn secondary small" id="btn-refresh" title="Reload the preview and check the live site">Refresh</button>
-      <button class="btn secondary small" id="btn-download" title="Save content.js to your computer">Download</button>
+      <button class="btn secondary small" id="btn-download" title="Save the content file to your computer">Download</button>
       <button class="btn secondary small" id="btn-password">Change password</button>
       <button class="btn secondary small" id="btn-lock">Lock</button>
       <button class="btn primary" id="btn-publish">Publish</button>
@@ -551,6 +555,7 @@ code block
 </div>
 
 <script src="content.js"></script>
+<script src="content.ko.js"></script>
 <script src="admin-config.js"></script>
 <script src="admin-core.js"></script>
 <script src="admin.js"></script>

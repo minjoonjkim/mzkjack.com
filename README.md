@@ -7,13 +7,20 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 | File | Purpose |
 | --- | --- |
 | `index.html` | The site. Renders everything from `content.js`. |
-| `content.js` | All text on the site: profile, tabs, sections. Edit this to change content. |
+| `content.js` | All English text on the site: profile, tabs, sections. Edit this to change content. |
+| `content.ko.js` | The Korean site, same shape as `content.js`. Managed separately; the ENG / 한국어 switch in the header picks one. |
 | `admin.html` | Password-protected editor with live preview. Publishes straight to GitHub. |
 | `admin.js`, `admin-core.js` | Editor logic. |
 | `admin-config.js` | Repo name plus your encrypted GitHub token (written by the editor on first setup). |
 | `images/profile.jpg` | Your portrait. Add it; the site shows a placeholder until it exists. |
 | `media/YYYY-MM/…` | Photos, videos and route maps attached to posts and races. Created by the editor when you post. |
 | `CNAME` | Custom domain for GitHub Pages. |
+
+## Languages
+
+The site is available in English and Korean. Visitors switch with the **ENG / 한국어** control in the header; the choice is remembered in the browser, and a first visit from a Korean-language browser starts in Korean. `?lang=ko` or `?lang=en` in the URL forces one. Everything the page says on its own (dates, race tallies, empty states, buttons) follows the chosen language; everything else comes from the matching content file.
+
+The two languages are independent copies. `content.js` is English and `content.ko.js` is Korean; a post added to one does not appear in the other, so post in both if it should. In the editor, the **ENG / 한국어** switch in the top bar chooses which file you are editing and publishing. Tab ids (`about`, `study`, …) should stay the same in both files so links keep working across the switch.
 
 ## Editing content
 
@@ -29,7 +36,7 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 
 Either way the site updates within about a minute; freshly uploaded photos and videos appear once GitHub Pages finishes rebuilding.
 
-**Option B: by hand.** Edit `content.js` in any text editor and push. Text fields accept `**bold**` and line breaks.
+**Option B: by hand.** Edit `content.js` (or `content.ko.js` for Korean) in any text editor and push. Text fields accept `**bold**` and line breaks.
 
 Section types available in `content.js` (and in the editor's "Add section" menu):
 
