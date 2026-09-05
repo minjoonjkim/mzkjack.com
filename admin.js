@@ -16,6 +16,8 @@
   var token = null;
   var dirty = false;
   var dirtyBy = { en: false, ko: false };
+  // Languages whose file changed only because media was mirrored into it.
+  var mediaDirty = { en: false, ko: false };
   function contentPathFor(l) {
     return l === 'ko' ? (CONFIG.contentPathKo || 'content.ko.js') : (CONFIG.contentPath || 'content.js');
   }
@@ -757,6 +759,70 @@
     cropThenUpload(URL.createObjectURL(file), true);
   });
 
+  /* ================= media is shared by every language =================
+     A photo or video is the same file whichever language you read the site in;
+     only its caption is translated. So media mirrors across the language models
+     and rides along on the next publish. */
+  var MEDIA_KEYS = { photo: 1, image: 1, icon: 1, map: 1, poster: 1, cover: 1 };
+
+  function normalizeMedia(list) {
+    return (Array.isArray(list) ? list : []).filter(function (m) { return m && m.src; })
+      .map(function (m) { return { type: m.type || 'image', src: m.src, alt: m.alt || '' }; });
+  }
+
+  // Drops half-filled rows so both languages hold the same list.
+  function compactMedia(node) {
+    if (Array.isArray(node)) { node.forEach(compactMedia); return; }
+    if (!node || typeof node !== 'object') return;
+    Object.keys(node).forEach(function (k) {
+      if (k === 'media' && Array.isArray(node[k])) node[k] = normalizeMedia(node[k]);
+      else compactMedia(node[k]);
+    });
+  }
+
+  function syncNode(src, dst) {
+    var changed = false;
+    if (Array.isArray(src) && Array.isArray(dst)) {
+      var n = Math.min(src.length, dst.length);
+      for (var i = 0; i < n; i++) { if (syncNode(src[i], dst[i])) changed = true; }
+      return changed;
+    }
+    if (!src || !dst || typeof src !== 'object' || typeof dst !== 'object') return false;
+    Object.keys(src).forEach(function (k) {
+      var sv = src[k], dv = dst[k];
+      if (k === 'media' && Array.isArray(sv)) {
+        var keep = {};
+        (Array.isArray(dv) ? dv : []).forEach(function (m) { if (m && m.src && m.alt) keep[m.src] = m.alt; });
+        var next = normalizeMedia(sv).map(function (m) {
+          return { type: m.type, src: m.src, alt: keep[m.src] || m.alt };
+        });
+        if (JSON.stringify(next) !== JSON.stringify(dv)) { dst[k] = next; changed = true; }
+        return;
+      }
+      if (MEDIA_KEYS[k] && typeof sv === 'string') {
+        if (dv !== sv) { dst[k] = sv; changed = true; }
+        return;
+      }
+      if (sv && typeof sv === 'object') { if (syncNode(sv, dv)) changed = true; }
+    });
+    return changed;
+  }
+
+  // Mirrors media out of the language being edited. Returns the languages it changed.
+  function syncMediaToOthers(compactSource) {
+    if (compactSource) compactMedia(model);
+    var touched = [];
+    Object.keys(models).forEach(function (l) {
+      if (l === lang) return;
+      if (syncNode(model, models[l])) {
+        touched.push(l);
+        dirtyBy[l] = true;
+        mediaDirty[l] = true;
+      }
+    });
+    return touched;
+  }
+
   // Compose publishes in one step; Structure edits sit in the browser until Publish,
   // so the button has to say so.
   function setDirty(v) {
@@ -768,6 +834,7 @@
   }
   function markDirty() {
     if (!dirty) setDirty(true);
+    syncMediaToOthers(false);
     if (!/^Click Delete/.test($('status').textContent)) {
       setStatus('Unpublished changes \u2014 click Publish to put them on the live site.');
     }
@@ -782,11 +849,23 @@
   var lastPublishedPath = contentPathFor('en');
   function publishContent(message) {
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
+    syncMediaToOthers(true);
     var payload = Core.serializeContent(model, lang);
     var path = contentPathFor(lang);
     lastPublishedPath = path;
-    return github()
-      .putFile(path, payload, (message || 'Update site content') + (lang === 'ko' ? ' (Korean)' : ''))
+    var gh = github();
+    // Languages that only picked up mirrored media go out with this publish, so
+    // the two sites never disagree about which photos exist.
+    var extras = Object.keys(models).filter(function (l) { return l !== lang && mediaDirty[l]; });
+    return gh.putFile(path, payload, (message || 'Update site content') + (lang === 'ko' ? ' (Korean)' : ''))
+      .then(function () {
+        return extras.reduce(function (chain, l) {
+          return chain.then(function () {
+            return gh.putFile(contentPathFor(l), Core.serializeContent(models[l], l), 'Sync media across languages')
+              .then(function () { mediaDirty[l] = false; dirtyBy[l] = false; });
+          });
+        }, Promise.resolve());
+      })
       .then(function () { setDirty(false); return payload; });
   }
 

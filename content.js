@@ -314,16 +314,6 @@ window.SITE_CONTENT = {
                 },
                 {
                   "type": "image",
-                  "src": "",
-                  "alt": ""
-                },
-                {
-                  "type": "image",
-                  "src": "",
-                  "alt": ""
-                },
-                {
-                  "type": "image",
                   "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
                   "alt": ""
                 }
