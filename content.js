@@ -358,7 +358,13 @@ window.SITE_CONTENT = {
               "location": "",
               "note": "",
               "map": "media/2026-09/1788584801014-course-img.png",
-              "media": []
+              "media": [
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
+                  "alt": ""
+                }
+              ]
             },
             {
               "name": "Paris-Saint-Germain-en-Laye 20K",
