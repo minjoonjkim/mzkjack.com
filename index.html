@@ -605,9 +605,24 @@
     .tally-n { font-size: 21px; }
   }
 
-  /* When the whole card cannot fit beside the content, it scrolls with the page
-     rather than pinning with its bottom cut off. */
-  @media (max-height: 760px) { .profile { position: static; } }
+  /* Shorter windows (a laptop with the Dock showing): a tighter card, so the
+     whole thing still fits beside the content. */
+  @media (min-width: 901px) and (max-height: 800px) {
+    .profile { top: 70px; }
+    .profile-cover { height: 72px; }
+    .portrait { width: 72px; margin-top: -34px; border-width: 2px; }
+    .profile-body { gap: 8px; padding-bottom: 12px; }
+    .identity h1 { font-size: 19px; }
+    .contact { gap: 7px; }
+    .contact .lines { gap: 4px; }
+    .contact .line { padding: 4px 8px; }
+    .focus-head { padding-top: 8px; }
+    .chips { gap: 3px; }
+    .chips li { padding: 2px 8px; }
+  }
+  /* When even that cannot fit, the card scrolls with the page rather than
+     pinning with its bottom cut off. */
+  @media (max-height: 690px) { .profile { position: static; } }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
