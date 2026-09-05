@@ -22,7 +22,7 @@ window.SITE_CONTENT = {
         "lines": [
           {
             "value": "Pennsylvania State University\n(B.S Computer Science & Statistics)",
-            "href": "https://www.psu.edu/",
+            "href": "https://www.eecs.psu.edu/departments/EECS-Departments-Computer-Science-Engineering3.aspx",
             "icon": "images/logos/university-seal.jpg"
           },
           {
