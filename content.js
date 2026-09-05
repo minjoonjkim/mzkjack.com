@@ -11,10 +11,6 @@ window.SITE_CONTENT = {
     "name": "Minjoon Jack Kim",
     "nameKo": "김민준",
     "photo": "images/profile.jpg",
-    "cover": {
-      "theme": "mint",
-      "image": ""
-    },
     "roles": [
       "Robotics Transformation (RX) Consultant @RLWRLD"
     ],
@@ -345,7 +341,26 @@ window.SITE_CONTENT = {
         {
           "type": "races",
           "title": "Racing",
-          "races": []
+          "races": [
+            {
+              "name": "2025 Chuncheon Marathon",
+              "date": "2028.10.25",
+              "distance": "full",
+              "km": "42.195",
+              "time": "3:47:18",
+              "pace": "",
+              "location": "Chuncheon, South Korea",
+              "note": "",
+              "map": "",
+              "media": [
+                {
+                  "type": "image",
+                  "src": "",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
         },
         {
           "type": "cards",
