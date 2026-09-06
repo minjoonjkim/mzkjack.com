@@ -90,45 +90,31 @@ window.SITE_CONTENT_KO = {
           "title": "경력",
           "entries": [
             {
-              "heading": "로보틱스 트랜스포메이션(RX) 컨설턴트 인턴",
-              "org": "RLWRLD",
-              "location": "대한민국 서울",
-              "when": "2026년 5월 – 현재",
-              "current": true,
-              "bullets": [
-                "**롯데호텔.** 4·5성급 호텔 4개 지점을 대상으로 고객 참여 분석을 주도했습니다. 현장 실사를 진행하고 각 호텔의 운영 범위, 인력 구조, 손익 귀속, 오너십 승인 구조를 벤치마킹해 로봇 도입 계약 제안을 뒷받침했습니다.",
-                "계약 착수를 2026년 11월로 앞당겨야 한다는 핵심 논리를 네 가지 근거(학습곡선 경제성, 경쟁사 선점 방어, 일정 의존성, SOP 전환 시점)로 구조화하고 고객사 경영진에게 발표했습니다.",
-                "국내 최대 물류기업 중 한 곳을 대상으로 한 로봇 PoC 제안에서 CJ대한통운 프로젝트 팀을 지원하며 시장 조사와 산출물 준비에 기여했습니다.",
-                "글로벌 선도 전자제품 제조사를 위한 피치덱을 준비했습니다. 고객의 자동화 제약을 3단 구조(전략적 근거, 경제적 동인, 실행 로드맵)로 정리하고 로봇 도입 4개 카테고리별 수요를 분석했습니다.",
-                "회사 IR 덱 제작에 참여했습니다. 아키텍처 시각 자료, 경쟁 차별화 슬라이드(Scale AI, Encord 대비), 글로벌 투자자를 위한 방법론 섹션 전체 영문 번역을 담당했습니다.",
-                "**RXDE.** AWS(EC2, RDS PostgreSQL, S3) 기반 회사 프로덕션 데이터 플랫폼의 개발을 처음부터 끝까지 담당했습니다. 전사적으로 채택된 통합 5-테이블 스키마를 설계하고, GPU 인프라 투자 결정에 근거가 된 비용-성능 벤치마크를 수행했습니다.",
-                "7개 성능 축, 28개 세부 기준으로 로봇 도입 준비도를 평가하는 과업 실행 가능성 평가 프레임워크를 개발해 기업 PoC 우선순위 결정의 go/no-go 판단을 표준화했으며, R&D 팀과 직접 조율하며 고도화했습니다."
-              ],
-              "_id": "ak2006"
+              "heading": "Pennsylvania State University",
+              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
+              "location": "Pennsylvania, United States",
+              "when": "Expected May 2028",
+              "current": false,
+              "bullets": [],
+              "_id": "ak2009"
             },
             {
-              "heading": "리서치 어시스턴트",
-              "org": "William Hansan · PE, M&A 자문",
-              "location": "대한민국 서울",
-              "when": "2026년 3월 – 2026년 5월",
+              "heading": "CFA Institute",
+              "org": "Chartered Financial Analyst Program",
+              "location": "",
+              "when": "Level II Candidate",
               "current": false,
-              "bullets": [
-                "국내 로보틱스 산업을 중심으로 TMT 섹터 산업 리서치를 파트타임으로 수행하며, 산업용 로봇과 부품 하위 세그먼트의 주요 기업을 분석했습니다.",
-                "딜 소싱을 위해 매출 규모, 마진 구조, 지배구조를 평가하여 잠재 인수 대상을 검토했습니다."
-              ],
-              "_id": "ak2007"
+              "bullets": [],
+              "_id": "ak200a"
             },
             {
-              "heading": "병역 (대한민국)",
-              "org": "서울교통공사",
-              "location": "자원 입대",
-              "when": "2024년 8월 – 2026년 5월",
+              "heading": "American International School of Cape Town",
+              "org": "",
+              "location": "Cape Town, South Africa",
+              "when": "Class of 2021",
               "current": false,
-              "bullets": [
-                "지하철 역사 내 감시 시스템을 관리하며 승객 안전을 확보했습니다.",
-                "비근무 시간을 활용해 독학으로 CFA 프로그램 2개 레벨에 응시했습니다."
-              ],
-              "_id": "ak2008"
+              "bullets": [],
+              "_id": "ak200b"
             }
           ]
         },
@@ -137,31 +123,45 @@ window.SITE_CONTENT_KO = {
           "title": "학력",
           "entries": [
             {
-              "heading": "펜실베이니아 주립대학교 (Penn State)",
-              "org": "컴퓨터과학 학사, 통계학 부전공 · GPA 3.70 / 4.0",
-              "location": "미국 펜실베이니아",
-              "when": "2028년 5월 졸업 예정",
-              "current": false,
-              "bullets": [],
-              "_id": "ak2009"
+              "heading": "Robotics Transformation (RX) Consultant Intern",
+              "org": "RLWRLD",
+              "location": "Seoul, South Korea",
+              "when": "May 2026 – Present",
+              "current": true,
+              "bullets": [
+                "**Lotte Hotel.** Led client engagement analysis across four 4- and 5-star properties, running on-site due diligence and benchmarking each hotel on operating scope, labor structure, P&L attribution, and ownership approval structure to support a robotics deployment contract proposal.",
+                "Built the core argument for accelerating contract initiation to November 2026, structured around four rationales (learning-curve economics, competitive pre-emption, schedule dependency, SOP transition timing) and presented to the client's senior management.",
+                "Supported the CJ Logistics project team on a robotics PoC proposal for one of Korea's largest logistics providers, contributing market research and deliverable preparation.",
+                "Prepared a pitch deck for a leading global electronics manufacturer, structuring the client's automation constraints into a three-part narrative (strategic rationale, economic drivers, execution roadmap) and analyzing demand across four robot deployment categories.",
+                "Contributed to the company IR deck: architecture visuals, competitive differentiation slides (vs. Scale AI, Encord), and the full English translation of the methodology section for global investors.",
+                "**RXDE.** Owned end-to-end development of the company's production data platform on AWS (EC2, RDS PostgreSQL, S3), designing a unified five-table schema adopted company-wide and running cost-performance benchmarks that informed a GPU infrastructure investment decision.",
+                "Developed a task feasibility evaluation framework scoring robotic deployment readiness across 28 sub-criteria on 7 performance axes, standardizing go/no-go assessment for enterprise PoC prioritization, iterated in direct alignment with the R&D team."
+              ],
+              "_id": "ak2006"
             },
             {
-              "heading": "CFA Institute",
-              "org": "공인재무분석사(CFA) 프로그램",
-              "location": "",
-              "when": "Level II 응시자",
+              "heading": "Research Assistant",
+              "org": "William Hansan · PE, M&A Advisory",
+              "location": "Seoul, South Korea",
+              "when": "Mar 2026 – May 2026",
               "current": false,
-              "bullets": [],
-              "_id": "ak200a"
+              "bullets": [
+                "Part-time industry research across the TMT sector with a focus on the Korean robotics landscape, analyzing key players across industrial robots and component sub-segments.",
+                "Assessed potential acquisition targets by evaluating revenue scale, margin profile, and ownership structure for deal origination."
+              ],
+              "_id": "ak2007"
             },
             {
-              "heading": "American International School of Cape Town",
-              "org": "",
-              "location": "남아프리카공화국 케이프타운",
-              "when": "2021년 졸업",
+              "heading": "Military Service, Republic of Korea",
+              "org": "Seoul Metropolitan Corporation",
+              "location": "Voluntary enlistment",
+              "when": "Aug 2024 – May 2026",
               "current": false,
-              "bullets": [],
-              "_id": "ak200b"
+              "bullets": [
+                "Managed surveillance systems across a metro station to ensure passenger safety.",
+                "Used off-duty hours to self-study for and write two levels of the CFA Program."
+              ],
+              "_id": "ak2008"
             }
           ]
         },
@@ -673,7 +673,7 @@ window.SITE_CONTENT_KO = {
             {
               "name": "트레일러닝 23K",
               "date": "2026-06-07",
-              "distance": "trail",
+              "distance": "other",
               "km": "23",
               "time": "4:15:00",
               "pace": "",
