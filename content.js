@@ -364,7 +364,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "춘천호반마라톤 대회",
-              "date": "",
+              "date": "2025-06-15",
               "distance": "half",
               "km": "",
               "time": "2:07:24",
@@ -376,7 +376,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Marvel Run",
-              "date": "",
+              "date": "2025-09-14",
               "distance": "half",
               "km": "",
               "time": "1:44:49",
@@ -388,7 +388,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Sports Seoul Half Marathon",
-              "date": "",
+              "date": "2025-11-30",
               "distance": "half",
               "km": "",
               "time": "1:52:28",
@@ -400,7 +400,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Seoul MBN Half Marathon",
-              "date": "",
+              "date": "2025-11-16",
               "distance": "half",
               "km": "",
               "time": "1:36:30",
@@ -424,7 +424,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "The Race Seoul",
-              "date": "",
+              "date": "2026-04-05",
               "distance": "half",
               "km": "",
               "time": "1:37:00",
@@ -436,7 +436,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Seoul Half Marathon",
-              "date": "",
+              "date": "2026-04-26",
               "distance": "half",
               "km": "",
               "time": "1:36:00",
@@ -448,7 +448,7 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Trail Running 23K",
-              "date": "",
+              "date": "2026-06-07",
               "distance": "other",
               "km": "23",
               "time": "4:15:00",
