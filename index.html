@@ -1416,7 +1416,11 @@
 
   // The hash is either "#tab" or "#tab/post-slug".
   function show(id, push) {
-    var parts = String(id == null ? '' : id).split('/');
+    // Browsers hand back location.hash percent-encoded, so a Korean slug such as
+    // "ontology-란-무엇인가" arrives as %EB%9E%80…; decode before matching.
+    var raw = String(id == null ? '' : id);
+    try { raw = decodeURIComponent(raw); } catch (e) { /* keep as typed */ }
+    var parts = raw.split('/');
     var tab = content.tabs.filter(function (t) { return t.id === parts[0]; })[0] || content.tabs[0];
     var slug = parts.length > 1 ? parts.slice(1).join('/') : '';
     activeTab = tab.id;
