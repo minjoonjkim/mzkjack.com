@@ -178,6 +178,13 @@
   };
   function templateFor(path, list) {
     var key = path[path.length - 1];
+    // A new tab needs a real id for its URL and a visible name, not blank copies.
+    if (key === 'tabs') {
+      var tab = JSON.parse(JSON.stringify(KEY_TEMPLATES.tabs)), n = 2;
+      var ids = list.map(function (t) { return t && t.id; });
+      while (ids.indexOf(tab.id) !== -1) tab.id = 'new-' + (n++);
+      return tab;
+    }
     if (list.length) return blank(list[0]);
     if (key === 'rows') {
       var parent = getAt(path.slice(0, -1));
@@ -480,7 +487,10 @@
     if (!container) { renderForm(); return; }
     var list = getAt(path);
     var key = path[path.length - 1];
-    var level = parseInt((container.closest('details') || {}).className.match(/level-(\d+)/) ? container.closest('details').className.match(/level-(\d+)/)[1] : 0, 10) + 1;
+    // A list nested in a section sits one level below it; a top-level list (tabs) is level 0.
+    var host = container.closest('details');
+    var m = host && /level-(\d+)/.exec(host.className);
+    var level = m ? parseInt(m[1], 10) + 1 : 0;
     var wrapper = container.parentElement;
     wrapper.outerHTML = renderList(list, path, key, level);
   }
