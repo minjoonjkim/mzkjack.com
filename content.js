@@ -85,6 +85,39 @@ window.SITE_CONTENT = {
         },
         {
           "type": "entries",
+          "title": "Education",
+          "entries": [
+            {
+              "heading": "Pennsylvania State University",
+              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
+              "location": "Pennsylvania, United States",
+              "when": "Expected May 2028",
+              "current": false,
+              "bullets": [],
+              "_id": "ak2009"
+            },
+            {
+              "heading": "CFA Institute",
+              "org": "Chartered Financial Analyst Program",
+              "location": "",
+              "when": "Level II Candidate",
+              "current": false,
+              "bullets": [],
+              "_id": "ak200a"
+            },
+            {
+              "heading": "American International School of Cape Town",
+              "org": "",
+              "location": "Cape Town, South Africa",
+              "when": "Class of 2021",
+              "current": false,
+              "bullets": [],
+              "_id": "ak200b"
+            }
+          ]
+        },
+        {
+          "type": "entries",
           "title": "Experience",
           "entries": [
             {
@@ -127,39 +160,6 @@ window.SITE_CONTENT = {
                 "Used off-duty hours to self-study for and write two levels of the CFA Program."
               ],
               "_id": "ak2008"
-            }
-          ]
-        },
-        {
-          "type": "entries",
-          "title": "Education",
-          "entries": [
-            {
-              "heading": "Pennsylvania State University",
-              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
-              "location": "Pennsylvania, United States",
-              "when": "Expected May 2028",
-              "current": false,
-              "bullets": [],
-              "_id": "ak2009"
-            },
-            {
-              "heading": "CFA Institute",
-              "org": "Chartered Financial Analyst Program",
-              "location": "",
-              "when": "Level II Candidate",
-              "current": false,
-              "bullets": [],
-              "_id": "ak200a"
-            },
-            {
-              "heading": "American International School of Cape Town",
-              "org": "",
-              "location": "Cape Town, South Africa",
-              "when": "Class of 2021",
-              "current": false,
-              "bullets": [],
-              "_id": "ak200b"
             }
           ]
         },
@@ -259,11 +259,6 @@ window.SITE_CONTENT = {
               "_id": "ak200k"
             }
           ]
-        },
-        {
-          "type": "posts",
-          "title": "Updates",
-          "posts": []
         }
       ]
     },
@@ -664,7 +659,7 @@ window.SITE_CONTENT = {
             {
               "name": "Trail Running 23K",
               "date": "2026-06-07",
-              "distance": "trail",
+              "distance": "other",
               "km": "23",
               "time": "4:15:00",
               "pace": "",
@@ -777,6 +772,46 @@ window.SITE_CONTENT = {
           ]
         }
       ]
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
+    },
+    {
+      "id": "",
+      "label": "",
+      "blocks": []
     }
   ]
 };
