@@ -336,15 +336,31 @@ window.SITE_CONTENT = {
             },
             {
               "name": "Paris-Saint-Germain-en-Laye 20K",
-              "date": "",
+              "date": "2025-05-18",
               "distance": "other",
               "km": "20",
               "time": "1:52:43",
               "pace": "",
               "location": "Saint-Germain-en-Laye, France",
               "note": "",
-              "map": "",
-              "media": []
+              "map": "media/2026-09/-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
+              "media": [
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673536449-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673548998-836a371e-780c-4a9a-a00a-39ab7c076258-1-1.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673610496-464ae637-2e34-4a87-9aeb-ae163d52cf87-1-1.jpeg",
+                  "alt": ""
+                }
+              ]
             },
             {
               "name": "춘천호반마라톤 대회",
