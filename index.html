@@ -729,6 +729,7 @@
         '10k': { short: '10 km', one: '10 km race',     label: '10 km races',    name: '10 km race' },
         '5k':  { short: '5 km',  one: '5 km race',      label: '5 km races',     name: '5 km race' },
         ultra: { short: 'Ultra', one: 'Ultramarathon',  label: 'Ultramarathons', name: 'Ultramarathon' },
+        trail: { short: 'Trail', one: 'Trail race',     label: 'Trail races',    name: 'Trail race' },
         tri:   { short: 'Tri',   one: 'Triathlon',      label: 'Triathlons',     name: 'Triathlon' },
         hyrox: { short: 'Hyrox', one: 'Hyrox race',     label: 'Hyrox races',    name: 'Hyrox' },
         other: { short: 'Race',  one: 'Other race',     label: 'Other races',    name: 'Race' }
@@ -766,6 +767,7 @@
         '10k': { short: '10 km',  one: '10 km',      label: '10 km',      name: '10 km \uB808\uC774\uC2A4' },
         '5k':  { short: '5 km',   one: '5 km',       label: '5 km',       name: '5 km \uB808\uC774\uC2A4' },
         ultra: { short: '\uC6B8\uD2B8\uB77C', one: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4', label: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4', name: '\uC6B8\uD2B8\uB77C \uB9C8\uB77C\uD1A4' },
+        trail: { short: '\uD2B8\uB808\uC77C', one: '\uD2B8\uB808\uC77C \uB808\uC774\uC2A4', label: '\uD2B8\uB808\uC77C \uB808\uC774\uC2A4', name: '\uD2B8\uB808\uC77C \uB808\uC774\uC2A4' },
         tri:   { short: '\uD2B8\uB77C\uC774', one: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', label: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', name: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860' },
         hyrox: { short: '\uD558\uC774\uB85D\uC2A4', one: '\uD558\uC774\uB85D\uC2A4', label: '\uD558\uC774\uB85D\uC2A4', name: '\uD558\uC774\uB85D\uC2A4' },
         other: { short: '\uB808\uC774\uC2A4', one: '\uAE30\uD0C0 \uB300\uD68C', label: '\uAE30\uD0C0 \uB300\uD68C', name: '\uB808\uC774\uC2A4' }
@@ -1293,9 +1295,9 @@
   }
 
   /* ---------- races ---------- */
-  var RACE_KM = { full: 42.195, half: 21.0975, '10k': 10, '5k': 5, ultra: 0, tri: 0, hyrox: 0 };
+  var RACE_KM = { full: 42.195, half: 21.0975, '10k': 10, '5k': 5, ultra: 0, trail: 0, tri: 0, hyrox: 0 };
   // Full / half / 10 km are always on the board, even at zero.
-  var TALLY_ORDER = ['full', 'half', '10k', '5k', 'ultra', 'tri', 'hyrox', 'other'];
+  var TALLY_ORDER = ['full', 'half', '10k', '5k', 'ultra', 'trail', 'tri', 'hyrox', 'other'];
   var TALLY_ALWAYS = { full: 1, half: 1, '10k': 1 };
 
   function raceKind(r) { return RACE_KM.hasOwnProperty(r.distance) ? r.distance : 'other'; }

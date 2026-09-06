@@ -664,7 +664,7 @@ window.SITE_CONTENT = {
             {
               "name": "Trail Running 23K",
               "date": "2026-06-07",
-              "distance": "other",
+              "distance": "trail",
               "km": "23",
               "time": "4:15:00",
               "pace": "",

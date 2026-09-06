@@ -189,7 +189,7 @@
   /* ================= races: shared vocabulary ================= */
   var RACE_OPTIONS = [
     ['full', 'Full marathon'], ['half', 'Half marathon'], ['10k', '10 km'], ['5k', '5 km'],
-    ['ultra', 'Ultramarathon'], ['tri', 'Triathlon'], ['hyrox', 'Hyrox'], ['other', 'Other']
+    ['ultra', 'Ultramarathon'], ['trail', 'Trail race'], ['tri', 'Triathlon'], ['hyrox', 'Hyrox'], ['other', 'Other']
   ];
   // Accepts 2026-10-25, 2026.10.25, 2026/10/25 -> 'YYYY-MM-DD'; '' if unparseable.
   function isoDate(v) {
@@ -200,7 +200,7 @@
     return m[1] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2);
   }
   var RACE_KM = { full: '42.195', half: '21.0975', '10k': '10', '5k': '5' };
-  var RACE_SHORT = { full: 'Full', half: 'Half', '10k': '10 km', '5k': '5 km', ultra: 'Ultra', tri: 'Tri', hyrox: 'Hyrox', other: 'Race' };
+  var RACE_SHORT = { full: 'Full', half: 'Half', '10k': '10 km', '5k': '5 km', ultra: 'Ultra', trail: 'Trail', tri: 'Tri', hyrox: 'Hyrox', other: 'Race' };
   var PRESET_KM = Object.keys(RACE_KM).map(function (k) { return RACE_KM[k]; });
   // Off-preset distances show the distance itself, not a generic "Race".
   function raceBadge(r) {
