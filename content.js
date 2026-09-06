@@ -90,8 +90,8 @@ window.SITE_CONTENT = {
             {
               "heading": "Pennsylvania State University",
               "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
-              "location": "Pennsylvania, United States",
-              "when": "Expected May 2028",
+              "location": "",
+              "when": "May 2028",
               "current": false,
               "bullets": [],
               "_id": "ak2009"
