@@ -21,7 +21,7 @@
   var token = null;
   var dirty = false;
   var dirtyBy = { en: false, ko: false };
-  // Languages whose file changed only because media was mirrored into it.
+  // Languages whose file changed only because shared data was mirrored into it.
   var mediaDirty = { en: false, ko: false };
   function contentPathFor(l) {
     return l === 'ko' ? (CONFIG.contentPathKo || 'content.ko.js') : (CONFIG.contentPath || 'content.js');
@@ -423,7 +423,8 @@
   }
 
   function renderObjectBody(obj, path, level) {
-    return Object.keys(obj).map(function (k) { return renderValue(obj[k], path.concat([k]), k, level); }).join('');
+    return Object.keys(obj).filter(function (k) { return k.charAt(0) !== '_'; })
+      .map(function (k) { return renderValue(obj[k], path.concat([k]), k, level); }).join('');
   }
 
   function renderList(list, path, key, level) {
@@ -871,11 +872,36 @@
     cropThenUpload(URL.createObjectURL(file), true);
   });
 
-  /* ================= media is shared by every language =================
-     A photo or video is the same file whichever language you read the site in;
-     only its caption is translated. So media mirrors across the language models
-     and rides along on the next publish. */
+  /* ================= data is shared by every language =================
+     A photo, a date, a finish time, a link or a colour is the same whichever
+     language you read the site in; only the words are translated. So everything
+     that is not text mirrors across the language models and rides along on the
+     next publish. A row added in one language appears in the other with the
+     source text as a placeholder to translate; a row removed disappears from both. */
   var MEDIA_KEYS = { photo: 1, image: 1, icon: 1, map: 1, poster: 1, cover: 1 };
+  // Scalars that carry no language: dates, numbers, flags, links, ids, colours.
+  var SHARED_KEYS = {
+    date: 1, time: 1, pace: 1, km: 1, distance: 1, current: 1, lead: 1,
+    href: 1, url: 1, id: 1, _id: 1, slug: 1, type: 1, theme: 1, accent: 1, accent2: 1
+  };
+  function isObj(v) { return !!v && typeof v === 'object' && !Array.isArray(v); }
+
+  // Rows (races, posts, entries, contact lines…) carry a language-independent _id so
+  // the two files pair up exactly, whatever is inserted, removed or reordered. Rows
+  // written before ids existed pair by position once, and take the same id on both sides.
+  function newId() { return Math.random().toString(36).slice(2, 8); }
+  function ensureRowIds(node, key) {
+    if (Array.isArray(node)) {
+      var rows = key !== 'tabs' && key !== 'blocks' && key !== 'media' && node.length && node.every(isObj);
+      node.forEach(function (row) {
+        if (rows && !row._id) row._id = newId();
+        ensureRowIds(row);
+      });
+      return;
+    }
+    if (!isObj(node)) return;
+    Object.keys(node).forEach(function (k) { ensureRowIds(node[k], k); });
+  }
 
   function normalizeMedia(list) {
     return (Array.isArray(list) ? list : []).filter(function (m) { return m && m.src; })
@@ -895,13 +921,56 @@
   function syncNode(src, dst) {
     var changed = false;
     if (Array.isArray(src) && Array.isArray(dst)) {
-      var n = Math.min(src.length, dst.length);
-      for (var i = 0; i < n; i++) { if (syncNode(src[i], dst[i])) changed = true; }
+      // Rows of objects (races, posts, entries, contact lines) align by position and
+      // the other language gains or loses rows to match. Lists of strings are text
+      // (bullets, paragraphs, chips) and stay as written in each language.
+      var rows = src.length ? src.every(isObj) : dst.every(isObj);
+      if (!rows) return false;
+      // Pass 1: pair by _id. Pass 2: a source row with no partner takes the next
+      // destination row that has no id yet (rows written before ids existed) and
+      // gives it the same id; otherwise it is a new row and is copied over. Any
+      // destination row left unpaired was deleted at the source.
+      var used = dst.map(function () { return false; }), byId = {};
+      dst.forEach(function (row, j) { if (isObj(row) && row._id) byId[row._id] = j; });
+      var pair = src.map(function (row) { return isObj(row) && row._id && byId[row._id] != null ? byId[row._id] : -1; });
+      pair.forEach(function (j) { if (j >= 0) used[j] = true; });
+      var cursor = 0, out = [];
+      src.forEach(function (row, i) {
+        var j = pair[i];
+        if (j < 0) {
+          while (cursor < dst.length && (used[cursor] || (isObj(dst[cursor]) && dst[cursor]._id))) cursor++;
+          if (cursor < dst.length) { j = cursor; used[j] = true; }
+        }
+        if (j >= 0) { if (syncNode(row, dst[j])) changed = true; out.push(dst[j]); }
+        else { out.push(clone(row)); changed = true; }
+      });
+      if (out.length !== dst.length || out.some(function (r, i) { return r !== dst[i]; })) {
+        dst.length = 0; out.forEach(function (r) { dst.push(r); }); changed = true;
+      }
       return changed;
     }
     if (!src || !dst || typeof src !== 'object' || typeof dst !== 'object') return false;
     Object.keys(src).forEach(function (k) {
       var sv = src[k], dv = dst[k];
+      // Page structure is each language's own. Tabs pair up by id and sections by
+      // kind (the 2nd "races" block here syncs with the 2nd "races" block there);
+      // nothing is added or removed, so a section that exists in one language only
+      // is left exactly as written.
+      if ((k === 'tabs' || k === 'blocks') && Array.isArray(sv) && Array.isArray(dv)) {
+        var seen = {};
+        sv.forEach(function (row) {
+          if (!isObj(row)) return;
+          var key = k === 'tabs' ? 'id:' + row.id : 'type:' + row.type;
+          var n = seen[key] = (seen[key] || 0) + 1, hit = 0;
+          for (var j = 0; j < dv.length; j++) {
+            var cand = dv[j];
+            if (!isObj(cand)) continue;
+            var ck = k === 'tabs' ? 'id:' + cand.id : 'type:' + cand.type;
+            if (ck === key && ++hit === n) { if (syncNode(row, cand)) changed = true; break; }
+          }
+        });
+        return;
+      }
       if (k === 'media' && Array.isArray(sv)) {
         var keep = {};
         (Array.isArray(dv) ? dv : []).forEach(function (m) { if (m && m.src && m.alt) keep[m.src] = m.alt; });
@@ -911,18 +980,24 @@
         if (JSON.stringify(next) !== JSON.stringify(dv)) { dst[k] = next; changed = true; }
         return;
       }
-      if (MEDIA_KEYS[k] && typeof sv === 'string') {
+      if ((MEDIA_KEYS[k] || SHARED_KEYS[k]) && (sv == null || typeof sv !== 'object')) {
         if (dv !== sv) { dst[k] = sv; changed = true; }
         return;
       }
-      if (sv && typeof sv === 'object') { if (syncNode(sv, dv)) changed = true; }
+      if (sv && typeof sv === 'object') {
+        // A structure that exists in one language only (a new section, a theme) is
+        // copied whole, text included, so there is something to translate.
+        if (!dv || typeof dv !== 'object' || Array.isArray(dv) !== Array.isArray(sv)) { dst[k] = clone(sv); changed = true; return; }
+        if (syncNode(sv, dv)) changed = true;
+      }
     });
     return changed;
   }
 
-  // Mirrors media out of the language being edited. Returns the languages it changed.
+  // Mirrors shared data out of the language being edited. Returns the languages it changed.
   function syncMediaToOthers(compactSource) {
     if (compactSource) compactMedia(model);
+    ensureRowIds(model);
     var touched = [];
     Object.keys(models).forEach(function (l) {
       if (l === lang) return;
@@ -966,14 +1041,14 @@
     var path = contentPathFor(lang);
     lastPublishedPath = path;
     var gh = github();
-    // Languages that only picked up mirrored media go out with this publish, so
-    // the two sites never disagree about which photos exist.
+    // Languages that only picked up mirrored data go out with this publish, so
+    // the two sites never disagree about dates, photos, links or colours.
     var extras = Object.keys(models).filter(function (l) { return l !== lang && mediaDirty[l]; });
     return gh.putFile(path, payload, (message || 'Update site content') + (lang === 'ko' ? ' (Korean)' : ''))
       .then(function () {
         return extras.reduce(function (chain, l) {
           return chain.then(function () {
-            return gh.putFile(contentPathFor(l), Core.serializeContent(models[l], l), 'Sync media across languages')
+            return gh.putFile(contentPathFor(l), Core.serializeContent(models[l], l), 'Sync shared data across languages')
               .then(function () { mediaDirty[l] = false; dirtyBy[l] = false; baseline[l] = snapshot(models[l]); });
           });
         }, Promise.resolve());
@@ -1944,10 +2019,13 @@
     return site.theme && site.theme.accent ? site.theme : null;
   }
   function writeTheme(theme) {
-    ['en', 'ko'].forEach(function (k) {
+    Object.keys(models).forEach(function (k) {
       var m = models[k];
       m.site = m.site || {};
       if (theme) m.site.theme = clone(theme); else delete m.site.theme;
+      // Written to every language directly, so the sync step sees no difference;
+      // flag the others so they publish alongside.
+      if (k !== lang) { mediaDirty[k] = true; dirtyBy[k] = true; }
     });
     markDirty();
     schedulePreview(['site']);

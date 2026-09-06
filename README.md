@@ -58,6 +58,17 @@ Race counts come from the entries themselves — a race dated in the future is l
 
 Post bodies accept `**bold**`, a blank line starts a new paragraph, and bare URLs become links. Photos and videos open in a full-screen viewer when clicked.
 
+## What is shared between languages
+
+Only words are per-language. Everything else is the same fact in both files and mirrors automatically as you edit, whichever language you happen to be editing:
+
+- **Shared (synced):** dates, finish times, paces, distances, the "current role" flag, photos, videos, route maps, cover and profile images, icons, links (`href`), tab ids, post slugs, the colour theme, and how many bullets a role shows before "All contributions".
+- **Per language (yours to translate):** titles, names, headings, organisations, locations, date *labels* like "May 2026 – Present", bodies, notes, bullets, paragraphs, chips, captions and tags.
+
+How rows pair up: every race, post, experience entry and contact line carries a small `_id` (hidden in the editor) so the two files match exactly even when you add a race at the top, delete one in the middle, or reorder. A row added in one language appears in the other with the source text as a placeholder to translate; a row deleted disappears from both. Page *structure* is per language — tabs pair by id and sections by kind, and a section that exists in one language only is left alone.
+
+On Publish, any language whose file changed only through this mirroring is published too, so the two sites never disagree about a date or a photo.
+
 ## Colour theme
 
 Click **Theme** in the editor's top bar. Enter any CSS colour — a hex code like `#57EBDE`, `57EBDE`, or `#5EC`, an `rgb(...)`, or a named colour — pick it from the swatch, or choose a preset. Tick **Blend into a second colour** for a gradient. The preview updates as you type; **Publish** makes it live.
