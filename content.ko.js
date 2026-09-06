@@ -88,12 +88,12 @@ window.SITE_CONTENT_KO = {
         },
         {
           "type": "entries",
-          "title": "경력",
+          "title": "학력",
           "entries": [
             {
-              "heading": "Pennsylvania State University",
-              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
-              "location": "Pennsylvania, United States",
+              "heading": "펜실베니아 주립대학교",
+              "org": "컴퓨터공학과, GPA 3.70 / 4.0",
+              "location": "",
               "when": "Expected May 2028",
               "current": false,
               "bullets": [],
@@ -101,7 +101,7 @@ window.SITE_CONTENT_KO = {
             },
             {
               "heading": "CFA Institute",
-              "org": "Chartered Financial Analyst Program",
+              "org": "Chartered Financial Analyst 1차 합격",
               "location": "",
               "when": "Level II Candidate",
               "current": false,
@@ -111,7 +111,7 @@ window.SITE_CONTENT_KO = {
             {
               "heading": "American International School of Cape Town",
               "org": "",
-              "location": "Cape Town, South Africa",
+              "location": "케이프타운, 남아프리카공화국",
               "when": "Class of 2021",
               "current": false,
               "bullets": [],
@@ -121,7 +121,7 @@ window.SITE_CONTENT_KO = {
         },
         {
           "type": "entries",
-          "title": "학력",
+          "title": "경력",
           "entries": [
             {
               "heading": "Robotics Transformation (RX) Consultant Intern",
