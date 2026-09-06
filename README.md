@@ -45,6 +45,7 @@ Section types available in `content.js` (and in the editor's "Add section" menu)
 - `text` — a title and paragraphs
 - `entries` — jobs, degrees, activities (heading, org, location, dates, bullets)
 - `table` — name / description / small tag rows (projects, certifications)
+- `courses` — coursework: department, course code, course name and a description per course. The site groups the rows by department, in the order departments first appear. The Academics tab starts with one.
 - `skills` — label / chips rows
 - `stats` — three big numbers with labels
 - `cards` — a two-column grid of small cards with facts

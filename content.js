@@ -272,6 +272,187 @@ window.SITE_CONTENT = {
       "label": "Academics",
       "blocks": [
         {
+          "type": "courses",
+          "title": "Coursework",
+          "courses": [
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 121",
+              "course": "Introduction to Programming Techniques",
+              "description": "Learned foundational programming and computational problem-solving through algorithm design, structured programming, arrays, functions, and recursion.",
+              "_id": "xt3gc6"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 122",
+              "course": "Intermediate Programming",
+              "description": "Developed a stronger foundation in object-oriented programming, recursion, algorithm analysis, and essential data structures, including linked lists, stacks, queues, hash tables, trees, and graphs.",
+              "_id": "qadmqt"
+            },
+            {
+              "dept": "Information Sciences and Technology",
+              "code": "IST 242",
+              "course": "Intermediate Object-Oriented Application Development",
+              "description": "Applied object-oriented principles such as encapsulation, inheritance, and polymorphism to build larger, modular software applications.",
+              "_id": "jhhdop"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 221",
+              "course": "Object-Oriented Programming with Web-Based Applications",
+              "description": "Used object-oriented design principles to develop web-based applications, with an emphasis on reusable components, application structure, and practical software development.",
+              "_id": "0ykfw2"
+            },
+            {
+              "dept": "Computer Engineering",
+              "code": "CMPEN 271",
+              "course": "Introduction to Digital Systems",
+              "description": "Studied binary representation, Boolean algebra, combinational logic, sequential circuits, and the foundational components used to construct digital computer systems.",
+              "_id": "f5qd75"
+            },
+            {
+              "dept": "Computer Engineering",
+              "code": "CMPEN 275",
+              "course": "Digital Design Laboratory",
+              "description": "Implemented and tested digital logic designs through laboratory exercises involving combinational and sequential circuits.",
+              "_id": "1lwpl9"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 360",
+              "course": "Discrete Mathematics for Computer Science",
+              "description": "Learned the mathematical foundations of computing, including logic, proofs, sets, relations, functions, induction, combinatorics, recurrence relations, and graph theory.",
+              "_id": "ndca98"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 465",
+              "course": "Data Structures and Algorithms",
+              "description": "Studied the design and analysis of efficient algorithms using recursion, sorting techniques, trees, sets, graphs, and other fundamental data structures.",
+              "_id": "y46c40"
+            },
+            {
+              "dept": "Computer Engineering",
+              "code": "CMPEN 331",
+              "course": "Computer Organization and Design",
+              "description": "Explored how computer hardware executes software through instruction sets, processor organization, datapaths, memory hierarchies, assembly-level operations, and performance analysis.",
+              "_id": "tlmdnz"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 311",
+              "course": "Introduction to Systems Programming",
+              "description": "Developed systems software in C within Unix environments and learned about memory organization, processes, files, system calls, debugging tools, program performance, and interprocess communication.",
+              "_id": "7s1ifh"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 461",
+              "course": "Programming Language Concepts",
+              "description": "Compared major programming paradigms and studied language syntax, semantics, type systems, scope, abstraction, runtime environments, and language implementation.",
+              "_id": "j36g66"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 442",
+              "course": "Artificial Intelligence",
+              "description": "Studied the foundations of intelligent systems, including problem-solving, goal-based and adversarial search, knowledge representation, probabilistic reasoning, decision-making, planning, and machine learning.",
+              "_id": "qhmqkb"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 497",
+              "course": "Mathematical Tools in Computer Science",
+              "description": "Applied mathematical reasoning and quantitative methods to computer science problems, strengthening the connection between formal models, algorithms, and computational problem-solving.",
+              "_id": "f3oywm"
+            },
+            {
+              "dept": "Computer Science",
+              "code": "CMPSC 473",
+              "course": "Operating Systems Design and Construction",
+              "description": "Studied the design of operating systems and the management of processes, threads, processors, memory, file systems, input and output devices, synchronization, and other shared computing resources.",
+              "_id": "j03dvw"
+            },
+            {
+              "dept": "Mathematics",
+              "code": "MATH 140",
+              "course": "Calculus with Analytic Geometry I",
+              "description": "Built a foundation in limits, continuity, derivatives, optimization, related rates, definite integrals, and the relationship between differentiation and integration.",
+              "_id": "lbc4ao"
+            },
+            {
+              "dept": "Mathematics",
+              "code": "MATH 141",
+              "course": "Calculus with Analytic Geometry II",
+              "description": "Studied advanced integration techniques, applications of integration, sequences and series, parametric equations, polar coordinates, and introductory differential equations.",
+              "_id": "51jk5w"
+            },
+            {
+              "dept": "Mathematics",
+              "code": "MATH 220",
+              "course": "Matrices",
+              "description": "Learned matrix operations, systems of linear equations, determinants, vector spaces, linear transformations, eigenvalues, and eigenvectors.",
+              "_id": "55eh2e"
+            },
+            {
+              "dept": "Mathematics",
+              "code": "MATH 230",
+              "course": "Calculus and Vector Analysis",
+              "description": "Extended calculus into multiple dimensions through partial derivatives, multiple integrals, vector fields, line and surface integrals, and the major theorems of vector calculus.",
+              "_id": "3oqkdc"
+            },
+            {
+              "dept": "Statistics",
+              "code": "STAT 200",
+              "course": "Elementary Statistics",
+              "description": "Learned descriptive statistics, probability fundamentals, sampling, confidence intervals, hypothesis testing, correlation, regression, and the interpretation of statistical results.",
+              "_id": "8d15fa"
+            },
+            {
+              "dept": "Statistics",
+              "code": "STAT 414",
+              "course": "Introduction to Probability Theory",
+              "description": "Studied calculus-based probability, including probability spaces, conditional probability, discrete and continuous random variables, transformations, expectation, generating functions, and limit theorems.",
+              "_id": "gzqx8w"
+            },
+            {
+              "dept": "Mathematics",
+              "code": "MATH 415",
+              "course": "Mathematical Statistics",
+              "description": "Developed a theoretical and applied understanding of statistical inference, including estimation, hypothesis testing, regression, correlation, analysis of variance, and computational analysis.",
+              "_id": "7qdgnm"
+            },
+            {
+              "dept": "Statistics",
+              "code": "STAT 460",
+              "course": "Intermediate Applied Statistics",
+              "description": "Applied hypothesis testing, goodness-of-fit tests, regression, correlation analysis, randomized experimental designs, block designs, and Latin square designs.",
+              "_id": "sdkjup"
+            },
+            {
+              "dept": "Statistics",
+              "code": "STAT 462",
+              "course": "Applied Regression Analysis",
+              "description": "Built and evaluated linear, multiple, stepwise, and nonlinear regression models while studying correlation, model selection, diagnostics, and the interpretation of relationships within data.",
+              "_id": "6rs0zr"
+            },
+            {
+              "dept": "Physics",
+              "code": "PHYS 211",
+              "course": "General Physics, Mechanics",
+              "description": "Studied classical mechanics through kinematics, Newton’s laws, forces, work and energy, momentum, rotational motion, gravitation, and oscillatory systems.",
+              "_id": "2fc9vt"
+            },
+            {
+              "dept": "Physics",
+              "code": "PHYS 212",
+              "course": "General Physics, Electricity and Magnetism",
+              "description": "Learned the principles of electric and magnetic fields, electrostatic potential, circuits, capacitance, electromagnetic induction, and the relationship between electricity and magnetism.",
+              "_id": "dc63vx"
+            }
+          ]
+        },
+        {
           "type": "entries",
           "title": "Extracurricular Activities ",
           "entries": [

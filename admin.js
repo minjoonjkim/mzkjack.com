@@ -153,6 +153,7 @@
     text:    { type: 'text', title: 'New section', paragraphs: ['Write something here.'] },
     entries: { type: 'entries', title: 'New section', entries: [{ heading: 'Role or degree', org: 'Organization', location: '', when: '2026', current: false, bullets: ['What you did.'] }] },
     table:   { type: 'table', title: 'New section', rows: [{ name: 'Name', text: 'Description', tag: '' }] },
+    courses: { type: 'courses', title: 'Coursework', courses: [{ dept: 'Computer Science', code: 'CMPSC 465', course: 'Data Structures and Algorithms', description: 'What the course covered.' }] },
     skills:  { type: 'skills', title: 'Skills', rows: [{ label: 'Category', items: ['One', 'Two'], text: '' }] },
     stats:   { type: 'stats', title: 'At a glance', stats: [{ value: '1', label: 'Label' }] },
     cards:   { type: 'cards', title: 'New section', cards: [{ meta: 'Category', title: 'Card', text: 'Description', facts: [{ label: 'Fact', value: 'Value' }] }] },
@@ -164,6 +165,7 @@
     tabs:    { id: 'new', label: 'New tab', blocks: [] },
     entries: { heading: '', org: '', location: '', when: '', current: false, bullets: [] },
     rows:    { name: '', text: '', tag: '' },
+    courses: { dept: '', code: '', course: '', description: '' },
     stats:   { value: '', label: '' },
     cards:   { meta: '', title: '', text: '', facts: [] },
     facts:   { label: '', value: '' },
@@ -200,6 +202,11 @@
   var RACE_KM = { full: '42.195', half: '21.0975', '10k': '10', '5k': '5' };
   var RACE_SHORT = { full: 'Full', half: 'Half', '10k': '10 km', '5k': '5 km', ultra: 'Ultra', tri: 'Tri', hyrox: 'Hyrox', other: 'Race' };
   var PRESET_KM = Object.keys(RACE_KM).map(function (k) { return RACE_KM[k]; });
+  // Off-preset distances show the distance itself, not a generic "Race".
+  function raceBadge(r) {
+    if (RACE_SHORT[r.distance] && r.distance !== 'other') return RACE_SHORT[r.distance];
+    return r.km ? r.km + ' km' : 'Race';
+  }
 
   // "3:42:15" or "42:10" -> seconds. Anything else -> null.
   function durationSeconds(txt) {
@@ -259,10 +266,11 @@
     note: 'Notes', map: 'Route map (file path)', distance: 'Distance',
     lines: 'Boxes (each row has its own icon)', icon: 'Icon / logo',
     cover: 'Banner above the photo', theme: 'Banner colour', image: 'Banner wallpaper',
-    accent: 'Accent colour (hex)', accent2: 'Second colour for a gradient (optional)'
+    accent: 'Accent colour (hex)', accent2: 'Second colour for a gradient (optional)',
+    courses: 'Courses', dept: 'Department', code: 'Course code', course: 'Course name'
   };
   var LINES_HINT = { paragraphs: 'One paragraph per line.', bullets: 'One bullet per line. Use **text** for bold.', items: 'One per line.', roles: 'One per line.', focus: 'One per line.' };
-  var MULTILINE = { text: 1, value: 1, body: 1, note: 1 };
+  var MULTILINE = { text: 1, value: 1, body: 1, note: 1, description: 1 };
   // Lists whose items are objects, so an empty one is still edited as a list.
   var OBJECT_LISTS = { lines: 1, media: 1, facts: 1, races: 1, posts: 1 };
   // Nicer wording for the "+ Add" button where the plural is not a simple -s.
@@ -281,12 +289,12 @@
   function isStringArray(a) { return Array.isArray(a) && a.every(function (x) { return typeof x === 'string'; }); }
   // The key whose text names an item, so the header can be edited in place.
   function titleKey(item) {
-    var keys = ['title', 'heading', 'label', 'name'];
+    var keys = ['title', 'heading', 'label', 'name', 'course'];
     for (var k = 0; k < keys.length; k++) if (item && typeof item[keys[k]] === 'string') return keys[k];
     return null;
   }
   function itemTitle(item, i) {
-    var keys = ['title', 'heading', 'label', 'name', 'value', 'id'];
+    var keys = ['title', 'heading', 'label', 'name', 'course', 'value', 'id'];
     if (item && item.src && !item.title) return String(item.src).split('/').pop();
     for (var k = 0; k < keys.length; k++) {
       if (item && typeof item[keys[k]] === 'string' && item[keys[k]].trim()) return item[keys[k]];
@@ -1616,7 +1624,7 @@
       if ((r.media || []).length) figs.push('<span>' + r.media.length + ' photo' + (r.media.length === 1 ? '' : 's') + '</span>');
       return '<article class="card arace">' +
         '<div class="arace-top">' +
-          '<span class="arace-badge' + (up ? ' upcoming' : '') + '">' + esc(RACE_SHORT[r.distance] || 'Race') + '</span>' +
+          '<span class="arace-badge' + (up ? ' upcoming' : '') + '">' + esc(raceBadge(r)) + '</span>' +
           '<div class="arace-id"><div class="arace-name">' + esc(r.name || '(unnamed race)') + '</div>' +
           '<div class="arace-sub">' + esc([niceDate(r.date), r.location].filter(Boolean).join(' · ') || 'No date') +
           (up ? ' · upcoming' : '') + '</div></div>' +

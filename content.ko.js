@@ -274,6 +274,187 @@ window.SITE_CONTENT_KO = {
       "label": "학업",
       "blocks": [
         {
+          "type": "courses",
+          "title": "수강 과목",
+          "courses": [
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 121",
+              "course": "Introduction to Programming Techniques",
+              "description": "알고리즘 설계, 구조적 프로그래밍, 배열, 함수, 재귀를 통해 프로그래밍과 계산적 문제 해결의 기초를 배웠다.",
+              "_id": "xt3gc6"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 122",
+              "course": "Intermediate Programming",
+              "description": "객체지향 프로그래밍, 재귀, 알고리즘 분석과 함께 연결 리스트, 스택, 큐, 해시 테이블, 트리, 그래프 등 핵심 자료구조의 기반을 다졌다.",
+              "_id": "qadmqt"
+            },
+            {
+              "dept": "정보과학기술",
+              "code": "IST 242",
+              "course": "Intermediate Object-Oriented Application Development",
+              "description": "캡슐화, 상속, 다형성 같은 객체지향 원칙을 적용해 규모가 큰 모듈형 소프트웨어 애플리케이션을 개발했다.",
+              "_id": "jhhdop"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 221",
+              "course": "Object-Oriented Programming with Web-Based Applications",
+              "description": "객체지향 설계 원칙으로 웹 기반 애플리케이션을 개발하며 재사용 가능한 컴포넌트, 애플리케이션 구조, 실무적인 소프트웨어 개발에 중점을 두었다.",
+              "_id": "0ykfw2"
+            },
+            {
+              "dept": "컴퓨터 엔지니어링",
+              "code": "CMPEN 271",
+              "course": "Introduction to Digital Systems",
+              "description": "이진 표현, 불 대수, 조합 논리, 순차 회로, 그리고 디지털 컴퓨터 시스템을 구성하는 기본 요소를 공부했다.",
+              "_id": "f5qd75"
+            },
+            {
+              "dept": "컴퓨터 엔지니어링",
+              "code": "CMPEN 275",
+              "course": "Digital Design Laboratory",
+              "description": "조합 회로와 순차 회로를 다루는 실습을 통해 디지털 논리 설계를 구현하고 검증했다.",
+              "_id": "1lwpl9"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 360",
+              "course": "Discrete Mathematics for Computer Science",
+              "description": "논리, 증명, 집합, 관계, 함수, 귀납법, 조합론, 점화식, 그래프 이론 등 컴퓨팅의 수학적 기초를 배웠다.",
+              "_id": "ndca98"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 465",
+              "course": "Data Structures and Algorithms",
+              "description": "재귀, 정렬 기법, 트리, 집합, 그래프 등 기본 자료구조를 활용한 효율적인 알고리즘의 설계와 분석을 공부했다.",
+              "_id": "y46c40"
+            },
+            {
+              "dept": "컴퓨터 엔지니어링",
+              "code": "CMPEN 331",
+              "course": "Computer Organization and Design",
+              "description": "명령어 집합, 프로세서 구조, 데이터패스, 메모리 계층, 어셈블리 수준 연산, 성능 분석을 통해 하드웨어가 소프트웨어를 실행하는 방식을 탐구했다.",
+              "_id": "tlmdnz"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 311",
+              "course": "Introduction to Systems Programming",
+              "description": "Unix 환경에서 C로 시스템 소프트웨어를 개발하며 메모리 구조, 프로세스, 파일, 시스템 콜, 디버깅 도구, 프로그램 성능, 프로세스 간 통신을 배웠다.",
+              "_id": "7s1ifh"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 461",
+              "course": "Programming Language Concepts",
+              "description": "주요 프로그래밍 패러다임을 비교하고 언어의 문법, 의미론, 타입 시스템, 스코프, 추상화, 런타임 환경, 언어 구현을 공부했다.",
+              "_id": "j36g66"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 442",
+              "course": "Artificial Intelligence",
+              "description": "문제 해결, 목표 기반 탐색과 적대적 탐색, 지식 표현, 확률적 추론, 의사결정, 계획, 기계학습 등 지능형 시스템의 기초를 공부했다.",
+              "_id": "qhmqkb"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 497",
+              "course": "Mathematical Tools in Computer Science",
+              "description": "수학적 추론과 정량적 방법을 컴퓨터과학 문제에 적용하며 형식 모델, 알고리즘, 계산적 문제 해결 사이의 연결을 다졌다.",
+              "_id": "f3oywm"
+            },
+            {
+              "dept": "컴퓨터공학",
+              "code": "CMPSC 473",
+              "course": "Operating Systems Design and Construction",
+              "description": "운영체제의 설계와 함께 프로세스, 스레드, 프로세서, 메모리, 파일 시스템, 입출력 장치, 동기화 등 공유 컴퓨팅 자원의 관리를 공부했다.",
+              "_id": "j03dvw"
+            },
+            {
+              "dept": "수학",
+              "code": "MATH 140",
+              "course": "Calculus with Analytic Geometry I",
+              "description": "극한, 연속성, 미분, 최적화, 관련 변화율, 정적분, 그리고 미분과 적분의 관계에 대한 기초를 쌓았다.",
+              "_id": "lbc4ao"
+            },
+            {
+              "dept": "수학",
+              "code": "MATH 141",
+              "course": "Calculus with Analytic Geometry II",
+              "description": "고급 적분 기법, 적분의 응용, 수열과 급수, 매개변수 방정식, 극좌표, 미분방정식 입문을 공부했다.",
+              "_id": "51jk5w"
+            },
+            {
+              "dept": "수학",
+              "code": "MATH 220",
+              "course": "Matrices",
+              "description": "행렬 연산, 연립 선형방정식, 행렬식, 벡터 공간, 선형 변환, 고유값과 고유벡터를 배웠다.",
+              "_id": "55eh2e"
+            },
+            {
+              "dept": "수학",
+              "code": "MATH 230",
+              "course": "Calculus and Vector Analysis",
+              "description": "편미분, 다중적분, 벡터장, 선적분과 면적분, 벡터 미적분의 주요 정리를 통해 미적분을 다차원으로 확장했다.",
+              "_id": "3oqkdc"
+            },
+            {
+              "dept": "통계학",
+              "code": "STAT 200",
+              "course": "Elementary Statistics",
+              "description": "기술통계, 확률의 기초, 표본추출, 신뢰구간, 가설검정, 상관, 회귀, 통계 결과의 해석을 배웠다.",
+              "_id": "8d15fa"
+            },
+            {
+              "dept": "통계학",
+              "code": "STAT 414",
+              "course": "Introduction to Probability Theory",
+              "description": "확률 공간, 조건부 확률, 이산·연속 확률변수, 변환, 기대값, 생성함수, 극한 정리 등 미적분 기반 확률론을 공부했다.",
+              "_id": "gzqx8w"
+            },
+            {
+              "dept": "수학",
+              "code": "MATH 415",
+              "course": "Mathematical Statistics",
+              "description": "추정, 가설검정, 회귀, 상관, 분산분석, 계산 분석을 포함한 통계적 추론을 이론과 응용 양면에서 익혔다.",
+              "_id": "7qdgnm"
+            },
+            {
+              "dept": "통계학",
+              "code": "STAT 460",
+              "course": "Intermediate Applied Statistics",
+              "description": "가설검정, 적합도 검정, 회귀, 상관분석, 랜덤화 실험설계, 블록 설계, 라틴방격 설계를 적용했다.",
+              "_id": "sdkjup"
+            },
+            {
+              "dept": "통계학",
+              "code": "STAT 462",
+              "course": "Applied Regression Analysis",
+              "description": "선형, 다중, 단계적, 비선형 회귀 모형을 구축하고 평가하며 상관, 모형 선택, 진단, 데이터 내 관계의 해석을 공부했다.",
+              "_id": "6rs0zr"
+            },
+            {
+              "dept": "물리학",
+              "code": "PHYS 211",
+              "course": "General Physics, Mechanics",
+              "description": "운동학, 뉴턴 법칙, 힘, 일과 에너지, 운동량, 회전 운동, 중력, 진동 시스템을 통해 고전역학을 공부했다.",
+              "_id": "2fc9vt"
+            },
+            {
+              "dept": "물리학",
+              "code": "PHYS 212",
+              "course": "General Physics, Electricity and Magnetism",
+              "description": "전기장과 자기장, 정전기 퍼텐셜, 회로, 축전, 전자기 유도, 전기와 자기의 관계에 대한 원리를 배웠다.",
+              "_id": "dc63vx"
+            }
+          ]
+        },
+        {
           "type": "entries",
           "title": "학위",
           "entries": [

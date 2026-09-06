@@ -218,6 +218,16 @@
   .table td { color: var(--slate); }
   .table .tag { display: inline-block; margin-top: 4px; color: var(--primary-text); background: var(--primary-tint); border-radius: 4px; padding: 1px 7px; font-size: 10px; font-weight: 700; letter-spacing: 0.03em; }
 
+  /* Coursework: grouped by department, one row per course */
+  .courses { display: grid; gap: 16px; }
+  .course-dept { color: var(--gray); font-size: var(--small); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; padding-bottom: 4px; border-bottom: 1px solid var(--line-soft); }
+  .course-list { display: grid; }
+  .course { display: grid; grid-template-columns: 112px 1fr; gap: 3px 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+  .course:last-child { border-bottom: 0; padding-bottom: 2px; }
+  .course .code { font-weight: 700; color: var(--primary-text); white-space: nowrap; }
+  .course h3 { font-size: 14px; font-weight: 700; color: var(--black); }
+  .course p { grid-column: 2; color: var(--slate); }
+
   .skills { display: grid; gap: 12px; }
   .skill-row { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: baseline; }
   .skill-row dt { color: var(--gray); font-size: var(--small); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
@@ -591,6 +601,8 @@
     .skill-row { grid-template-columns: 1fr; gap: 4px; }
     .table th { display: block; width: auto; padding-bottom: 0; }
     .table td { display: block; padding-top: 2px; }
+    .course { grid-template-columns: 1fr; gap: 2px; }
+    .course p { grid-column: 1; }
     .entry .when { white-space: normal; }
     .post-media.n-3 { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
     .post-media.n-3 .media-cell:first-child { grid-row: auto; grid-column: span 2; max-height: 250px; }
@@ -693,6 +705,7 @@
     en: {
       focus: 'Focus Areas', addPhoto: 'Add photo at', expandAll: 'Expand all', collapseAll: 'Collapse all',
       noPosts: 'No posts yet.', noArticles: 'Nothing published here yet.', allPosts: '\u2190 All posts',
+      noCourses: 'No courses listed yet.',
       untitled: 'Untitled', edit: 'Edit', nextUp: 'Next upcoming', unnamedRace: 'Unnamed race',
       routeMap: 'route map', route: 'Route', upcoming: 'Upcoming', perKm: '/km', routeMapAlt: 'Route map \u2014 ',
       close: 'Close', prev: 'Previous', next: 'Next', prevPhoto: 'Previous photo', nextPhoto: 'Next photo',
@@ -719,11 +732,16 @@
         tri:   { short: 'Tri',   one: 'Triathlon',      label: 'Triathlons',     name: 'Triathlon' },
         hyrox: { short: 'Hyrox', one: 'Hyrox race',     label: 'Hyrox races',    name: 'Hyrox' },
         other: { short: 'Race',  one: 'Other race',     label: 'Other races',    name: 'Race' }
+      },
+      // A distance with no preset gets its own name, not "other".
+      kmKind: function (km) {
+        return { short: km + ' km', one: km + ' km race', label: km + ' km races', name: km + ' km race' };
       }
     },
     ko: {
       focus: '\uAD00\uC2EC \uBD84\uC57C', addPhoto: '\uC0AC\uC9C4 \uCD94\uAC00 \uC704\uCE58', expandAll: '\uBAA8\uB450 \uD3BC\uCE58\uAE30', collapseAll: '\uBAA8\uB450 \uC811\uAE30',
       noPosts: '\uC544\uC9C1 \uAC8C\uC2DC\uBB3C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.', noArticles: '\uC544\uC9C1 \uBC1C\uD589\uB41C \uAE00\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.', allPosts: '\u2190 \uC804\uCCB4 \uAE00',
+      noCourses: '\uC544\uC9C1 \uB4F1\uB85D\uB41C \uACFC\uBAA9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.',
       untitled: '\uC81C\uBAA9 \uC5C6\uC74C', edit: '\uD3B8\uC9D1', nextUp: '\uB2E4\uC74C \uB300\uD68C', unnamedRace: '\uC774\uB984 \uC5C6\uB294 \uB300\uD68C',
       routeMap: '\uCF54\uC2A4 \uC9C0\uB3C4', route: '\uCF54\uC2A4', upcoming: '\uC608\uC815', perKm: '/km', routeMapAlt: '\uCF54\uC2A4 \uC9C0\uB3C4 \u2014 ',
       close: '\uB2EB\uAE30', prev: '\uC774\uC804', next: '\uB2E4\uC74C', prevPhoto: '\uC774\uC804 \uC0AC\uC9C4', nextPhoto: '\uB2E4\uC74C \uC0AC\uC9C4',
@@ -751,6 +769,9 @@
         tri:   { short: '\uD2B8\uB77C\uC774', one: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', label: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860', name: '\uD2B8\uB77C\uC774\uC560\uC2AC\uB860' },
         hyrox: { short: '\uD558\uC774\uB85D\uC2A4', one: '\uD558\uC774\uB85D\uC2A4', label: '\uD558\uC774\uB85D\uC2A4', name: '\uD558\uC774\uB85D\uC2A4' },
         other: { short: '\uB808\uC774\uC2A4', one: '\uAE30\uD0C0 \uB300\uD68C', label: '\uAE30\uD0C0 \uB300\uD68C', name: '\uB808\uC774\uC2A4' }
+      },
+      kmKind: function (km) {
+        return { short: km + ' km', one: km + ' km', label: km + ' km', name: km + ' km \uB808\uC774\uC2A4' };
       }
     }
   };
@@ -978,6 +999,30 @@
         return '<tr><th scope="row">' + esc(r.name) + '</th><td>' + rich(r.text) +
           (r.tag ? '<span class="tag">' + esc(r.tag) + '</span>' : '') + '</td></tr>';
       }).join('') + '</tbody></table>';
+    },
+    // Courses are grouped by department in the order departments first appear;
+    // rows with no department are listed first without a heading.
+    courses: function (b) {
+      var list = (b.courses || []).filter(function (c) { return c && (c.code || c.course || c.dept); });
+      if (!list.length) return '<p class="feed-empty">' + esc(T.noCourses) + '</p>';
+      var groups = [], byDept = {};
+      list.forEach(function (c) {
+        var d = String(c.dept || '').trim();
+        if (!byDept[d]) { byDept[d] = { dept: d, courses: [] }; groups.push(byDept[d]); }
+        byDept[d].courses.push(c);
+      });
+      groups.sort(function (a, c) { return (a.dept ? 1 : 0) - (c.dept ? 1 : 0); });
+      return '<div class="courses">' + groups.map(function (g) {
+        return '<div class="course-group">' +
+          (g.dept ? '<h3 class="course-dept">' + esc(g.dept) + '</h3>' : '') +
+          '<div class="course-list">' + g.courses.map(function (c) {
+            return '<article class="course">' +
+              '<span class="code num">' + esc(c.code) + '</span>' +
+              '<h3>' + esc(c.course) + '</h3>' +
+              (c.description ? '<p>' + rich(c.description) + '</p>' : '') +
+              '</article>';
+          }).join('') + '</div></div>';
+      }).join('') + '</div>';
     },
     skills: function (b) {
       return '<dl class="skills">' + (b.rows || []).map(function (r) {
@@ -1258,6 +1303,20 @@
     var words = T.kinds[k] || T.kinds.other;
     return { key: k, short: words.short, one: words.one, label: words.label, name: words.name, km: RACE_KM[k] || 0 };
   }
+  // A race off the preset list is counted under its own distance -- a 20 km run
+  // is "20 km" on the board, not one more anonymous "other".
+  function tallyKey(r) {
+    var k = raceKind(r);
+    if (k !== 'other') return k;
+    var km = raceKm(r);
+    return km ? 'km:' + (Math.round(km * 1000) / 1000) : 'other';
+  }
+  function tallyInfo(key) {
+    if (key.indexOf('km:') !== 0) return kindInfo(key);
+    var km = key.slice(3);
+    var words = T.kmKind(km);
+    return { key: key, short: words.short, one: words.one, label: words.label, name: words.name, km: +km };
+  }
   function raceKm(r) {
     var typed = parseFloat(r.km);
     if (typed > 0) return typed;
@@ -1301,13 +1360,21 @@
     var counts = {};
     races.forEach(function (r) {
       if (isUpcoming(r)) return;
-      var k = raceKind(r);
+      var k = tallyKey(r);
       counts[k] = (counts[k] || 0) + 1;
     });
-    var tally = TALLY_ORDER.filter(function (k) { return counts[k] || TALLY_ALWAYS[k]; })
+    // Custom distances take the slot the catch-all used to hold, longest first.
+    var custom = Object.keys(counts).filter(function (k) { return k.indexOf('km:') === 0; })
+      .sort(function (a, b) { return parseFloat(b.slice(3)) - parseFloat(a.slice(3)); });
+    var order = [];
+    TALLY_ORDER.forEach(function (k) {
+      if (k === 'other') order = order.concat(custom);
+      order.push(k);
+    });
+    var tally = order.filter(function (k) { return counts[k] || TALLY_ALWAYS[k]; })
       .map(function (k) {
         var n = counts[k] || 0;
-        var info = kindInfo(k);
+        var info = tallyInfo(k);
         return '<div class="tally"><span class="tally-n num">' + n + '</span>' +
                '<span class="tally-l">' + esc(n === 1 ? info.one : info.label) + '</span></div>';
       }).join('');
