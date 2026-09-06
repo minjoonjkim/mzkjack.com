@@ -253,31 +253,6 @@ window.SITE_CONTENT_KO = {
       "label": "학업",
       "blocks": [
         {
-          "type": "text",
-          "title": "무엇을, 왜 공부하는가",
-          "paragraphs": [
-            "두 갈래의 공부가 나란히 진행됩니다. 통계학을 부전공으로 하는 컴퓨터과학 학위, 그리고 CFA 프로그램입니다. 하나는 시스템이 어떻게 만들어지는지를, 다른 하나는 그것이 어떻게 평가되는지를 가르쳐 줍니다. RLWRLD에서의 로보틱스 업무는 이 둘이 만나는 지점입니다."
-          ]
-        },
-        {
-          "type": "stats",
-          "title": "한눈에 보기",
-          "stats": [
-            {
-              "value": "3.70",
-              "label": "GPA / 4.0, Penn State"
-            },
-            {
-              "value": "Level II",
-              "label": "CFA 프로그램 응시자"
-            },
-            {
-              "value": "2028",
-              "label": "졸업 예정"
-            }
-          ]
-        },
-        {
           "type": "entries",
           "title": "학위",
           "entries": [
@@ -297,7 +272,7 @@ window.SITE_CONTENT_KO = {
         },
         {
           "type": "entries",
-          "title": "CFA 프로그램",
+          "title": "CFA",
           "entries": [
             {
               "heading": "공인재무분석사(CFA) Level II 응시자",
@@ -313,32 +288,11 @@ window.SITE_CONTENT_KO = {
           ]
         },
         {
-          "type": "table",
-          "title": "자격 및 수료",
-          "rows": [
-            {
-              "name": "MOS Expert 2016",
-              "text": "Microsoft Office Specialist Expert: Excel, PowerPoint, Word.",
-              "tag": "자격번호 EF16D26"
-            },
-            {
-              "name": "NLCG 트레이닝 프로그램",
-              "text": "Penn State의 10주 컨설팅 부트캠프: 시장 규모 추정, 이슈 트리, 가설 기반 문제 해결, 고객 커뮤니케이션.",
-              "tag": "2024년 1월 – 5월"
-            }
-          ]
-        },
-        {
           "type": "text",
           "title": "지금 읽고 있는 것",
           "paragraphs": [
             "주식과 채권 밸류에이션을 중심으로 CFA Level II 커리큘럼을 공부하고 있습니다. 함께 로봇 파운데이션 모델과 모방학습 관련 논문 및 기술 보고서를 읽으며 R&D 팀과 보폭을 맞추고 있습니다."
           ]
-        },
-        {
-          "type": "posts",
-          "title": "학습 기록",
-          "posts": []
         }
       ]
     },
