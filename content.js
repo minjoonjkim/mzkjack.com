@@ -72,10 +72,9 @@ window.SITE_CONTENT = {
           "type": "text",
           "title": "About",
           "paragraphs": [
-            "I was born in South Korea, and spent my childhood in Hong Kong before moving to South Africa, where I lived until studying Computer Science & Statistics at Penn State University.",
-            "After completing my military service for the Republic of Korea, I decided to take a gap year to intern at RLWRLD as Robotics Transformation Consultant. RLWRLD builds real-world intelligence for robotics, and our team works with clients across a range of industries to understand their operations and develop bespoke strategies for deploying robotics and Physical AI in the real world.",
-            "Outside of work, endurance sports are a big part of my life. I enjoy running including ultramarathons, and currently training for an Ironman.",
-            "I am a firm believer that where there’s a will, there’s a way, and that mindset shapes how I approach both professional challenges and personal goals."
+            "I was born in South Korea, spent much of my childhood in Hong Kong, and later moved to South Africa before beginning my studies in Computer Science and Statistics at Penn State. Growing up across different countries shaped my curiosity, adaptability, and interest in understanding how people and systems operate in different environments.",
+            "After completing my military service in South Korea, I took a gap year from university to join RLWRLD as a Robotics Transformation Consultant. RLWRLD develops real-world intelligence for robotics, and my work sits at the intersection of technology and strategy. I study how businesses operate, identify where robotics can create meaningful value, and help develop practical strategies for deploying robotics and Physical AI across different industries.",
+            "Outside of work, endurance sports are an important part of my life. I run road races and ultramarathons and am currently training for an Ironman. I have always believed that where there is a will, there is a way. This mindset continues to shape how I approach difficult problems, ambitious goals, and the challenges that come with both."
           ]
         },
         {
