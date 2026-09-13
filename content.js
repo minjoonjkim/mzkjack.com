@@ -127,11 +127,11 @@ window.SITE_CONTENT = {
               "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "Took an AI-powered automation assessment tool from concept through productization, defining the evaluation criteria that turn a single worksite video into evidence-based verdicts across readiness dimensions.",
-                "Built the VLM Ops pipeline, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments in two languages from three video input sources.",
-                "Developed the workflows, database schemas, and backend services behind a robotics data platform, chaining six processing stages that turn raw field footage into structured model training data.",
-                "Recast a luxury hotel group’s operating workflows into a robotics deployment model, evaluating hundreds of subtasks to surface automation opportunities and size labor capacity and fleet requirements.",
-                "Wrote customer proposals and executive presentations that framed robotics capabilities and deployment economics as business cases across three industries: hospitality, manufacturing, and logistics."
+                "Recast a luxury hotel group’s operating workflows into a robotics deployment model, evaluating hundreds of subtasks against automation feasibility to size labor capacity, fleet requirements, and the operational case for adoption.",
+                "Structured client proposals and executive presentations across three industries (hospitality, manufacturing, logistics), framing robotics capability and deployment economics as business cases for client leadership.",
+                "Took an AI-powered automation assessment tool from concept through productization, defining the evaluation criteria that turn a single worksite video into evidence-based readiness verdicts.",
+                "Built the VLM Ops pipeline behind that product, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments in two languages from three video input sources.",
+                "Developed the workflows, database schemas, and backend services for a robotics data platform, chaining six processing stages that turn raw field footage into structured model training data."
               ],
               "_id": "ak2006"
             },
@@ -142,7 +142,7 @@ window.SITE_CONTENT = {
               "when": "Aug 2024 – May 2026",
               "current": false,
               "bullets": [
-                "Managed surveillance systems across the metro station to ensure passenger safety, and used off-duty hours to self-study for and write two levels of the CFA Program."
+                "Managed surveillance systems across a metro station to ensure passenger safety, and self-studied through off-duty hours to write two levels of the CFA Program."
               ],
               "_id": "ak2008"
             }
