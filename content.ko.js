@@ -124,31 +124,28 @@ window.SITE_CONTENT_KO = {
           "title": "경력",
           "entries": [
             {
-              "heading": "Robotics Transformation (RX) Consultant Intern",
+              "heading": "로보틱스 전환(RX) 컨설턴트 인턴",
               "org": "RLWRLD",
-              "location": "Seoul, South Korea",
-              "when": "May 2026 – Present",
+              "location": "서울, 대한민국",
+              "when": "2026년 5월 – 현재",
               "current": true,
               "bullets": [
-                "**Lotte Hotel.** Led client engagement analysis across four 4- and 5-star properties, running on-site due diligence and benchmarking each hotel on operating scope, labor structure, P&L attribution, and ownership approval structure to support a robotics deployment contract proposal.",
-                "Built the core argument for accelerating contract initiation to November 2026, structured around four rationales (learning-curve economics, competitive pre-emption, schedule dependency, SOP transition timing) and presented to the client's senior management.",
-                "Supported the CJ Logistics project team on a robotics PoC proposal for one of Korea's largest logistics providers, contributing market research and deliverable preparation.",
-                "Prepared a pitch deck for a leading global electronics manufacturer, structuring the client's automation constraints into a three-part narrative (strategic rationale, economic drivers, execution roadmap) and analyzing demand across four robot deployment categories.",
-                "Contributed to the company IR deck: architecture visuals, competitive differentiation slides (vs. Scale AI, Encord), and the full English translation of the methodology section for global investors.",
-                "**RXDE.** Owned end-to-end development of the company's production data platform on AWS (EC2, RDS PostgreSQL, S3), designing a unified five-table schema adopted company-wide and running cost-performance benchmarks that informed a GPU infrastructure investment decision.",
-                "Developed a task feasibility evaluation framework scoring robotic deployment readiness across 28 sub-criteria on 7 performance axes, standardizing go/no-go assessment for enterprise PoC prioritization, iterated in direct alignment with the R&D team."
+                "AI 평가 제품을 기획 단계부터 고객 납품까지 완성했으며, 평가 기준을 정의해 현장 영상 한 편을 7개 준비도 항목에 대한 근거 기반 판정으로 전환했습니다.",
+                "VLM Ops 파이프라인을 구축해 평가 루브릭, 버전 관리되는 판정 로직, PostgreSQL 작업 오케스트레이션을 통합하고, 3개 영상 입력 소스에 대한 평가 결과를 2개 언어로 제공했습니다.",
+                "로보틱스 데이터 플랫폼의 워크플로, 데이터베이스 스키마, 백엔드 서비스를 개발하고 6단계 처리 과정을 통합해 원본 현장 영상을 구조화된 모델 학습 데이터로 전환했습니다.",
+                "럭셔리 호텔 그룹의 고객 업무 흐름을 로봇 도입 모델로 전환했으며, 수백 개의 세부 업무를 평가해 자동화 기회를 발굴하고 인력 수용량과 로봇 대수 요건을 산정했습니다.",
+                "고객 제안서와 경영진 발표자료를 작성해 로봇 기술 역량과 도입 경제성을 호스피탈리티·제조·물류 3개 산업의 비즈니스 케이스로 구성했습니다."
               ],
               "_id": "ak2006"
             },
             {
-              "heading": "Military Service, Republic of Korea",
-              "org": "Seoul Metropolitan Corporation",
-              "location": "Voluntary enlistment",
-              "when": "Aug 2024 – May 2026",
+              "heading": "대한민국 군 복무",
+              "org": "서울교통공사",
+              "location": "자원 입대",
+              "when": "2024년 8월 – 2026년 5월",
               "current": false,
               "bullets": [
-                "Managed surveillance systems across a metro station to ensure passenger safety.",
-                "Used off-duty hours to self-study for and write two levels of the CFA Program."
+                "지하철 역사 전반의 관제 시스템을 운영해 안전을 확보했으며, 비번 시간을 활용해 독학으로 CFA 2개 레벨에 응시했습니다."
               ],
               "_id": "ak2008"
             }
@@ -270,175 +267,175 @@ window.SITE_CONTENT_KO = {
               "dept": "컴퓨터공학",
               "code": "CMPSC 121",
               "course": "Introduction to Programming Techniques",
-              "description": "알고리즘 설계, 구조적 프로그래밍, 배열, 함수, 재귀를 통해 프로그래밍과 계산적 문제 해결의 기초를 배웠다.",
+              "description": "변수와 자료형, 제어문과 반복문, 함수와 매개변수 전달, 배열과 문자열, 포인터, 구조체, 파일 입출력, 재귀, 단계적 세분화에 기반한 구조적 프로그래밍, 알고리즘 설계와 디버깅",
               "_id": "xt3gc6"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 122",
               "course": "Intermediate Programming",
-              "description": "객체지향 프로그래밍, 재귀, 알고리즘 분석과 함께 연결 리스트, 스택, 큐, 해시 테이블, 트리, 그래프 등 핵심 자료구조의 기반을 다졌다.",
+              "description": "클래스와 객체, 상속과 다형성, 연산자 오버로딩, 템플릿, 동적 메모리 관리, 연결 리스트·스택·큐·해시 테이블·이진 탐색 트리·그래프, 정렬과 탐색 알고리즘, 점근 복잡도 분석",
               "_id": "qadmqt"
             },
             {
               "dept": "정보과학기술",
               "code": "IST 242",
               "course": "Intermediate Object-Oriented Application Development",
-              "description": "캡슐화, 상속, 다형성 같은 객체지향 원칙을 적용해 규모가 큰 모듈형 소프트웨어 애플리케이션을 개발했다.",
+              "description": "캡슐화·상속·다형성, 인터페이스와 추상 클래스, 예외 처리, 컬렉션과 제네릭, 이벤트 기반 GUI, MVC 패턴, 파일 및 데이터 영속성, 모듈형 애플리케이션 설계",
               "_id": "jhhdop"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 221",
               "course": "Object-Oriented Programming with Web-Based Applications",
-              "description": "객체지향 설계 원칙으로 웹 기반 애플리케이션을 개발하며 재사용 가능한 컴포넌트, 애플리케이션 구조, 실무적인 소프트웨어 개발에 중점을 두었다.",
+              "description": "상속 계층과 인터페이스 설계, 이벤트 처리, 클라이언트·서버 상호작용, 서버 사이드 페이지와 폼 처리, 데이터 바인딩, 세션과 상태 관리, 재사용 가능한 컴포넌트, 계층형 애플리케이션 구조",
               "_id": "0ykfw2"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 271",
               "course": "Introduction to Digital Systems",
-              "description": "이진 표현, 불 대수, 조합 논리, 순차 회로, 그리고 디지털 컴퓨터 시스템을 구성하는 기본 요소를 공부했다.",
+              "description": "수 체계와 2의 보수, 불 대수와 드모르간 법칙, 카르노 맵 간소화, 논리 게이트, 가산기·멀티플렉서·디코더 등 조합 회로, 래치와 플립플롭, 레지스터와 카운터, 유한 상태 기계와 상태 다이어그램",
               "_id": "f5qd75"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 275",
               "course": "Digital Design Laboratory",
-              "description": "조합 회로와 순차 회로를 다루는 실습을 통해 디지털 논리 설계를 구현하고 검증했다.",
+              "description": "하드웨어 기술 언어를 이용한 설계와 시뮬레이션, 조합 회로와 유한 상태 기계 구현, 타이밍 검증, 테스트벤치 작성, 논리 분석기·오실로스코프를 이용한 디버깅",
               "_id": "1lwpl9"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 360",
               "course": "Discrete Mathematics for Computer Science",
-              "description": "논리, 증명, 집합, 관계, 함수, 귀납법, 조합론, 점화식, 그래프 이론 등 컴퓨팅의 수학적 기초를 배웠다.",
+              "description": "명제·술어 논리와 추론 규칙, 직접 증명·대우 증명·귀류법, 수학적 귀납법과 강한 귀납법, 집합 연산, 함수와 관계, 동치관계, 모듈러 산술, 순열과 조합, 비둘기집 원리, 포함배제 원리, 점화식, 그래프와 트리",
               "_id": "ndca98"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 465",
               "course": "Data Structures and Algorithms",
-              "description": "재귀, 정렬 기법, 트리, 집합, 그래프 등 기본 자료구조를 활용한 효율적인 알고리즘의 설계와 분석을 공부했다.",
+              "description": "점근 표기법과 복잡도 분석, 분할 정복과 마스터 정리, 병합·퀵·힙 정렬, 이진 탐색 트리와 균형 트리, 해시 테이블, 힙과 우선순위 큐, 너비·깊이 우선 탐색, 최단 경로와 최소 신장 트리, 동적 계획법, 탐욕 알고리즘, NP-완전성",
               "_id": "y46c40"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 331",
               "course": "Computer Organization and Design",
-              "description": "명령어 집합, 프로세서 구조, 데이터패스, 메모리 계층, 어셈블리 수준 연산, 성능 분석을 통해 하드웨어가 소프트웨어를 실행하는 방식을 탐구했다.",
+              "description": "MIPS 명령어 집합 구조와 어셈블리 프로그래밍, 정수·부동소수점 산술, 단일 사이클과 파이프라인 데이터패스, 제어 유닛, 데이터·제어 해저드와 포워딩, 캐시와 메모리 계층, 가상 메모리, 입출력, CPI 기반 성능 분석",
               "_id": "tlmdnz"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 311",
               "course": "Introduction to Systems Programming",
-              "description": "Unix 환경에서 C로 시스템 소프트웨어를 개발하며 메모리 구조, 프로세스, 파일, 시스템 콜, 디버깅 도구, 프로그램 성능, 프로세스 간 통신을 배웠다.",
+              "description": "C 포인터와 프로세스 메모리 레이아웃, 동적 할당, 시스템 콜, 파일 디스크립터와 입출력, fork·exec·wait를 통한 프로세스 제어, 시그널, 파이프와 소켓 기반 프로세스 간 통신, 스레드와 동기화, Makefile·gdb·valgrind를 이용한 빌드와 디버깅",
               "_id": "7s1ifh"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 461",
               "course": "Programming Language Concepts",
-              "description": "주요 프로그래밍 패러다임을 비교하고 언어의 문법, 의미론, 타입 시스템, 스코프, 추상화, 런타임 환경, 언어 구현을 공부했다.",
+              "description": "문법과 BNF, 어휘 분석과 구문 분석, 추상 구문 트리, 이름 바인딩과 정적·동적 스코프, 타입 시스템과 타입 검사, 매개변수 전달 방식, 명령형·객체지향·함수형·논리형 패러다임, 고차 함수와 클로저, 가비지 컬렉션, 활성 레코드와 런타임 환경",
               "_id": "j36g66"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 442",
               "course": "Artificial Intelligence",
-              "description": "문제 해결, 목표 기반 탐색과 적대적 탐색, 지식 표현, 확률적 추론, 의사결정, 계획, 기계학습 등 지능형 시스템의 기초를 공부했다.",
+              "description": "상태 공간 탐색, 너비·깊이·균일 비용 탐색, A*와 휴리스틱, 게임 트리와 미니맥스, 알파-베타 가지치기, 제약 충족 문제, 명제·1차 논리 기반 지식 표현, 베이즈 정리와 베이지안 네트워크, 마르코프 결정 과정, 고전적 계획, 지도학습과 신경망 기초",
               "_id": "qhmqkb"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 497",
               "course": "Mathematical Tools in Computer Science",
-              "description": "수학적 추론과 정량적 방법을 컴퓨터과학 문제에 적용하며 형식 모델, 알고리즘, 계산적 문제 해결 사이의 연결을 다졌다.",
+              "description": "선형대수와 행렬 분해, 확률 부등식과 집중 현상, 고유값 분해와 스펙트럼 방법, 특이값 분해를 이용한 차원 축소, 고차원 기하, 무작위 알고리즘, 마르코프 연쇄, 볼록 최적화와 경사 하강법",
               "_id": "f3oywm"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 473",
               "course": "Operating Systems Design and Construction",
-              "description": "운영체제의 설계와 함께 프로세스, 스레드, 프로세서, 메모리, 파일 시스템, 입출력 장치, 동기화 등 공유 컴퓨팅 자원의 관리를 공부했다.",
+              "description": "프로세스와 스레드, 문맥 교환, CPU 스케줄링 기법, 임계 구역과 상호 배제, 세마포어·뮤텍스·모니터, 교착 상태 탐지와 회피, 페이징과 세그먼테이션, 가상 메모리와 페이지 교체 알고리즘, 파일 시스템 구조, 디스크 스케줄링과 입출력 관리",
               "_id": "j03dvw"
             },
             {
               "dept": "수학",
               "code": "MATH 140",
               "course": "Calculus with Analytic Geometry I",
-              "description": "극한, 연속성, 미분, 최적화, 관련 변화율, 정적분, 그리고 미분과 적분의 관계에 대한 기초를 쌓았다.",
+              "description": "함수와 극한, 연속성과 중간값 정리, 도함수의 정의, 미분 규칙과 연쇄법칙, 음함수 미분, 관련 변화율, 평균값 정리, 극값과 1·2차 도함수 판정, 곡선 개형, 최적화, 로피탈 정리, 리만 합과 정적분, 미적분의 기본정리, 치환적분",
               "_id": "lbc4ao"
             },
             {
               "dept": "수학",
               "code": "MATH 141",
               "course": "Calculus with Analytic Geometry II",
-              "description": "고급 적분 기법, 적분의 응용, 수열과 급수, 매개변수 방정식, 극좌표, 미분방정식 입문을 공부했다.",
+              "description": "부분적분, 삼각치환, 부분분수 분해, 이상적분, 넓이·부피·호의 길이와 회전체 표면적, 수열과 급수의 수렴 판정, 멱급수와 테일러·매클로린 급수, 매개변수 곡선, 극좌표, 1계 미분방정식과 변수분리법",
               "_id": "51jk5w"
             },
             {
               "dept": "수학",
               "code": "MATH 220",
               "course": "Matrices",
-              "description": "행렬 연산, 연립 선형방정식, 행렬식, 벡터 공간, 선형 변환, 고유값과 고유벡터를 배웠다.",
+              "description": "가우스 소거법과 행 사다리꼴, 연립 선형방정식의 해 구조, 행렬 연산과 역행렬, 행렬식과 크라메르 공식, 벡터 공간과 부분공간, 일차독립·기저·차원, 선형 변환과 표현 행렬, 고유값과 고유벡터, 대각화",
               "_id": "55eh2e"
             },
             {
               "dept": "수학",
               "code": "MATH 230",
               "course": "Calculus and Vector Analysis",
-              "description": "편미분, 다중적분, 벡터장, 선적분과 면적분, 벡터 미적분의 주요 정리를 통해 미적분을 다차원으로 확장했다.",
+              "description": "공간 벡터와 내적·외적, 직선과 평면의 방정식, 편도함수, 방향도함수와 기울기 벡터, 다변수 연쇄법칙, 라그랑주 승수법, 이중·삼중적분, 극좌표·원통좌표·구면좌표, 벡터장과 선적분, 보존장과 퍼텐셜 함수, 그린 정리, 발산 정리, 스토크스 정리",
               "_id": "3oqkdc"
             },
             {
               "dept": "통계학",
               "code": "STAT 200",
               "course": "Elementary Statistics",
-              "description": "기술통계, 확률의 기초, 표본추출, 신뢰구간, 가설검정, 상관, 회귀, 통계 결과의 해석을 배웠다.",
+              "description": "자료의 요약과 시각화, 중심경향치와 산포도, 확률의 기초와 조건부 확률, 이항분포와 정규분포, 표본분포와 중심극한정리, 모평균·모비율의 신뢰구간, 가설검정과 p-값, 1·2 표본 t 검정, 카이제곱 검정, 상관계수와 단순선형회귀",
               "_id": "8d15fa"
             },
             {
               "dept": "통계학",
               "code": "STAT 414",
               "course": "Introduction to Probability Theory",
-              "description": "확률 공간, 조건부 확률, 이산·연속 확률변수, 변환, 기대값, 생성함수, 극한 정리 등 미적분 기반 확률론을 공부했다.",
+              "description": "표본 공간과 확률의 공리, 조건부 확률과 베이즈 정리, 독립성, 이항·포아송·기하·초기하 분포, 정규·지수·감마·베타 분포, 결합·주변·조건부 분포, 확률변수의 변환, 기대값과 분산, 적률생성함수, 공분산과 상관, 큰 수의 법칙과 중심극한정리",
               "_id": "gzqx8w"
             },
             {
               "dept": "수학",
               "code": "MATH 415",
               "course": "Mathematical Statistics",
-              "description": "추정, 가설검정, 회귀, 상관, 분산분석, 계산 분석을 포함한 통계적 추론을 이론과 응용 양면에서 익혔다.",
+              "description": "적률법과 최대우도추정, 추정량의 불편성·일치성·효율성, 크라메르-라오 하한, 충분통계량, 구간추정, 네이만-피어슨 보조정리와 우도비 검정, 1·2 표본 검정, 분산분석, 회귀와 상관, 비모수 검정",
               "_id": "7qdgnm"
             },
             {
               "dept": "통계학",
               "code": "STAT 460",
               "course": "Intermediate Applied Statistics",
-              "description": "가설검정, 적합도 검정, 회귀, 상관분석, 랜덤화 실험설계, 블록 설계, 라틴방격 설계를 적용했다.",
+              "description": "가설검정과 검정력, 적합도 검정과 분할표 분석, 단순·다중 회귀, 상관분석, 완전 확률화 설계, 난괴법, 라틴방격 설계, 요인 설계와 교호작용, 분산분석과 다중비교, 잔차 진단",
               "_id": "sdkjup"
             },
             {
               "dept": "통계학",
               "code": "STAT 462",
               "course": "Applied Regression Analysis",
-              "description": "선형, 다중, 단계적, 비선형 회귀 모형을 구축하고 평가하며 상관, 모형 선택, 진단, 데이터 내 관계의 해석을 공부했다.",
+              "description": "단순·다중 선형회귀와 최소제곱 추정, 모형 가정 검토와 잔차 진단, 다중공선성과 분산팽창계수, 전진·후진·단계적 변수 선택, 지시변수와 교호작용항, 변수 변환과 가중최소제곱, 레버리지와 영향점, 로지스틱 회귀와 비선형 회귀",
               "_id": "6rs0zr"
             },
             {
               "dept": "물리학",
               "code": "PHYS 211",
               "course": "General Physics, Mechanics",
-              "description": "운동학, 뉴턴 법칙, 힘, 일과 에너지, 운동량, 회전 운동, 중력, 진동 시스템을 통해 고전역학을 공부했다.",
+              "description": "1·2차원 운동학과 벡터, 뉴턴의 운동 법칙, 마찰과 원운동, 일과 운동에너지 정리, 퍼텐셜 에너지와 역학적 에너지 보존, 운동량과 충격량, 충돌, 질량중심, 회전 운동학과 토크, 관성 모멘트, 각운동량 보존, 정역학, 만유인력, 단순조화진동",
               "_id": "2fc9vt"
             },
             {
               "dept": "물리학",
               "code": "PHYS 212",
               "course": "General Physics, Electricity and Magnetism",
-              "description": "전기장과 자기장, 정전기 퍼텐셜, 회로, 축전, 전자기 유도, 전기와 자기의 관계에 대한 원리를 배웠다.",
+              "description": "쿨롱 법칙과 전기장, 가우스 법칙, 전위와 전기 퍼텐셜 에너지, 축전기와 유전체, 전류와 저항, 키르히호프 법칙과 직류 회로, RC 회로, 자기장과 로런츠 힘, 비오-사바르 법칙, 앙페르 법칙, 패러데이 법칙과 렌츠 법칙, 인덕턴스, 맥스웰 방정식",
               "_id": "dc63vx"
             }
           ]
