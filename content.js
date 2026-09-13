@@ -127,27 +127,13 @@ window.SITE_CONTENT = {
               "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "**Lotte Hotel.** Led client engagement analysis across four 4- and 5-star properties, running on-site due diligence and benchmarking each hotel on operating scope, labor structure, P&L attribution, and ownership approval structure to support a robotics deployment contract proposal.",
-                "Built the core argument for accelerating contract initiation to November 2026, structured around four rationales (learning-curve economics, competitive pre-emption, schedule dependency, SOP transition timing) and presented to the client's senior management.",
-                "Supported the CJ Logistics project team on a robotics PoC proposal for one of Korea's largest logistics providers, contributing market research and deliverable preparation.",
-                "Prepared a pitch deck for a leading global electronics manufacturer, structuring the client's automation constraints into a three-part narrative (strategic rationale, economic drivers, execution roadmap) and analyzing demand across four robot deployment categories.",
-                "Contributed to the company IR deck: architecture visuals, competitive differentiation slides (vs. Scale AI, Encord), and the full English translation of the methodology section for global investors.",
-                "**RXDE.** Owned end-to-end development of the company's production data platform on AWS (EC2, RDS PostgreSQL, S3), designing a unified five-table schema adopted company-wide and running cost-performance benchmarks that informed a GPU infrastructure investment decision.",
-                "Developed a task feasibility evaluation framework scoring robotic deployment readiness across 28 sub-criteria on 7 performance axes, standardizing go/no-go assessment for enterprise PoC prioritization, iterated in direct alignment with the R&D team."
+                "Created an AI assessment product from concept to customer delivery, defining evaluation criteria to turn a single worksite video into evidence based verdicts across seven readiness dimensions.",
+                "Built the VLM Ops pipeline, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments from three video input sources in two languages.",
+                "Developed workflows, database schemas, and backend services for a robotics data platform, integrating six processing stages to convert raw field footage into structured model training data",
+                "Translated customer workflows into a robotics deployment model for a luxury hotel group, evaluating hundreds of subtasks to identify automation opportunities and estimate labor capacity and fleet requirements.",
+                "Developed customer proposals and executive presentations, translating robotics capabilities and deployment economics into business cases across three industries, hospitality, manufacturing, and logistics"
               ],
               "_id": "ak2006"
-            },
-            {
-              "heading": "Research Assistant",
-              "org": "William Hansan · PE, M&A Advisory",
-              "location": "Seoul, South Korea",
-              "when": "Mar 2026 – May 2026",
-              "current": false,
-              "bullets": [
-                "Part-time industry research across the TMT sector with a focus on the Korean robotics landscape, analyzing key players across industrial robots and component sub-segments.",
-                "Assessed potential acquisition targets by evaluating revenue scale, margin profile, and ownership structure for deal origination."
-              ],
-              "_id": "ak2007"
             },
             {
               "heading": "Military Service, Republic of Korea",
@@ -156,8 +142,7 @@ window.SITE_CONTENT = {
               "when": "Aug 2024 – May 2026",
               "current": false,
               "bullets": [
-                "Managed surveillance systems across a metro station to ensure passenger safety.",
-                "Used off-duty hours to self-study for and write two levels of the CFA Program."
+                "Managed surveillance systems across the metro station to ensure safety & utilized off duty hours to self study and write two levels of CFA"
               ],
               "_id": "ak2008"
             }
