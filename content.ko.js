@@ -267,175 +267,175 @@ window.SITE_CONTENT_KO = {
               "dept": "컴퓨터공학",
               "code": "CMPSC 121",
               "course": "Introduction to Programming Techniques",
-              "description": "변수와 자료형, 제어문과 반복문, 함수와 매개변수 전달, 배열과 문자열, 포인터, 구조체, 파일 입출력, 재귀, 단계적 세분화에 기반한 구조적 프로그래밍, 알고리즘 설계와 디버깅",
+              "description": "구조적 프로그래밍, 배열, 함수, 포인터, 재귀",
               "_id": "xt3gc6"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 122",
               "course": "Intermediate Programming",
-              "description": "클래스와 객체, 상속과 다형성, 연산자 오버로딩, 템플릿, 동적 메모리 관리, 연결 리스트·스택·큐·해시 테이블·이진 탐색 트리·그래프, 정렬과 탐색 알고리즘, 점근 복잡도 분석",
+              "description": "객체지향 프로그래밍, 핵심 자료구조, 복잡도 분석",
               "_id": "qadmqt"
             },
             {
               "dept": "정보과학기술",
               "code": "IST 242",
               "course": "Intermediate Object-Oriented Application Development",
-              "description": "캡슐화·상속·다형성, 인터페이스와 추상 클래스, 예외 처리, 컬렉션과 제네릭, 이벤트 기반 GUI, MVC 패턴, 파일 및 데이터 영속성, 모듈형 애플리케이션 설계",
+              "description": "캡슐화, 상속, 다형성, 모듈형 애플리케이션 설계",
               "_id": "jhhdop"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 221",
               "course": "Object-Oriented Programming with Web-Based Applications",
-              "description": "상속 계층과 인터페이스 설계, 이벤트 처리, 클라이언트·서버 상호작용, 서버 사이드 페이지와 폼 처리, 데이터 바인딩, 세션과 상태 관리, 재사용 가능한 컴포넌트, 계층형 애플리케이션 구조",
+              "description": "객체지향 웹 애플리케이션, 재사용 컴포넌트, 계층형 구조",
               "_id": "0ykfw2"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 271",
               "course": "Introduction to Digital Systems",
-              "description": "수 체계와 2의 보수, 불 대수와 드모르간 법칙, 카르노 맵 간소화, 논리 게이트, 가산기·멀티플렉서·디코더 등 조합 회로, 래치와 플립플롭, 레지스터와 카운터, 유한 상태 기계와 상태 다이어그램",
+              "description": "불 대수, 조합 논리, 플립플롭, 유한 상태 기계",
               "_id": "f5qd75"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 275",
               "course": "Digital Design Laboratory",
-              "description": "하드웨어 기술 언어를 이용한 설계와 시뮬레이션, 조합 회로와 유한 상태 기계 구현, 타이밍 검증, 테스트벤치 작성, 논리 분석기·오실로스코프를 이용한 디버깅",
+              "description": "디지털 논리 설계 실습, 시뮬레이션, 타이밍 검증",
               "_id": "1lwpl9"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 360",
               "course": "Discrete Mathematics for Computer Science",
-              "description": "명제·술어 논리와 추론 규칙, 직접 증명·대우 증명·귀류법, 수학적 귀납법과 강한 귀납법, 집합 연산, 함수와 관계, 동치관계, 모듈러 산술, 순열과 조합, 비둘기집 원리, 포함배제 원리, 점화식, 그래프와 트리",
+              "description": "논리, 증명, 귀납법, 조합론, 점화식, 그래프 이론",
               "_id": "ndca98"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 465",
               "course": "Data Structures and Algorithms",
-              "description": "점근 표기법과 복잡도 분석, 분할 정복과 마스터 정리, 병합·퀵·힙 정렬, 이진 탐색 트리와 균형 트리, 해시 테이블, 힙과 우선순위 큐, 너비·깊이 우선 탐색, 최단 경로와 최소 신장 트리, 동적 계획법, 탐욕 알고리즘, NP-완전성",
+              "description": "점근 분석, 분할 정복, 그래프 알고리즘, 동적 계획법",
               "_id": "y46c40"
             },
             {
               "dept": "컴퓨터 엔지니어링",
               "code": "CMPEN 331",
               "course": "Computer Organization and Design",
-              "description": "MIPS 명령어 집합 구조와 어셈블리 프로그래밍, 정수·부동소수점 산술, 단일 사이클과 파이프라인 데이터패스, 제어 유닛, 데이터·제어 해저드와 포워딩, 캐시와 메모리 계층, 가상 메모리, 입출력, CPI 기반 성능 분석",
+              "description": "MIPS 어셈블리, 파이프라인 데이터패스, 해저드, 메모리 계층",
               "_id": "tlmdnz"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 311",
               "course": "Introduction to Systems Programming",
-              "description": "C 포인터와 프로세스 메모리 레이아웃, 동적 할당, 시스템 콜, 파일 디스크립터와 입출력, fork·exec·wait를 통한 프로세스 제어, 시그널, 파이프와 소켓 기반 프로세스 간 통신, 스레드와 동기화, Makefile·gdb·valgrind를 이용한 빌드와 디버깅",
+              "description": "Unix 환경 C 시스템 프로그래밍, 프로세스, 시스템 콜, 프로세스 간 통신",
               "_id": "7s1ifh"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 461",
               "course": "Programming Language Concepts",
-              "description": "문법과 BNF, 어휘 분석과 구문 분석, 추상 구문 트리, 이름 바인딩과 정적·동적 스코프, 타입 시스템과 타입 검사, 매개변수 전달 방식, 명령형·객체지향·함수형·논리형 패러다임, 고차 함수와 클로저, 가비지 컬렉션, 활성 레코드와 런타임 환경",
+              "description": "문법과 의미론, 타입 시스템, 스코프, 언어 패러다임",
               "_id": "j36g66"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 442",
               "course": "Artificial Intelligence",
-              "description": "상태 공간 탐색, 너비·깊이·균일 비용 탐색, A*와 휴리스틱, 게임 트리와 미니맥스, 알파-베타 가지치기, 제약 충족 문제, 명제·1차 논리 기반 지식 표현, 베이즈 정리와 베이지안 네트워크, 마르코프 결정 과정, 고전적 계획, 지도학습과 신경망 기초",
+              "description": "휴리스틱·적대적 탐색, 지식 표현, 확률적 추론",
               "_id": "qhmqkb"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 497",
               "course": "Mathematical Tools in Computer Science",
-              "description": "선형대수와 행렬 분해, 확률 부등식과 집중 현상, 고유값 분해와 스펙트럼 방법, 특이값 분해를 이용한 차원 축소, 고차원 기하, 무작위 알고리즘, 마르코프 연쇄, 볼록 최적화와 경사 하강법",
+              "description": "선형대수, 확률, 스펙트럼 방법, 최적화",
               "_id": "f3oywm"
             },
             {
               "dept": "컴퓨터공학",
               "code": "CMPSC 473",
               "course": "Operating Systems Design and Construction",
-              "description": "프로세스와 스레드, 문맥 교환, CPU 스케줄링 기법, 임계 구역과 상호 배제, 세마포어·뮤텍스·모니터, 교착 상태 탐지와 회피, 페이징과 세그먼테이션, 가상 메모리와 페이지 교체 알고리즘, 파일 시스템 구조, 디스크 스케줄링과 입출력 관리",
+              "description": "스케줄링, 동기화, 교착 상태, 가상 메모리, 파일 시스템",
               "_id": "j03dvw"
             },
             {
               "dept": "수학",
               "code": "MATH 140",
               "course": "Calculus with Analytic Geometry I",
-              "description": "함수와 극한, 연속성과 중간값 정리, 도함수의 정의, 미분 규칙과 연쇄법칙, 음함수 미분, 관련 변화율, 평균값 정리, 극값과 1·2차 도함수 판정, 곡선 개형, 최적화, 로피탈 정리, 리만 합과 정적분, 미적분의 기본정리, 치환적분",
+              "description": "극한, 미분, 최적화, 정적분",
               "_id": "lbc4ao"
             },
             {
               "dept": "수학",
               "code": "MATH 141",
               "course": "Calculus with Analytic Geometry II",
-              "description": "부분적분, 삼각치환, 부분분수 분해, 이상적분, 넓이·부피·호의 길이와 회전체 표면적, 수열과 급수의 수렴 판정, 멱급수와 테일러·매클로린 급수, 매개변수 곡선, 극좌표, 1계 미분방정식과 변수분리법",
+              "description": "적분 기법, 수열과 급수, 극좌표",
               "_id": "51jk5w"
             },
             {
               "dept": "수학",
               "code": "MATH 220",
               "course": "Matrices",
-              "description": "가우스 소거법과 행 사다리꼴, 연립 선형방정식의 해 구조, 행렬 연산과 역행렬, 행렬식과 크라메르 공식, 벡터 공간과 부분공간, 일차독립·기저·차원, 선형 변환과 표현 행렬, 고유값과 고유벡터, 대각화",
+              "description": "연립 선형방정식, 벡터 공간, 선형 변환, 고유값",
               "_id": "55eh2e"
             },
             {
               "dept": "수학",
               "code": "MATH 230",
               "course": "Calculus and Vector Analysis",
-              "description": "공간 벡터와 내적·외적, 직선과 평면의 방정식, 편도함수, 방향도함수와 기울기 벡터, 다변수 연쇄법칙, 라그랑주 승수법, 이중·삼중적분, 극좌표·원통좌표·구면좌표, 벡터장과 선적분, 보존장과 퍼텐셜 함수, 그린 정리, 발산 정리, 스토크스 정리",
+              "description": "편미분, 다중적분, 벡터장, 스토크스 정리",
               "_id": "3oqkdc"
             },
             {
               "dept": "통계학",
               "code": "STAT 200",
               "course": "Elementary Statistics",
-              "description": "자료의 요약과 시각화, 중심경향치와 산포도, 확률의 기초와 조건부 확률, 이항분포와 정규분포, 표본분포와 중심극한정리, 모평균·모비율의 신뢰구간, 가설검정과 p-값, 1·2 표본 t 검정, 카이제곱 검정, 상관계수와 단순선형회귀",
+              "description": "기술통계, 신뢰구간, 가설검정, 회귀",
               "_id": "8d15fa"
             },
             {
               "dept": "통계학",
               "code": "STAT 414",
               "course": "Introduction to Probability Theory",
-              "description": "표본 공간과 확률의 공리, 조건부 확률과 베이즈 정리, 독립성, 이항·포아송·기하·초기하 분포, 정규·지수·감마·베타 분포, 결합·주변·조건부 분포, 확률변수의 변환, 기대값과 분산, 적률생성함수, 공분산과 상관, 큰 수의 법칙과 중심극한정리",
+              "description": "확률변수, 확률분포, 기대값, 극한 정리",
               "_id": "gzqx8w"
             },
             {
               "dept": "수학",
               "code": "MATH 415",
               "course": "Mathematical Statistics",
-              "description": "적률법과 최대우도추정, 추정량의 불편성·일치성·효율성, 크라메르-라오 하한, 충분통계량, 구간추정, 네이만-피어슨 보조정리와 우도비 검정, 1·2 표본 검정, 분산분석, 회귀와 상관, 비모수 검정",
+              "description": "최대우도추정, 가설검정, 통계적 추론",
               "_id": "7qdgnm"
             },
             {
               "dept": "통계학",
               "code": "STAT 460",
               "course": "Intermediate Applied Statistics",
-              "description": "가설검정과 검정력, 적합도 검정과 분할표 분석, 단순·다중 회귀, 상관분석, 완전 확률화 설계, 난괴법, 라틴방격 설계, 요인 설계와 교호작용, 분산분석과 다중비교, 잔차 진단",
+              "description": "실험설계, 블록 설계, 분산분석, 다중비교",
               "_id": "sdkjup"
             },
             {
               "dept": "통계학",
               "code": "STAT 462",
               "course": "Applied Regression Analysis",
-              "description": "단순·다중 선형회귀와 최소제곱 추정, 모형 가정 검토와 잔차 진단, 다중공선성과 분산팽창계수, 전진·후진·단계적 변수 선택, 지시변수와 교호작용항, 변수 변환과 가중최소제곱, 레버리지와 영향점, 로지스틱 회귀와 비선형 회귀",
+              "description": "다중회귀, 모형 선택, 잔차 진단, 로지스틱 회귀",
               "_id": "6rs0zr"
             },
             {
               "dept": "물리학",
               "code": "PHYS 211",
               "course": "General Physics, Mechanics",
-              "description": "1·2차원 운동학과 벡터, 뉴턴의 운동 법칙, 마찰과 원운동, 일과 운동에너지 정리, 퍼텐셜 에너지와 역학적 에너지 보존, 운동량과 충격량, 충돌, 질량중심, 회전 운동학과 토크, 관성 모멘트, 각운동량 보존, 정역학, 만유인력, 단순조화진동",
+              "description": "운동학, 뉴턴 법칙, 에너지, 운동량, 회전 운동",
               "_id": "2fc9vt"
             },
             {
               "dept": "물리학",
               "code": "PHYS 212",
               "course": "General Physics, Electricity and Magnetism",
-              "description": "쿨롱 법칙과 전기장, 가우스 법칙, 전위와 전기 퍼텐셜 에너지, 축전기와 유전체, 전류와 저항, 키르히호프 법칙과 직류 회로, RC 회로, 자기장과 로런츠 힘, 비오-사바르 법칙, 앙페르 법칙, 패러데이 법칙과 렌츠 법칙, 인덕턴스, 맥스웰 방정식",
+              "description": "전기장과 자기장, 회로, 전자기 유도",
               "_id": "dc63vx"
             }
           ]
