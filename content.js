@@ -127,11 +127,11 @@ window.SITE_CONTENT = {
               "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "Created an AI assessment product from concept to customer delivery, defining evaluation criteria to turn a single worksite video into evidence based verdicts across multiple readiness dimensions.",
-                "Built the VLM Ops pipeline, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments from three video input sources in two languages.",
-                "Developed workflows, database schemas, and backend services for a robotics data platform, integrating six processing stages to convert raw field footage into structured model training data",
-                "Translated customer workflows into a robotics deployment model for a luxury hotel group, evaluating hundreds of subtasks to identify automation opportunities and estimate labor capacity and fleet requirements.",
-                "Developed customer proposals and executive presentations, translating robotics capabilities and deployment economics into business cases across three industries, hospitality, manufacturing, and logistics"
+                "Took an AI-powered automation assessment tool from concept through productization, defining the evaluation criteria that turn a single worksite video into evidence-based verdicts across readiness dimensions.",
+                "Built the VLM Ops pipeline, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments in two languages from three video input sources.",
+                "Developed the workflows, database schemas, and backend services behind a robotics data platform, chaining six processing stages that turn raw field footage into structured model training data.",
+                "Recast a luxury hotel group’s operating workflows into a robotics deployment model, evaluating hundreds of subtasks to surface automation opportunities and size labor capacity and fleet requirements.",
+                "Wrote customer proposals and executive presentations that framed robotics capabilities and deployment economics as business cases across three industries: hospitality, manufacturing, and logistics."
               ],
               "_id": "ak2006"
             },
@@ -142,7 +142,7 @@ window.SITE_CONTENT = {
               "when": "Aug 2024 – May 2026",
               "current": false,
               "bullets": [
-                "Managed surveillance systems across the metro station to ensure safety & utilized off duty hours to self study and write two levels of CFA"
+                "Managed surveillance systems across the metro station to ensure passenger safety, and used off-duty hours to self-study for and write two levels of the CFA Program."
               ],
               "_id": "ak2008"
             }
