@@ -141,18 +141,6 @@ window.SITE_CONTENT_KO = {
               "_id": "ak2006"
             },
             {
-              "heading": "Research Assistant",
-              "org": "William Hansan · PE, M&A Advisory",
-              "location": "Seoul, South Korea",
-              "when": "Mar 2026 – May 2026",
-              "current": false,
-              "bullets": [
-                "Part-time industry research across the TMT sector with a focus on the Korean robotics landscape, analyzing key players across industrial robots and component sub-segments.",
-                "Assessed potential acquisition targets by evaluating revenue scale, margin profile, and ownership structure for deal origination."
-              ],
-              "_id": "ak2007"
-            },
-            {
               "heading": "Military Service, Republic of Korea",
               "org": "Seoul Metropolitan Corporation",
               "location": "Voluntary enlistment",
