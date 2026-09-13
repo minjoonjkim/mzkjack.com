@@ -127,7 +127,7 @@ window.SITE_CONTENT = {
               "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "Created an AI assessment product from concept to customer delivery, defining evaluation criteria to turn a single worksite video into evidence based verdicts across seven readiness dimensions.",
+                "Created an AI assessment product from concept to customer delivery, defining evaluation criteria to turn a single worksite video into evidence based verdicts across multiple readiness dimensions.",
                 "Built the VLM Ops pipeline, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments from three video input sources in two languages.",
                 "Developed workflows, database schemas, and backend services for a robotics data platform, integrating six processing stages to convert raw field footage into structured model training data",
                 "Translated customer workflows into a robotics deployment model for a luxury hotel group, evaluating hundreds of subtasks to identify automation opportunities and estimate labor capacity and fleet requirements.",
