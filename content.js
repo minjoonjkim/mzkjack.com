@@ -88,10 +88,10 @@ window.SITE_CONTENT = {
           "title": "Education",
           "entries": [
             {
-              "heading": "Pennsylvania State University",
-              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
+              "heading": "펜실베니아 주립대학교",
+              "org": "컴퓨터공학과, GPA 3.70 / 4.0",
               "location": "",
-              "when": "May 2028",
+              "when": "Expected May 2028",
               "current": false,
               "bullets": [],
               "_id": "ak2009"
@@ -99,7 +99,7 @@ window.SITE_CONTENT = {
             {
               "heading": "American International School of Cape Town",
               "org": "",
-              "location": "Cape Town, South Africa",
+              "location": "케이프타운, 남아프리카공화국",
               "when": "Class of 2021",
               "current": false,
               "bullets": [],
@@ -112,28 +112,28 @@ window.SITE_CONTENT = {
           "title": "Experience",
           "entries": [
             {
-              "heading": "Robotics Transformation (RX) Consultant Intern",
+              "heading": "로보틱스 전환(RX) 컨설턴트 인턴",
               "org": "RLWRLD",
-              "location": "Seoul, South Korea",
-              "when": "May 2026 – Present",
+              "location": "",
+              "when": "2026년 5월 – 현재",
               "current": true,
               "bullets": [
-                "Recast a luxury hotel group’s operating workflows into a robotics deployment model, evaluating hundreds of subtasks against automation feasibility to size labor capacity, fleet requirements, and the operational case for adoption.",
-                "Structured client proposals and executive presentations across three industries (hospitality, manufacturing, logistics), framing robotics capability and deployment economics as business cases for client leadership.",
-                "Took an AI-powered automation assessment tool from concept through productization, defining the evaluation criteria that turn a single worksite video into evidence-based readiness verdicts.",
-                "Built the VLM Ops pipeline behind that product, integrating evaluation rubrics, versioned decision logic, and PostgreSQL job orchestration to deliver assessments in two languages from three video input sources.",
-                "Developed the workflows, database schemas, and backend services for a robotics data platform, chaining six processing stages that turn raw field footage into structured model training data."
+                "국내 호텔 그룹의 운영 프로세스를 로봇 도입 시나리오로 재설계하고, 수백 개 세부 업무의 자동화 타당성을 분석해 인력 처리 용량과 필요 로봇 대수, 도입 근거 도출",
+                "호텔, 제조, 물류 3개 산업의 고객 제안서와 경영진 발표자료 작성, 로봇의 기술적 구현 가능성과 도입 경제성을 의사결정용 비즈니스 케이스로 구체화",
+                "AI 기반 자동화 평가 제품의 기획부터 제품화까지 전 과정 주도, 단일 현장 영상으로 로봇 도입 준비도를 평가하는 근거 기반 판정 체계 수립 &  VLM Ops 파이프라인 구축, 평가 루브릭과 버전 관리형 판정 로직, PostgreSQL 기반 작업 오케스트레이션을 통합해 3종 영상 입력 소스와 국영문 평가 결과 지원",
+                "데이터 플랫폼의 워크플로와 데이터베이스 스키마 설계 및 백엔드 개발, 현장 영상을 모델 학습 데이터로 가공하는 6단계 파이프라인 구현 및 제품화 개발 주도",
+                "제품화를 통해 로보틱스 평가 및 데이터 처리 역량을 제품 자산으로 확장하고, AWS 파트너십으로 이어지는 기반 마련에 기여"
               ],
               "_id": "ak2006"
             },
             {
-              "heading": "Military Service, Republic of Korea",
-              "org": "Seoul Metropolitan Corporation",
-              "location": "Voluntary enlistment",
-              "when": "Aug 2024 – May 2026",
+              "heading": "서울교통공사 (사회복무요원)",
+              "org": "4호선 남태령역",
+              "location": "해외 영주권자 자원입대",
+              "when": "2024년 8월 – 2026년 5월",
               "current": false,
               "bullets": [
-                "Managed surveillance systems across a metro station to ensure passenger safety, and self-studied through off-duty hours to write two levels of the CFA Program."
+                "역사 내 승객 안전 확보, 야간근무조 (3조2교대) 활용한 독학으로 CFA Level 1 Pass, Level 2 응시완료"
               ],
               "_id": "ak2008"
             }
@@ -174,22 +174,10 @@ window.SITE_CONTENT = {
           "title": "Projects",
           "rows": [
             {
-              "name": "Blackjack RL",
-              "text": "Q-learning agent built in Gymnasium, with an integrated GUI to visualize how the model interacts with the environment.",
-              "tag": "Python",
-              "_id": "ak200e"
-            },
-            {
-              "name": "Chess AI",
-              "text": "Evaluation function and minimax algorithm with alpha-beta pruning to enhance move selection.",
-              "tag": "Python",
-              "_id": "ak200f"
-            },
-            {
-              "name": "Airbnb Pricing",
-              "text": "Regression and stepwise model selection to analyze rental price drivers from socio-economic datasets.",
-              "tag": "R",
-              "_id": "ak200g"
+              "name": "CFA Level 1 합격",
+              "text": "2026.10",
+              "tag": "",
+              "_id": "ya6a5r"
             }
           ]
         },
@@ -227,12 +215,6 @@ window.SITE_CONTENT = {
               "items": [],
               "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · License EF16D26",
               "_id": "ak200j"
-            },
-            {
-              "label": "Finance",
-              "items": [],
-              "text": "DCF and comparable company valuation, P&L attribution, deal screening, CFA Level II curriculum",
-              "_id": "ak200k"
             }
           ]
         }
