@@ -62,7 +62,6 @@ window.SITE_CONTENT_KO = {
       "VLMOps",
       "로봇 현장 도입",
       "강화학습",
-      "투자은행(IB)",
       "M&A"
     ],
     "cover": {
