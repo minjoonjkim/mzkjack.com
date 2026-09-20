@@ -61,7 +61,6 @@ window.SITE_CONTENT = {
       "VLMOps",
       "Robotics Deployment",
       "Reinforcement Learning",
-      "Investment Banking",
       "M&A"
     ],
     "cover": {
@@ -78,18 +77,21 @@ window.SITE_CONTENT = {
           "type": "text",
           "title": "About",
           "paragraphs": [
-            "I was born in South Korea, spent much of my childhood in Hong Kong, and later moved to South Africa before beginning my studies in Computer Science and Statistics at Penn State. Growing up across different countries shaped my curiosity, adaptability, and interest in understanding how people and systems operate in different environments.",
-            "After completing my military service in South Korea, I took a gap year from university to join RLWRLD as a Robotics Transformation Consultant. RLWRLD develops real-world intelligence for robotics, and my work sits at the intersection of technology and strategy. I study how businesses operate, identify where robotics can create meaningful value, and help develop practical strategies for deploying robotics and Physical AI across different industries.",
-            "Outside of work, endurance sports are an important part of my life. I run road races and ultramarathons and am currently training for an Ironman. I have always believed that where there is a will, there is a way. This mindset continues to shape how I approach difficult problems, ambitious goals, and the challenges that come with both."
-          ]
+            "I was born in South Korea, spent my childhood in Hong Kong, and later moved to South Africa, where I lived for many years. Growing up across different cultures and environments taught me to adapt to unfamiliar situations and to look at people and problems from more than one perspective. I then moved to the United States, where I study Computer Science with a minor in Statistics at Pennsylvania State University, learning how to structure complex problems logically and solve them with data and technology.",
+            "After finishing my military service, I took a gap year away from university to see how industry actually works. I am currently a Robotics Transformation Consultant Intern at RLWRLD, a Physical AI startup that develops the real-world intelligence robots need in order to understand and act in the physical world. My team analyses how sites across manufacturing, logistics, hospitality and other industries operate and where automation is needed, and designs the strategy and execution plans for bringing robots and Physical AI into real work.",
+            "My role here is to connect the technology with the business. That ranges from walking a client's site to find the tasks a robot could take on, to building the frameworks and data platforms that assess whether a robot can actually be deployed. I keep learning that what is technically possible and what is genuinely valuable on site are not always the same thing, and that judging where and how a technology should be used matters as much as building a good one.",
+            "Outside of work, endurance sport is a large part of my life. I run road races and ultramarathons, and I am currently training across swimming, cycling and running with an Ironman finish as my goal. It has been more than a hobby: it taught me how to hold a pace over long stretches of time, and how to keep moving forward through difficulties I did not plan for.",
+            "“Where there’s a will, there’s a way” is the motto I live by. Even when no clear answer or path is visible at the start, I believe a clear will, constant attempts and steady execution will eventually make one. That belief underpins how I take on new environments, how I work through complex problems, and how I move towards my own goals."
+          ],
+          "_id": "defs45"
         },
         {
           "type": "entries",
           "title": "Education",
           "entries": [
             {
-              "heading": "펜실베니아 주립대학교",
-              "org": "컴퓨터공학과, GPA 3.70 / 4.0",
+              "heading": "Pennsylvania State University",
+              "org": "B.S. Computer Science, Minor in Statistics · GPA 3.70 / 4.0",
               "location": "",
               "when": "Expected May 2028",
               "current": false,
@@ -99,87 +101,115 @@ window.SITE_CONTENT = {
             {
               "heading": "American International School of Cape Town",
               "org": "",
-              "location": "케이프타운, 남아프리카공화국",
+              "location": "Cape Town, South Africa",
               "when": "Class of 2021",
               "current": false,
               "bullets": [],
               "_id": "ak200b"
             }
-          ]
+          ],
+          "_id": "qip6ci"
+        },
+        {
+          "type": "table",
+          "title": "Certifications",
+          "rows": [
+            {
+              "name": "CFA Level 1 Passed",
+              "text": "2026.10",
+              "tag": "",
+              "_id": "ya6a5r"
+            }
+          ],
+          "_id": "hd94uz"
         },
         {
           "type": "entries",
           "title": "Experience",
           "entries": [
             {
-              "heading": "로보틱스 전환(RX) 컨설턴트 인턴",
+              "heading": "Robotics Transformation (RX) Consultant Intern",
               "org": "RLWRLD",
               "location": "",
-              "when": "2026년 5월 – 현재",
+              "when": "May 2026 – Present",
               "current": true,
               "bullets": [
-                "국내 호텔 그룹의 운영 프로세스를 로봇 도입 시나리오로 재설계하고, 수백 개 세부 업무의 자동화 타당성을 분석해 인력 처리 용량과 필요 로봇 대수, 도입 근거 도출",
-                "호텔, 제조, 물류 3개 산업의 고객 제안서와 경영진 발표자료 작성, 로봇의 기술적 구현 가능성과 도입 경제성을 의사결정용 비즈니스 케이스로 구체화",
-                "AI 기반 자동화 평가 제품의 기획부터 제품화까지 전 과정 주도, 단일 현장 영상으로 로봇 도입 준비도를 평가하는 근거 기반 판정 체계 수립 &  VLM Ops 파이프라인 구축, 평가 루브릭과 버전 관리형 판정 로직, PostgreSQL 기반 작업 오케스트레이션을 통합해 3종 영상 입력 소스와 국영문 평가 결과 지원",
-                "데이터 플랫폼의 워크플로와 데이터베이스 스키마 설계 및 백엔드 개발, 현장 영상을 모델 학습 데이터로 가공하는 6단계 파이프라인 구현 및 제품화 개발 주도",
-                "제품화를 통해 로보틱스 평가 및 데이터 처리 역량을 제품 자산으로 확장하고, AWS 파트너십으로 이어지는 기반 마련에 기여"
+                "Redesigned a domestic hotel group’s operating processes into robot deployment scenarios, analysing the automation feasibility of several hundred subtasks to derive labour handling capacity, the number of robots required, and the case for adoption.",
+                "Produced client proposals and executive presentations across three industries — hospitality, manufacturing and logistics — turning the technical feasibility and deployment economics of robotics into business cases for decision-making.",
+                "Led an AI-powered automation assessment product from concept through productization: established an evidence-based verdict framework that rates robot deployment readiness from a single worksite video, and built the VLM Ops pipeline behind it, integrating evaluation rubrics, versioned decision logic and PostgreSQL job orchestration to support three video input sources and assessment results in both Korean and English.",
+                "Designed the workflows and database schema for the data platform and developed its backend, implementing a six-stage pipeline that turns field footage into model training data and leading its productization.",
+                "Extended robotics assessment and data processing capability into product assets through productization, contributing to the groundwork that led to an AWS partnership."
               ],
               "_id": "ak2006"
             },
             {
-              "heading": "서울교통공사 (사회복무요원)",
-              "org": "4호선 남태령역",
-              "location": "해외 영주권자 자원입대",
-              "when": "2024년 8월 – 2026년 5월",
+              "heading": "Seoul Metro (Social Service Agent)",
+              "org": "Namtaeryeong Station, Line 4",
+              "location": "Voluntary enlistment as an overseas permanent resident",
+              "when": "Aug 2024 – May 2026",
               "current": false,
               "bullets": [
-                "역사 내 승객 안전 확보, 야간근무조 (3조2교대) 활용한 독학으로 CFA Level 1 Pass, Level 2 응시완료"
+                "Kept passengers safe inside the station, and used the night-shift rotation (three teams, two shifts) to self-study, passing CFA Level 1 and sitting Level 2."
               ],
               "_id": "ak2008"
             }
-          ]
+          ],
+          "_id": "8xp0ai"
         },
         {
           "type": "entries",
           "title": "Extracurricular",
           "entries": [
             {
-              "heading": "Associate Trainee",
-              "org": "Nittany Lion Consulting Group · Consulting Training Program",
-              "location": "Pennsylvania, United States",
+              "heading": "Associate Consultant Trainee",
+              "org": "Nittany Lion Consulting Group",
+              "location": "",
               "when": "Jan 2024 – May 2024",
               "current": false,
               "bullets": [
-                "Highly selective ten-week bootcamp in consulting fundamentals: market sizing, issue tree analysis, hypothesis-driven problem solving, and client communication frameworks.",
-                "Participated in five mock consulting interviews and collaborated in four-person teams to deliver structured recommendations and presentations, earning recognition for analytical rigor and clear communication."
+                "Completed a selective ten-week bootcamp in consulting fundamentals: market sizing, issue tree analysis, hypothesis-driven problem solving, and client communication frameworks."
               ],
               "_id": "ak200c"
             },
             {
-              "heading": "Vice President, Information Technology & Communications",
+              "heading": "TMT, Vice President",
               "org": "Penn State Capital College Student Investment Fund",
-              "location": "Pennsylvania, United States",
+              "location": "",
               "when": "Oct 2021 – May 2023",
               "current": false,
               "bullets": [
-                "Produced valuation reports and industry briefs using DCF models, comparable company analysis, and EDGAR data, presenting buy/sell recommendations to the investment committee.",
-                "Managed a $1M simulated portfolio, generating a 35% profit during the reporting cycle through sector rotation analysis and relative strength screening."
+                "Produced valuation reports and weekly industry briefings using DCF models, comparable company analysis and EDGAR data, and presented buy/sell recommendations to the investment committee.",
+                "Managed a $100M simulated portfolio, returning 35% over the reporting period through sector rotation analysis and relative strength screening."
               ],
               "_id": "ak200d"
             }
-          ]
+          ],
+          "_id": "2yvoym"
         },
         {
           "type": "table",
           "title": "Projects",
           "rows": [
             {
-              "name": "CFA Level 1 합격",
-              "text": "2026.10",
-              "tag": "",
-              "_id": "ya6a5r"
+              "name": "Blackjack RL",
+              "text": "Q-learning agent built in a Gymnasium environment, with an integrated GUI that visualizes how the model interacts with the environment.",
+              "tag": "Python",
+              "_id": "ak200e"
+            },
+            {
+              "name": "Chess AI",
+              "text": "Improved move selection with a minimax algorithm using an evaluation function and alpha-beta pruning.",
+              "tag": "Python",
+              "_id": "ak200f"
+            },
+            {
+              "name": "Airbnb Pricing",
+              "text": "Analyzed the drivers of rental prices in a socioeconomic dataset using regression analysis and stepwise model selection.",
+              "tag": "R",
+              "_id": "ak200g"
             }
-          ]
+          ],
+          "_id": "emme39"
         },
         {
           "type": "skills",
@@ -213,10 +243,202 @@ window.SITE_CONTENT = {
             {
               "label": "Office",
               "items": [],
-              "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · License EF16D26",
+              "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · Certification no. EF16D26",
               "_id": "ak200j"
             }
-          ]
+          ],
+          "_id": "d16um7"
+        }
+      ]
+    },
+    {
+      "id": "hobbies",
+      "label": "Hobbies",
+      "blocks": [
+        {
+          "type": "races",
+          "title": "Racing",
+          "races": [
+            {
+              "name": "Chuncheon Marathon",
+              "date": "2025-10-26",
+              "distance": "full",
+              "km": "",
+              "time": "3:47:18",
+              "pace": "",
+              "location": "",
+              "note": "",
+              "map": "media/2026-09/1788584801014-course-img.png",
+              "media": [
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
+                  "alt": ""
+                }
+              ],
+              "_id": "ak200p"
+            },
+            {
+              "name": "Saint-Germain-en-Laye 20K",
+              "date": "2025-05-18",
+              "distance": "other",
+              "km": "20",
+              "time": "1:52:43",
+              "pace": "",
+              "location": "Saint-Germain-en-Laye, France",
+              "note": "",
+              "map": "media/2026-09/-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
+              "media": [
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673536449-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673548998-836a371e-780c-4a9a-a00a-39ab7c076258-1-1.jpeg",
+                  "alt": ""
+                },
+                {
+                  "type": "image",
+                  "src": "media/2026-09/1788673610496-464ae637-2e34-4a87-9aeb-ae163d52cf87-1-1.jpeg",
+                  "alt": ""
+                }
+              ],
+              "_id": "ak200q"
+            },
+            {
+              "name": "Chuncheon Lakeside Marathon",
+              "date": "2025-06-15",
+              "distance": "half",
+              "km": "",
+              "time": "2:07:24",
+              "pace": "",
+              "location": "Chuncheon, Gangwon",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200r"
+            },
+            {
+              "name": "Marvel Run",
+              "date": "2025-09-14",
+              "distance": "half",
+              "km": "",
+              "time": "1:44:49",
+              "pace": "",
+              "location": "",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200s"
+            },
+            {
+              "name": "Sports Seoul Half Marathon",
+              "date": "2025-11-30",
+              "distance": "half",
+              "km": "",
+              "time": "1:52:28",
+              "pace": "",
+              "location": "Seoul",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200t"
+            },
+            {
+              "name": "Seoul MBN Half Marathon",
+              "date": "2025-11-16",
+              "distance": "half",
+              "km": "",
+              "time": "1:36:30",
+              "pace": "",
+              "location": "Seoul",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200u"
+            },
+            {
+              "name": "Seoul Marathon 10K",
+              "date": "",
+              "distance": "10k",
+              "km": "",
+              "time": "45:03",
+              "pace": "",
+              "location": "Seoul",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200v"
+            },
+            {
+              "name": "The Race Seoul",
+              "date": "2026-04-05",
+              "distance": "half",
+              "km": "",
+              "time": "1:37:00",
+              "pace": "",
+              "location": "Seoul",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200w"
+            },
+            {
+              "name": "Seoul Half Marathon",
+              "date": "2026-04-26",
+              "distance": "half",
+              "km": "",
+              "time": "1:36:00",
+              "pace": "",
+              "location": "Seoul",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200x"
+            },
+            {
+              "name": "Trail Running 23K",
+              "date": "2026-06-07",
+              "distance": "other",
+              "km": "23",
+              "time": "4:15:00",
+              "pace": "",
+              "location": "",
+              "note": "",
+              "map": "",
+              "media": [],
+              "_id": "ak200y"
+            }
+          ],
+          "_id": "iei1ls"
+        }
+      ]
+    },
+    {
+      "id": "blogs",
+      "label": "Blogs",
+      "blocks": [
+        {
+          "type": "blog",
+          "title": "Writing",
+          "posts": [
+            {
+              "title": "What Is an Ontology?",
+              "date": "2026-09-06",
+              "tags": [],
+              "cover": "media/2026-09/1788673275576-cover-codex-image-sep-6-2026-02-39-55-pm.png",
+              "body": "Lately the word “ontology” keeps coming up at work. It is a concept that has been gaining ground quickly, not only in the data industry but across the AI ecosystem more broadly. Watching Palantir insist, again and again, that building an ontology is its core competitive advantage made me curious. What exactly is an ontology, and why does it matter to today’s AI systems?\n\nIt has been four months since I started interning at a Physical AI startup. Building automation tools myself and putting them to work in the field has recently made the meaning of an ontology far more concrete than it used to be — because I have felt firsthand that simply collecting and storing data is not enough to understand real work, let alone automate it.\n\nBy its dictionary definition, an ontology is a system that represents the things and concepts that exist, and the relationships between them, in a form a computer can understand and process. Put simply, it defines the objects that make up the real world and builds a single structure out of what properties each one has and how they connect to one another.\n\nTake just one person — me — and you can already derive a great deal of information. The places I have lived, my family, my school and major, my job, my interests, my friends, my hobbies, my goals: all of it describes me. At first glance this might look like the work of listing every such fact without omission. But the heart of an ontology is not in gathering a lot of information. It is in classifying each piece against a common standard and structuring the relationships and context between them.\n\nIf I define “me” as a single object, then birthplace, major, occupation and interests become my properties. Penn State is the school I attend, Computer Science is the subject I study, and RLWRLD is the company I work at. Running and triathlon are hobbies, and they connect to personal goals. Seen this way, each piece of information does not stand on its own: it is joined into one context through relationships and actions such as “attends”, “majors in”, “works at” and “trains”.\n\nWorking through this idea reminded me of Class and Object, which I first met in my sophomore year while learning object-oriented programming. The most basic explanation I was taught back then was that a Class is a blueprint defining an object’s properties and behaviors, while an Object is an actual individual thing created from that blueprint.\n\nA “Person” class, for instance, might have properties such as name, birthplace, school and workplace, and behaviors such as study, work and run. An object named “Minjoon” then fills each of those properties with real values: Penn State for school, RLWRLD for workplace, running for hobby.\n\nObject-oriented programming and ontologies are not, of course, the same thing. Object-oriented programming focuses on defining the structure and behavior of the objects that make up software, whereas an ontology also expresses what real-world things mean and what relationships they hold with one another. If Class and Object are the starting point for representing individual things inside a computer, an ontology is closer to a way of connecting those things back together to reconstruct a world.\n\nWork inside a company is not so different. An employee belongs to a team, a team owns projects, and a project connects to a client. Projects consume data and equipment, and out of them come analyses and decisions. Where a conventional database concentrates on storing employee, project and client information in separate tables, an ontology also expresses what those things mean within the actual work and how they act on one another.\n\nPalantir’s ontology is likewise closer to a structure that defines core objects and their properties, the links between objects, and the actions that can be performed on them, all together. You could define “robot”, “task”, “video” and “assessment result” as objects, then connect which task a given video records, which robot capabilities that task requires, and which deployment decision an assessment result leads to. Palantir’s own documentation describes the ontology as a graph expressing object types and properties, links between objects, and the actions available on them.\n\nIn the end, an ontology is not a tidy way of classifying data. It is a way of giving scattered data real-world meaning and relationships, so that a computer can understand the context of the work. And the more AI moves beyond answering questions to actually understanding, judging and acting on an organization’s work, the more that structure matters.",
+              "_id": "ak3019"
+            }
+          ],
+          "_id": "h6i7d9"
         }
       ]
     },
@@ -274,7 +496,7 @@ window.SITE_CONTENT = {
               "dept": "Computer Science",
               "code": "CMPSC 360",
               "course": "Discrete Mathematics for Computer Science",
-              "description": "Logic, proofs, induction, combinatorics, recurrences, graph theory",
+              "description": "Logic, proofs, induction, combinatorics, recurrence relations, graph theory",
               "_id": "ndca98"
             },
             {
@@ -295,7 +517,7 @@ window.SITE_CONTENT = {
               "dept": "Computer Science",
               "code": "CMPSC 311",
               "course": "Introduction to Systems Programming",
-              "description": "C systems programming in Unix, processes, system calls, IPC",
+              "description": "C systems programming in Unix, processes, system calls, interprocess communication",
               "_id": "7s1ifh"
             },
             {
@@ -330,7 +552,7 @@ window.SITE_CONTENT = {
               "dept": "Mathematics",
               "code": "MATH 140",
               "course": "Calculus with Analytic Geometry I",
-              "description": "Limits, derivatives, optimization, definite integrals",
+              "description": "Limits, differentiation, optimization, definite integrals",
               "_id": "lbc4ao"
             },
             {
@@ -344,7 +566,7 @@ window.SITE_CONTENT = {
               "dept": "Mathematics",
               "code": "MATH 220",
               "course": "Matrices",
-              "description": "Linear systems, vector spaces, linear transformations, eigenvalues",
+              "description": "Systems of linear equations, vector spaces, linear transformations, eigenvalues",
               "_id": "55eh2e"
             },
             {
@@ -365,7 +587,7 @@ window.SITE_CONTENT = {
               "dept": "Statistics",
               "code": "STAT 414",
               "course": "Introduction to Probability Theory",
-              "description": "Random variables, distributions, expectation, limit theorems",
+              "description": "Random variables, probability distributions, expectation, limit theorems",
               "_id": "gzqx8w"
             },
             {
@@ -379,14 +601,14 @@ window.SITE_CONTENT = {
               "dept": "Statistics",
               "code": "STAT 460",
               "course": "Intermediate Applied Statistics",
-              "description": "Experimental design, blocking, ANOVA, multiple comparisons",
+              "description": "Design of experiments, blocking, analysis of variance, multiple comparisons",
               "_id": "sdkjup"
             },
             {
               "dept": "Statistics",
               "code": "STAT 462",
               "course": "Applied Regression Analysis",
-              "description": "Multiple regression, model selection, diagnostics, logistic regression",
+              "description": "Multiple regression, model selection, residual diagnostics, logistic regression",
               "_id": "6rs0zr"
             },
             {
@@ -403,373 +625,10 @@ window.SITE_CONTENT = {
               "description": "Electric and magnetic fields, circuits, electromagnetic induction",
               "_id": "dc63vx"
             }
-          ]
-        },
-        {
-          "type": "entries",
-          "title": "Extracurricular Activities ",
-          "entries": [
-            {
-              "heading": "Penn State Derivatives Association ",
-              "org": "Pennsylvania State University",
-              "location": "",
-              "when": "2021 – 2028",
-              "current": true,
-              "bullets": [
-                "**Computer science.** Algorithms, data structures, systems programming in C and C++, object-oriented design in Java and C#, databases and SQL.",
-                "**Statistics.** Regression, model selection, and applied data analysis in R, the foundation for the Airbnb pricing project and the feasibility scoring framework at RLWRLD.",
-                "**Applied AI.** Reinforcement learning (Q-learning in Gymnasium) and adversarial search (minimax with alpha-beta pruning), built as standalone projects."
-              ],
-              "_id": "ak200l"
-            },
-            {
-              "heading": "Penn State Student Investment Fund",
-              "org": "",
-              "location": "",
-              "when": "",
-              "current": false,
-              "bullets": [],
-              "_id": "ak200m"
-            },
-            {
-              "heading": "Nittany Lion Consulting Group",
-              "org": "",
-              "location": "",
-              "when": "",
-              "current": false,
-              "bullets": [],
-              "_id": "ak200n"
-            }
-          ]
-        },
-        {
-          "type": "entries",
-          "title": "CFA Program",
-          "entries": [
-            {
-              "heading": "Chartered Financial Analyst, Level II Candidate",
-              "org": "CFA Institute",
-              "location": "",
-              "when": "2024 – Present",
-              "current": true,
-              "bullets": [
-                "Self-studied and wrote two levels of the CFA exams during military service, using off-duty hours over roughly 21 months.",
-                "Core areas applied at work: equity valuation, financial statement analysis, corporate finance, and portfolio management."
-              ],
-              "_id": "ak200o"
-            }
-          ]
+          ],
+          "_id": "81gbis"
         }
       ]
-    },
-    {
-      "id": "hobbies",
-      "label": "Hobbies",
-      "blocks": [
-        {
-          "type": "races",
-          "title": "Racing",
-          "races": [
-            {
-              "name": "Chuncheon Marathon",
-              "date": "2025-10-26",
-              "distance": "full",
-              "km": "",
-              "time": "3:47:18",
-              "pace": "",
-              "location": "",
-              "note": "",
-              "map": "media/2026-09/1788584801014-course-img.png",
-              "media": [
-                {
-                  "type": "image",
-                  "src": "media/2026-09/1788586923124-9d5e54c3-2ac3-4708-b384-b3d9d7533aae-4-5.jpeg",
-                  "alt": ""
-                },
-                {
-                  "type": "image",
-                  "src": "media/2026-09/1788588100176-989854ac-430c-48af-b901-1606b2f55092-4-5.jpeg",
-                  "alt": ""
-                }
-              ],
-              "_id": "ak200p"
-            },
-            {
-              "name": "Paris-Saint-Germain-en-Laye 20K",
-              "date": "2025-05-18",
-              "distance": "other",
-              "km": "20",
-              "time": "1:52:43",
-              "pace": "",
-              "location": "Saint-Germain-en-Laye, France",
-              "note": "",
-              "map": "media/2026-09/-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
-              "media": [
-                {
-                  "type": "image",
-                  "src": "media/2026-09/1788673536449-975e7ed2-32f6-4c7e-84fa-74cc5eb9962a-4-5.jpeg",
-                  "alt": ""
-                },
-                {
-                  "type": "image",
-                  "src": "media/2026-09/1788673548998-836a371e-780c-4a9a-a00a-39ab7c076258-1-1.jpeg",
-                  "alt": ""
-                },
-                {
-                  "type": "image",
-                  "src": "media/2026-09/1788673610496-464ae637-2e34-4a87-9aeb-ae163d52cf87-1-1.jpeg",
-                  "alt": ""
-                }
-              ],
-              "_id": "ak200q"
-            },
-            {
-              "name": "춘천호반마라톤 대회",
-              "date": "2025-06-15",
-              "distance": "half",
-              "km": "",
-              "time": "2:07:24",
-              "pace": "",
-              "location": "Chuncheon, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200r"
-            },
-            {
-              "name": "Marvel Run",
-              "date": "2025-09-14",
-              "distance": "half",
-              "km": "",
-              "time": "1:44:49",
-              "pace": "",
-              "location": "",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200s"
-            },
-            {
-              "name": "Sports Seoul Half Marathon",
-              "date": "2025-11-30",
-              "distance": "half",
-              "km": "",
-              "time": "1:52:28",
-              "pace": "",
-              "location": "Seoul, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200t"
-            },
-            {
-              "name": "Seoul MBN Half Marathon",
-              "date": "2025-11-16",
-              "distance": "half",
-              "km": "",
-              "time": "1:36:30",
-              "pace": "",
-              "location": "Seoul, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200u"
-            },
-            {
-              "name": "Seoul Marathon 10K",
-              "date": "",
-              "distance": "10k",
-              "km": "",
-              "time": "45:03",
-              "pace": "",
-              "location": "Seoul, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200v"
-            },
-            {
-              "name": "The Race Seoul",
-              "date": "2026-04-05",
-              "distance": "half",
-              "km": "",
-              "time": "1:37:00",
-              "pace": "",
-              "location": "Seoul, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200w"
-            },
-            {
-              "name": "Seoul Half Marathon",
-              "date": "2026-04-26",
-              "distance": "half",
-              "km": "",
-              "time": "1:36:00",
-              "pace": "",
-              "location": "Seoul, South Korea",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200x"
-            },
-            {
-              "name": "Trail Running 23K",
-              "date": "2026-06-07",
-              "distance": "other",
-              "km": "23",
-              "time": "4:15:00",
-              "pace": "",
-              "location": "",
-              "note": "",
-              "map": "",
-              "media": [],
-              "_id": "ak200y"
-            }
-          ]
-        },
-        {
-          "type": "cards",
-          "title": "Disciplines",
-          "cards": [
-            {
-              "meta": "Triathlon",
-              "title": "Ironman 70.3",
-              "text": "Half-distance triathlon. Three sports, one clock, and a long day of pacing decisions.",
-              "facts": [
-                {
-                  "label": "Swim",
-                  "value": "1.9 km",
-                  "_id": "ak3010"
-                },
-                {
-                  "label": "Bike",
-                  "value": "90 km",
-                  "_id": "ak3011"
-                },
-                {
-                  "label": "Run",
-                  "value": "21.1 km",
-                  "_id": "ak3012"
-                }
-              ],
-              "_id": "ak300z"
-            },
-            {
-              "meta": "Running",
-              "title": "Marathon",
-              "text": "The distance where fueling and negative splits matter more than fitness alone.",
-              "facts": [
-                {
-                  "label": "Distance",
-                  "value": "42.195 km",
-                  "_id": "ak3014"
-                }
-              ],
-              "_id": "ak3013"
-            },
-            {
-              "meta": "Trail & road",
-              "title": "Ultramarathon",
-              "text": "Anything past the marathon. I race the 50 km and 100 km distances, where the goal shifts from speed to staying steady for hours.",
-              "facts": [
-                {
-                  "label": "Distances",
-                  "value": "50 km · 100 km",
-                  "_id": "ak3016"
-                }
-              ],
-              "_id": "ak3015"
-            },
-            {
-              "meta": "Fitness racing",
-              "title": "Hyrox",
-              "text": "Eight 1 km runs, each followed by a workout station: SkiErg, sled push and pull, burpee broad jumps, rowing, farmers carry, sandbag lunges, wall balls.",
-              "facts": [
-                {
-                  "label": "Format",
-                  "value": "8 × 1 km + 8 stations",
-                  "_id": "ak3018"
-                }
-              ],
-              "_id": "ak3017"
-            }
-          ]
-        },
-        {
-          "type": "text",
-          "title": "Poker",
-          "paragraphs": [
-            "Off the course, I play poker, mostly for the math. Pot odds, expected value, and reading incomplete information are the same skills that show up in valuation and in deciding whether a robot deployment is worth the contract."
-          ]
-        },
-        {
-          "type": "posts",
-          "title": "Training log",
-          "posts": []
-        }
-      ]
-    },
-    {
-      "id": "blogs",
-      "label": "Blogs",
-      "blocks": [
-        {
-          "type": "blog",
-          "title": "Writing",
-          "posts": [
-            {
-              "title": "Ontology 란 무엇인가?",
-              "date": "2026-09-06",
-              "tags": [],
-              "cover": "media/2026-09/1788673275576-cover-codex-image-sep-6-2026-02-39-55-pm.png",
-              "body": "요즘 일하다 보면 ‘온톨로지(Ontology)’라는 단어를 자주 접하게 된다. 데이터 업계뿐만 아니라 최근 AI 생태계 전반에서 빠르게 존재감을 키우고 있는 개념이다. 특히 팔란티어가 자사의 핵심 경쟁력으로 온톨로지 구축을 끊임없이 강조하는 모습을 보며 궁금해졌다. 도대체 온톨로지란 무엇이며, 왜 지금의 AI 시스템에 중요한 것일까?\n\n피지컬 AI 스타트업에서 인턴 생활을 시작한 지도 어느덧 4개월이 지났다. 최근에는 자동화 도구를 직접 개발하고 현업에 적용하는 과정을 경험하면서 온톨로지의 의미가 이전보다 훨씬 구체적으로 다가오기 시작했다. 단순히 데이터를 수집하고 저장하는 것만으로는 실제 업무를 이해하거나 자동화하기 어렵다는 사실을 체감했기 때문이다.\n\n온톨로지의 사전적 의미는 존재하는 사물과 개념, 그리고 이들 사이의 관계를 컴퓨터가 이해하고 처리할 수 있는 형태로 표현한 체계다. 쉽게 말하면 현실 세계를 구성하는 대상을 정의하고, 각 대상이 어떤 특성을 가지며 서로 어떻게 연결되어 있는지를 하나의 구조로 만드는 것이다.\n\n예를 들어 ‘나’라는 한 사람만 보더라도 수많은 정보를 도출할 수 있다. 내가 살아온 지역, 가족 관계, 학교와 전공, 직장, 관심 분야, 친구, 취미, 목표 등이 모두 나를 설명하는 정보다. 얼핏 보면 이런 정보들을 빠짐없이 나열하는 작업처럼 보일 수 있다. 그러나 온톨로지의 핵심은 정보를 많이 모으는 데 있지 않다. 각각의 정보를 공통된 기준으로 분류하고, 그 사이의 관계와 맥락을 구조화하는 데 있다.\n\n‘나’를 하나의 객체로 정의한다면 출생지, 전공, 직업, 관심사 등은 나의 속성이 된다. Penn State는 내가 재학 중인 학교이고, Computer Science는 내가 공부하는 전공이며, RLWRLD는 내가 근무하는 회사다. 달리기와 철인 3종 경기는 취미이자 개인적인 목표와 연결된다. 이렇게 보면 각각의 정보는 독립적으로 존재하는 것이 아니라 ‘재학하다’, ‘전공하다’, ‘근무하다’, ‘훈련하다’와 같은 관계와 행동을 통해 하나의 맥락으로 이어진다.\n\n이 개념을 이해하면서 대학교 2학년 때 객체지향 프로그래밍(Object-Oriented Programming)을 배우며 처음 접했던 Class와 Object가 떠올랐다. 당시 가장 기초적으로 배운 설명은 Class가 객체의 속성과 행동을 정의한 설계도라면, Object는 그 설계도를 바탕으로 만들어진 실제 개별 대상이라는 것이었다.\n\n예를 들어 ‘사람’이라는 Class에는 이름, 출생지, 학교, 직장과 같은 속성이 있고, 공부하다, 일하다, 달리다와 같은 행동이 정의될 수 있다. 그리고 ‘민준’이라는 Object에는 각각의 속성에 실제 값이 들어간다. 학교는 Penn State, 직장은 RLWRLD, 취미는 달리기와 같은 방식이다.\n\n물론 객체지향 프로그래밍과 온톨로지가 동일한 개념은 아니다. 객체지향 프로그래밍이 소프트웨어를 구성하는 객체의 구조와 행동을 정의하는 데 초점을 맞춘다면, 온톨로지는 현실 세계의 대상들이 무엇을 의미하고 서로 어떤 관계를 맺는지까지 표현한다. Class와 Object가 개별 대상을 컴퓨터 안에 표현하는 출발점이라면, 온톨로지는 그 대상들을 서로 연결해 하나의 현실 세계를 재구성하는 방식에 가깝다.\n\n기업의 업무도 이와 크게 다르지 않다. 직원은 특정 팀에 소속되고, 팀은 프로젝트를 담당하며, 프로젝트는 고객과 연결된다. 프로젝트에는 데이터와 장비가 사용되고, 그 결과로 분석과 의사결정이 만들어진다. 기존 데이터베이스가 직원, 프로젝트, 고객 정보를 각각의 테이블에 저장하는 데 집중한다면, 온톨로지는 이 대상들이 실제 업무 안에서 어떤 의미를 가지며 서로 어떻게 작용하는지까지 표현한다.\n\n팔란티어의 온톨로지도 핵심 객체와 그 속성, 객체 사이의 연결, 그리고 객체에 수행할 수 있는 행동을 함께 정의하는 구조에 가깝다. 예를 들어 ‘로봇’, ‘작업’, ‘영상’, ‘평가 결과’를 각각 객체로 정의하고, 특정 영상이 어떤 작업을 기록한 것인지, 해당 작업에는 어떤 로봇 역량이 필요한지, 평가 결과가 어떤 배포 결정으로 이어지는지를 연결할 수 있다. 팔란티어의 공식 문서에서도 온톨로지를 객체 유형과 속성, 객체 간 연결, 수행 가능한 행동을 함께 표현하는 그래프로 설명한다.\n\n결국 온톨로지는 데이터를 보기 좋게 분류하는 방법이 아니다. 흩어진 데이터에 현실의 의미와 관계를 부여해 컴퓨터가 업무의 맥락을 이해할 수 있도록 만드는 방식이다. 그리고 AI가 단순히 질문에 답하는 도구를 넘어 실제 조직의 업무를 이해하고 판단하며 행동하기 시작할수록, 이러한 구조는 더욱 중요해질 수밖에 없다.",
-              "_id": "ak3019"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
-    },
-    {
-      "id": "",
-      "label": "",
-      "blocks": []
     }
   ]
 };

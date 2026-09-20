@@ -894,8 +894,10 @@
      A photo, a date, a finish time, a link or a colour is the same whichever
      language you read the site in; only the words are translated. So everything
      that is not text mirrors across the language models and rides along on the
-     next publish. A row added in one language appears in the other with the
-     source text as a placeholder to translate; a row removed disappears from both. */
+     next publish. A row added in one language appears in the other as an empty
+     row to write; a row removed disappears from both. Text is never copied
+     between languages — a mirrored row arrives blank, so an untranslated
+     sentence can never reach the other language's site. */
   var MEDIA_KEYS = { photo: 1, image: 1, icon: 1, map: 1, poster: 1, cover: 1 };
   // Scalars that carry no language: dates, numbers, flags, links, ids, colours.
   var SHARED_KEYS = {
@@ -904,13 +906,36 @@
   };
   function isObj(v) { return !!v && typeof v === 'object' && !Array.isArray(v); }
 
+  // The shape of a row without its words: media, dates, links, ids and nesting
+  // survive, every other string comes back empty. This is what crosses the
+  // language boundary when a row exists on one side only — the row shows up to
+  // be written, and no sentence is ever published in the wrong language.
+  function scaffold(v, key) {
+    if (Array.isArray(v)) {
+      if (key === 'media') return normalizeMedia(v);
+      // A list of strings is text (bullets, paragraphs, chips): keep the count, drop the words.
+      if (v.length && v.every(function (x) { return typeof x === 'string'; })) return v.map(function () { return ''; });
+      return v.map(function (x) { return scaffold(x); });
+    }
+    if (!isObj(v)) return v;
+    var out = {};
+    Object.keys(v).forEach(function (k) {
+      var val = v[k];
+      if (val && typeof val === 'object') { out[k] = scaffold(val, k); return; }
+      out[k] = (MEDIA_KEYS[k] || SHARED_KEYS[k] || typeof val !== 'string') ? val : '';
+    });
+    return out;
+  }
+
   // Rows (races, posts, entries, contact lines…) carry a language-independent _id so
   // the two files pair up exactly, whatever is inserted, removed or reordered. Rows
   // written before ids existed pair by position once, and take the same id on both sides.
   function newId() { return Math.random().toString(36).slice(2, 8); }
   function ensureRowIds(node, key) {
     if (Array.isArray(node)) {
-      var rows = key !== 'tabs' && key !== 'blocks' && key !== 'media' && node.length && node.every(isObj);
+      // Sections get an id too, so "the 2nd table here" can never drift onto a
+      // different table there when one language grows a section the other lacks.
+      var rows = key !== 'tabs' && key !== 'media' && node.length && node.every(isObj);
       node.forEach(function (row) {
         if (rows && !row._id) row._id = newId();
         ensureRowIds(row);
@@ -960,7 +985,7 @@
           if (cursor < dst.length) { j = cursor; used[j] = true; }
         }
         if (j >= 0) { if (syncNode(row, dst[j])) changed = true; out.push(dst[j]); }
-        else { out.push(clone(row)); changed = true; }
+        else { out.push(scaffold(row)); changed = true; }
       });
       if (out.length !== dst.length || out.some(function (r, i) { return r !== dst[i]; })) {
         dst.length = 0; out.forEach(function (r) { dst.push(r); }); changed = true;
@@ -970,21 +995,53 @@
     if (!src || !dst || typeof src !== 'object' || typeof dst !== 'object') return false;
     Object.keys(src).forEach(function (k) {
       var sv = src[k], dv = dst[k];
-      // Page structure is each language's own. Tabs pair up by id and sections by
-      // kind (the 2nd "races" block here syncs with the 2nd "races" block there);
-      // nothing is added or removed, so a section that exists in one language only
-      // is left exactly as written.
+      // Page structure is each language's own: nothing is added or removed here,
+      // so a tab or section that exists in one language only is left exactly as
+      // written. Tabs pair by id. Sections pair by _id, and only fall back to
+      // kind-and-position ("the 2nd races block") for sections written before
+      // ids existed — a section paired that way takes the id, so it pairs
+      // properly from then on and cannot drift onto a different section later.
       if ((k === 'tabs' || k === 'blocks') && Array.isArray(sv) && Array.isArray(dv)) {
+        var taken = dv.map(function () { return false; });
+        var done = sv.map(function () { return false; });
+        if (k === 'blocks') {
+          sv.forEach(function (row, i) {
+            if (!isObj(row) || !row._id) return;
+            for (var j = 0; j < dv.length; j++) {
+              if (taken[j] || !isObj(dv[j]) || dv[j]._id !== row._id) continue;
+              taken[j] = true; done[i] = true;
+              if (syncNode(row, dv[j])) changed = true;
+              return;
+            }
+          });
+        }
+        // Position is only a safe pairing rule while it is unambiguous. If one
+        // language has three "table" sections left over and the other has one,
+        // there is no telling which is which, so those sections are left alone
+        // rather than guessed at — guessing is what once emptied Projects.
+        var left = {};
+        if (k === 'blocks') {
+          sv.forEach(function (row, i) {
+            if (isObj(row) && !done[i]) { var t = 'type:' + row.type; left[t] = left[t] || [0, 0]; left[t][0]++; }
+          });
+          dv.forEach(function (cand, j) {
+            if (isObj(cand) && !taken[j]) { var t = 'type:' + cand.type; left[t] = left[t] || [0, 0]; left[t][1]++; }
+          });
+        }
         var seen = {};
-        sv.forEach(function (row) {
-          if (!isObj(row)) return;
+        sv.forEach(function (row, i) {
+          if (!isObj(row) || done[i]) return;
           var key = k === 'tabs' ? 'id:' + row.id : 'type:' + row.type;
+          if (k === 'blocks' && left[key] && left[key][0] !== left[key][1]) return;
           var n = seen[key] = (seen[key] || 0) + 1, hit = 0;
           for (var j = 0; j < dv.length; j++) {
             var cand = dv[j];
-            if (!isObj(cand)) continue;
+            if (!isObj(cand) || taken[j]) continue;
             var ck = k === 'tabs' ? 'id:' + cand.id : 'type:' + cand.type;
-            if (ck === key && ++hit === n) { if (syncNode(row, cand)) changed = true; break; }
+            if (ck !== key || ++hit !== n) continue;
+            if (k === 'blocks') { taken[j] = true; if (row._id && !cand._id) cand._id = row._id; }
+            if (syncNode(row, cand)) changed = true;
+            break;
           }
         });
         return;
@@ -1003,9 +1060,9 @@
         return;
       }
       if (sv && typeof sv === 'object') {
-        // A structure that exists in one language only (a new section, a theme) is
-        // copied whole, text included, so there is something to translate.
-        if (!dv || typeof dv !== 'object' || Array.isArray(dv) !== Array.isArray(sv)) { dst[k] = clone(sv); changed = true; return; }
+        // A structure that exists in one language only (a new section, a theme)
+        // crosses over as scaffolding: the shape to fill in, none of the words.
+        if (!dv || typeof dv !== 'object' || Array.isArray(dv) !== Array.isArray(sv)) { dst[k] = scaffold(sv, k); changed = true; return; }
         if (syncNode(sv, dv)) changed = true;
       }
     });
@@ -1052,9 +1109,38 @@
   function github() { return Core.GitHub(token, CONFIG.repo, CONFIG.branch || 'main'); }
 
   var lastPublishedPath = contentPathFor('en');
+
+  // Last line of defence before anything leaves the browser: the English site is
+  // never allowed to go out carrying Korean. profile.nameKo is the one field
+  // that holds the Korean name on purpose, so it is exempt. Nothing should ever
+  // trip this — if it does, a publish is stopped rather than putting the wrong
+  // language on the live site.
+  function untranslated(content, l) {
+    if (l !== 'en') return '';
+    var hangul = /[\uAC00-\uD7A3\u3131-\u318E]/, found = '';
+    (function walk(node, key) {
+      if (found || node == null) return;
+      if (typeof node === 'string') {
+        if (key !== 'nameKo' && hangul.test(node)) found = node.slice(0, 60);
+        return;
+      }
+      if (typeof node !== 'object') return;
+      Object.keys(node).forEach(function (k) { walk(node[k], Array.isArray(node) ? key : k); });
+    })(content, '');
+    return found;
+  }
+
   function publishContent(message) {
     if (!token) return Promise.reject(new Error('Locked. Reload and unlock first.'));
     syncMediaToOthers(true);
+    var blocked = Object.keys(models).map(function (l) {
+      var hit = untranslated(models[l], l);
+      return hit ? l + ': “' + hit + '…”' : '';
+    }).filter(Boolean);
+    if (blocked.length) {
+      return Promise.reject(new Error('Publish stopped — Korean text in the English content (' +
+        blocked.join('; ') + '). Translate it on the ENG side first.'));
+    }
     var payload = Core.serializeContent(model, lang);
     var path = contentPathFor(lang);
     lastPublishedPath = path;
