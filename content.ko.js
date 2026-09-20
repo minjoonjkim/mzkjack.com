@@ -111,11 +111,23 @@ window.SITE_CONTENT_KO = {
           ]
         },
         {
+          "type": "table",
+          "title": "자격증",
+          "rows": [
+            {
+              "name": "CFA Level 1 합격",
+              "text": "2026.10",
+              "tag": "",
+              "_id": "ya6a5r"
+            }
+          ]
+        },
+        {
           "type": "entries",
           "title": "경력",
           "entries": [
             {
-              "heading": "로보틱스 전환(RX) 컨설턴트 인턴",
+              "heading": "Robotics Transformation (RX) Consultant Intern",
               "org": "RLWRLD",
               "location": "",
               "when": "2026년 5월 – 현재",
@@ -229,19 +241,8 @@ window.SITE_CONTENT_KO = {
               "items": [],
               "text": "Microsoft Office Specialist Expert 2016 (Excel, PowerPoint, Word) · 자격번호 EF16D26",
               "_id": "ak200j"
-            },
-            {
-              "label": "금융",
-              "items": [],
-              "text": "DCF 및 유사기업 비교 밸류에이션, 손익 귀속 분석, 딜 스크리닝, CFA Level II 커리큘럼",
-              "_id": "ak200k"
             }
           ]
-        },
-        {
-          "type": "posts",
-          "title": "소식",
-          "posts": []
         }
       ]
     },
