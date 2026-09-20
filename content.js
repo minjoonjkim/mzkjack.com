@@ -97,15 +97,6 @@ window.SITE_CONTENT = {
               "_id": "ak2009"
             },
             {
-              "heading": "CFA Institute",
-              "org": "Chartered Financial Analyst Program",
-              "location": "",
-              "when": "Level II Candidate",
-              "current": false,
-              "bullets": [],
-              "_id": "ak200a"
-            },
-            {
               "heading": "American International School of Cape Town",
               "org": "",
               "location": "Cape Town, South Africa",
