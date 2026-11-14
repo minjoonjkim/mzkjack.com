@@ -11,8 +11,8 @@ window.ADMIN_CONFIG = {
     "v": 1,
     "kdf": "PBKDF2-SHA256",
     "iterations": 600000,
-    "salt": "+fDCM6jEeu317VUpsUcwXw==",
-    "iv": "8kZV84A5Yr54OP7K",
-    "data": "V5J3uvWNc6nFwE/nq9FCBTrT+UGbkhcEEAAkmVj8uqN4W9i00uWnNNPds29GbtiMVQ9HPSxCHYsKQnmiILTQ2hocG5iFhlcO4Ujqx9+OLsVkwBDWw2TwPkVGXSbHn1p50bduMrFgJDn2PfBRhA=="
+    "salt": "VBPb54tNUFH74oYAxZxClg==",
+    "iv": "FbltMMPiK0POHTbG",
+    "data": "axXUhBe8CgfJKZNNPCa85i/Zrq9fycQmI9kx+ER5HG7XAbEgFqgwpzPi4BRbjnDTkJAPM4p9HFiOMeXqv2RwEJw/Sx6nOG2EZwn99FA0TXP1gNsgQQQFqM8BDODNzLMFiVSZapY8hwVYyWPfBw=="
   }
 };
