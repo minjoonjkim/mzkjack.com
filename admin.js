@@ -995,55 +995,8 @@
     if (!src || !dst || typeof src !== 'object' || typeof dst !== 'object') return false;
     Object.keys(src).forEach(function (k) {
       var sv = src[k], dv = dst[k];
-      // Page structure is each language's own: nothing is added or removed here,
-      // so a tab or section that exists in one language only is left exactly as
-      // written. Tabs pair by id. Sections pair by _id, and only fall back to
-      // kind-and-position ("the 2nd races block") for sections written before
-      // ids existed — a section paired that way takes the id, so it pairs
-      // properly from then on and cannot drift onto a different section later.
       if ((k === 'tabs' || k === 'blocks') && Array.isArray(sv) && Array.isArray(dv)) {
-        var taken = dv.map(function () { return false; });
-        var done = sv.map(function () { return false; });
-        if (k === 'blocks') {
-          sv.forEach(function (row, i) {
-            if (!isObj(row) || !row._id) return;
-            for (var j = 0; j < dv.length; j++) {
-              if (taken[j] || !isObj(dv[j]) || dv[j]._id !== row._id) continue;
-              taken[j] = true; done[i] = true;
-              if (syncNode(row, dv[j])) changed = true;
-              return;
-            }
-          });
-        }
-        // Position is only a safe pairing rule while it is unambiguous. If one
-        // language has three "table" sections left over and the other has one,
-        // there is no telling which is which, so those sections are left alone
-        // rather than guessed at — guessing is what once emptied Projects.
-        var left = {};
-        if (k === 'blocks') {
-          sv.forEach(function (row, i) {
-            if (isObj(row) && !done[i]) { var t = 'type:' + row.type; left[t] = left[t] || [0, 0]; left[t][0]++; }
-          });
-          dv.forEach(function (cand, j) {
-            if (isObj(cand) && !taken[j]) { var t = 'type:' + cand.type; left[t] = left[t] || [0, 0]; left[t][1]++; }
-          });
-        }
-        var seen = {};
-        sv.forEach(function (row, i) {
-          if (!isObj(row) || done[i]) return;
-          var key = k === 'tabs' ? 'id:' + row.id : 'type:' + row.type;
-          if (k === 'blocks' && left[key] && left[key][0] !== left[key][1]) return;
-          var n = seen[key] = (seen[key] || 0) + 1, hit = 0;
-          for (var j = 0; j < dv.length; j++) {
-            var cand = dv[j];
-            if (!isObj(cand) || taken[j]) continue;
-            var ck = k === 'tabs' ? 'id:' + cand.id : 'type:' + cand.type;
-            if (ck !== key || ++hit !== n) continue;
-            if (k === 'blocks') { taken[j] = true; if (row._id && !cand._id) cand._id = row._id; }
-            if (syncNode(row, cand)) changed = true;
-            break;
-          }
-        });
+        if (alignStructure(sv, dv, k)) changed = true;
         return;
       }
       if (k === 'media' && Array.isArray(sv)) {
@@ -1066,6 +1019,72 @@
         if (syncNode(sv, dv)) changed = true;
       }
     });
+    return changed;
+  }
+
+  // Page structure — the tabs, and the sections inside each tab — follows the
+  // language being edited: moving, adding or removing a tab or section there does
+  // the same in the other language. Only the layout crosses; a section that is
+  // new to the other language arrives as scaffolding with its words left blank.
+  // Tabs pair by id, sections by _id. A section written before ids existed pairs
+  // by kind and position only while that is unambiguous (and then takes the id);
+  // otherwise it is left where it was rather than guessed at — guessing is what
+  // once emptied Projects. Such a section is never removed or duplicated.
+  function alignStructure(sv, dv, k) {
+    var changed = false;
+    function keyOf(row) { return isObj(row) ? (k === 'tabs' ? row.id : row._id) : null; }
+    var pairOf = sv.map(function () { return -1; });
+    var taken = dv.map(function () { return false; });
+    sv.forEach(function (row, i) {
+      var id = keyOf(row);
+      if (!id) return;
+      for (var j = 0; j < dv.length; j++) {
+        if (!taken[j] && keyOf(dv[j]) === id) { taken[j] = true; pairOf[i] = j; return; }
+      }
+    });
+    // Sections without an id on this side, by type: they may be the partner of
+    // an unpaired source section, so that section is not added as new.
+    var idless = {};
+    if (k === 'blocks') {
+      var left = {};
+      sv.forEach(function (row, i) {
+        if (isObj(row) && pairOf[i] < 0) { left[row.type] = left[row.type] || [0, 0]; left[row.type][0]++; }
+      });
+      dv.forEach(function (c, j) {
+        if (isObj(c) && !taken[j] && !c._id) { left[c.type] = left[c.type] || [0, 0]; left[c.type][1]++; idless[c.type] = true; }
+      });
+      var seen = {};
+      sv.forEach(function (row, i) {
+        if (!isObj(row) || pairOf[i] >= 0) return;
+        var t = row.type;
+        if (!left[t] || left[t][0] !== left[t][1]) return;
+        var n = seen[t] = (seen[t] || 0) + 1, hit = 0;
+        for (var j = 0; j < dv.length; j++) {
+          var c = dv[j];
+          if (!isObj(c) || taken[j] || c._id || c.type !== t || ++hit !== n) continue;
+          taken[j] = true; pairOf[i] = j;
+          if (row._id) c._id = row._id;
+          break;
+        }
+      });
+    }
+    var out = [];
+    sv.forEach(function (row, i) {
+      var j = pairOf[i];
+      if (j >= 0) { if (syncNode(row, dv[j])) changed = true; out.push(dv[j]); }
+      else if (keyOf(row) && !(k === 'blocks' && idless[row.type])) out.push(scaffold(row));
+    });
+    // Unpaired rows here: one with an id was removed at the source and goes;
+    // one without stays, right after the row it used to follow.
+    dv.forEach(function (c, j) {
+      if (taken[j] || keyOf(c)) return;
+      var at = 0;
+      for (var p = j - 1; p >= 0; p--) { var q = out.indexOf(dv[p]); if (q >= 0) { at = q + 1; break; } }
+      out.splice(at, 0, c);
+    });
+    if (out.length !== dv.length || out.some(function (r, i) { return r !== dv[i]; })) {
+      dv.length = 0; out.forEach(function (r) { dv.push(r); }); changed = true;
+    }
     return changed;
   }
 

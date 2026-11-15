@@ -1193,7 +1193,9 @@
 
       var img = /^\s*!\[([^\]]*)\]\(([^)\s]+)\)\s*$/.exec(line);
       if (img) {
-        html += '<figure class="doc-fig"><img src="' + esc(img[2]) + '" alt="' + esc(img[1]) + '" loading="lazy">' +
+        // A file named …@2x.png is drawn at double density: show it at half its pixel size.
+        var half = /@2x\.[a-z]+$/i.test(img[2]) ? ' onload="this.style.width=(this.naturalWidth/2)+\'px\'"' : '';
+        html += '<figure class="doc-fig"><img src="' + esc(img[2]) + '" alt="' + esc(img[1]) + '" loading="lazy"' + half + '>' +
           (img[1] ? '<figcaption>' + esc(img[1]) + '</figcaption>' : '') + '</figure>';
         i++; continue;
       }
@@ -1248,7 +1250,8 @@
 
   /* ---------- blog: index and article ---------- */
   function blogPosts(b) {
-    return (b.posts || []).slice().sort(function (a, c) {
+    // A post that exists in the other language only arrives here with no words yet; skip it.
+    return (b.posts || []).filter(function (p) { return p && (p.title || p.body); }).sort(function (a, c) {
       var da = isoDate(a.date), dc = isoDate(c.date);
       if (da && dc) return da === dc ? 0 : (dc < da ? -1 : 1);
       if (da) return -1;

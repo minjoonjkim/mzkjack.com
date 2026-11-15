@@ -20,7 +20,9 @@ Personal website of Minjoon Jack Kim. Static HTML, no build step, hosted on GitH
 
 The site is available in English and Korean. Visitors switch with the **ENG / 한국어** control in the header; the choice is remembered in the browser, and a first visit from a Korean-language browser starts in Korean. `?lang=ko` or `?lang=en` in the URL forces one. Everything the page says on its own (dates, race tallies, empty states, buttons) follows the chosen language; everything else comes from the matching content file.
 
-The two languages are independent copies. `content.js` is English and `content.ko.js` is Korean; a post added to one does not appear in the other, so post in both if it should. In the editor, the **ENG / 한국어** switch in the top bar chooses which file you are editing and publishing. Tab ids (`about`, `study`, …) should stay the same in both files so links keep working across the switch.
+`content.js` is English and `content.ko.js` is Korean. The words in each are written separately and never copied between them. In the editor, the **ENG / 한국어** switch in the top bar chooses which file you are editing and publishing.
+
+The page layout is shared. When you move, add or remove a tab or a section in either language, the editor makes the same change in the other one and publishes both files together. A section that is new to the other language shows up with its text blank, ready to translate. Photos, dates, links and other data that has no language are mirrored the same way. Tabs are matched by their id (`about`, `study`, …) and sections by a shared `_id`, so keep those the same in both files if you edit them by hand.
 
 ## Editing content
 
